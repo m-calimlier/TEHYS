@@ -1056,8 +1056,8 @@ public sealed partial class HakedisCreateHybridUiContractTests
                     string InRect(Rect rect)=>string.Concat(page.Letters.Where(letter=>
                         letter.BoundingBox.Left>=rect.Left*0.75-0.5 && letter.BoundingBox.Right<=rect.Right*0.75+0.5 &&
                         letter.BoundingBox.Bottom>=page.Height-rect.Bottom*0.75-0.5 && letter.BoundingBox.Top<=page.Height-rect.Top*0.75+0.5).Select(letter=>letter.Value));
-                    Assert.Contains(i==0?"100.000,00":"150.000,00",InRect(new Rect(398,310,350,25)),StringComparison.Ordinal);
-                    Assert.Contains(i==0?"01.01.2026":"02.01.2026",InRect(new Rect(398,364,350,25)),StringComparison.Ordinal);
+                    Assert.Contains("250.000,00",InRect(new Rect(398,310,350,25)),StringComparison.Ordinal);
+                    Assert.Contains("01.01.2026",InRect(new Rect(398,364,350,25)),StringComparison.Ordinal);
                 }
                 }
             }

@@ -23,8 +23,8 @@ public static class OehsOutputPathService
             OehsIdentityService.NormalizeIdentity(payment.TenderNumber),
             OehsIdentityService.NormalizeIdentity(payment.ContractorTaxOrIdentityNumber),
             string.IsNullOrWhiteSpace(payment.ContractorTaxOrIdentityNumber) ? payment.ContractorName?.Trim() : "",
-            payment.ContractNumber, payment.RouteNumber, payment.BatchRouteNumbers,
-            payment.ProgressPaymentNumber?.ToString(CultureInfo.InvariantCulture)
+            payment.ContractNumber, payment.BatchId.HasValue ? $"Batch:{payment.BatchId}" : payment.RouteNumber, payment.BatchRouteNumbers,
+            payment.BatchId.HasValue ? null : payment.ProgressPaymentNumber?.ToString(CultureInfo.InvariantCulture)
         });
         var key = Convert.ToHexString(SHA256.HashData(Encoding.UTF8.GetBytes(identity)))[..16];
         var program = payment.Input.ProgramType == TransportationProgramType.SpecialEducation ? "OE" : "TE";

@@ -64,7 +64,8 @@ jobs:
           $headerCard = $statusNodes[0].ParentNode.ParentNode.ParentNode
           $statusLabels = $headerCard.SelectNodes(".//*[local-name()='TextBlock' and @Text='KAYIT DURUMU']")
           if ($statusLabels.Count -ne 1) { throw "The dynamic save-status card must have exactly one status label." }
-          if ($xaml -notmatch 'dört ayrı, tek sayfalı PDF') { throw "Output page description does not match the four-PDF save behavior." }
+          if ($xaml -notmatch 'Dört belge tek PDF dosyasında sırasıyla kaydedilir') { throw "Output page description must describe the combined four-page PDF." }
+          if ($code -notmatch 'OehsOfficialDocumentFactory.BuildCombined\(context\)' -or $code -notmatch 'outputs\[0\].Pages.Count != 4') { throw "PDF export must generate exactly four official pages in one document." }
           if ($xaml -notmatch 'x:Name="HeaderSaveStatusTextBlock"' -or $xaml -notmatch 'x:Name="HeaderSaveStatusDot"') { throw "Dynamic save-status controls are missing." }
           if ($code -notmatch 'SetHeaderSaveStatus\("Kaydedildi"' -or $code -notmatch 'SetHeaderSaveStatus\("Veri yükleme hatası"') { throw "Load/save status update paths are missing." }
 

@@ -36,7 +36,11 @@ internal sealed record OehsOfficialDocumentContext(
     string ApproverName = "Özgür BAYSAL",
     string ApproverRole = "İlçe Milli Eğitim Müdürü",
     TransportationProgramType ProgramType = TransportationProgramType.SpecialEducation,
-    string RouteName = "");
+    string RouteName = "",
+    bool IsCombined = false,
+    decimal? RawTransportPriceDifference = null,
+    decimal? ReportStampTax = null,
+    decimal? ReportDeductions = null);
 
 internal enum OehsOfficialDocumentKind
 {
@@ -148,13 +152,11 @@ internal static class OehsOfficialDocumentFactory
         // starts below the title and the side borders continue past the main table.
         AddOuterFrame(page, x, 56, w, 1014, openBottom: true);
         var paymentNo = c.ProgressPaymentNumber?.ToString(Turkish) ?? "-";
-        var routeNo = string.IsNullOrWhiteSpace(c.RouteNumber) ? "-" : c.RouteNumber.Trim();
         var date = FormatDate(c.PeriodDate);
 
         AddText(page, "HAK EDİŞ RAPORU", x, 32, w, 25, 16, true, TextAlignment.Center);
         AddCell(page, BuildWorkTitle(c, includeRouteNumber: true, includeStudentSuffix: false), x, 60, 411, 87, 9.5, true, TextAlignment.Left, White, new Thickness(5, 5, 5, 3));
-        AddCell(page, $"Hakediş No : {paymentNo}", x + 411, 60, w - 411, 43.5, 10.5, true, TextAlignment.Center);
-        AddCell(page, $"Hat No : {routeNo}", x + 411, 103.5, w - 411, 43.5, 10.5, true, TextAlignment.Center);
+        AddCell(page, $"Hakediş No : {paymentNo}", x + 411, 60, w - 411, 87, 10.5, true, TextAlignment.Center);
 
         AddCell(page, $"{date} TARİHİNE KADAR YAPILAN İŞİN", x, 148, w, 24, 11, true, TextAlignment.Center, White);
         var amountRows = new (string Key, string Label, decimal Value)[]
@@ -196,7 +198,7 @@ internal static class OehsOfficialDocumentFactory
         var deductions = new (string Key, string Label, decimal Value, double Height)[]
         {
             ("a)", "Gelir / Kurumlar Vergisi ( E x % .. )", 0m, 29),
-            ("b)", BuildStampTaxLabel(c.Calculation), ProgressPaymentReportService.CalculateReportStampTax(c.Calculation, c.ProgramType, rawTransportPriceDifference), 29),
+            ("b)", BuildStampTaxLabel(c.Calculation), c.ReportStampTax ?? ProgressPaymentReportService.CalculateReportStampTax(c.Calculation, c.ProgramType, rawTransportPriceDifference), 29),
             ("c)", BuildWithholdingLabel(c.Calculation, c.ProgramType), c.Calculation.Withholding, 29),
             ("d)", "Sosyal Sigortalar Kurumu Kesintisi", c.Calculation.Deductions.SocialSecurityDebt, 29),
             ("e)", "İdare Makinesi Kiraları", 0m, 29),
@@ -223,7 +225,7 @@ internal static class OehsOfficialDocumentFactory
 
         AddCell(page, "H", x, y, 53, 28, 10, true, TextAlignment.Center, TotalGray);
         AddCell(page, "Kesintiler ve Mahsuplar Toplamı", x + 53, y, 356, 28, 10, true, TextAlignment.Left, TotalGray);
-        AddCell(page, FormatMoney(ProgressPaymentReportService.CalculateReportTotalDeductions(c.Calculation, c.ProgramType, rawTransportPriceDifference)), x + 409, y, w - 409, 28, 10, true, TextAlignment.Right, TotalGray, new Thickness(3, 2, 8, 2));
+        AddCell(page, FormatMoney(c.ReportDeductions ?? ProgressPaymentReportService.CalculateReportTotalDeductions(c.Calculation, c.ProgramType, rawTransportPriceDifference)), x + 409, y, w - 409, 28, 10, true, TextAlignment.Right, TotalGray, new Thickness(3, 2, 8, 2));
         y += 28;
         AddCell(page, "I", x, y, 53, 28, 10, true, TextAlignment.Center, TotalGray);
         AddCell(page, "Yükleniciye Ödenecek Tutar  ( G - H )", x + 53, y, 356, 28, 10, true, TextAlignment.Left, TotalGray);
@@ -241,6 +243,7 @@ internal static class OehsOfficialDocumentFactory
 
     private static decimal FindCurrentRawTransportPriceDifference(OehsOfficialDocumentContext context)
     {
+        if(context.RawTransportPriceDifference.HasValue)return context.RawTransportPriceDifference.Value;
         var currentPayment = context.Payments
             .Where(payment => payment.ProgressPaymentNumber == context.ProgressPaymentNumber)
             .Where(payment => payment.PeriodDate == context.PeriodDate)
@@ -433,7 +436,7 @@ internal static class OehsOfficialDocumentFactory
         AddCell(page, BuildWorkTitle(c, includeRouteNumber: false, includeStudentSuffix: true), x, 47, 574, 70, 8.8, true, TextAlignment.Left, White, new Thickness(5, 3, 5, 2));
         AddCell(page, "Sayfa No : 1", x + 574, 47, w - 574, 23.3, 9.5, true, TextAlignment.Left);
         AddCell(page, $"Hakediş No : {c.ProgressPaymentNumber?.ToString(Turkish) ?? "-"}", x + 574, 70.3, w - 574, 23.3, 9.5, true, TextAlignment.Left);
-        AddCell(page, $"Hat No : {c.RouteNumber}", x + 574, 93.6, w - 574, 23.4, 9.5, true, TextAlignment.Left);
+        if(!c.IsCombined)AddCell(page, $"Hat No : {c.RouteNumber}", x + 574, 93.6, w - 574, 23.4, 9.5, true, TextAlignment.Left);
 
         var widths = new[] { 69d, 202d, 195d, 107d, w - 69d - 202d - 195d - 107d };
         var headers = new[] { "Sıra No", "İşin Cinsi", "İş Tutarı\n(a)", "Fiyat Farkı\nTutarı\n(b)", "Toplam\n(a+b)" };
@@ -651,6 +654,7 @@ internal static class OehsOfficialDocumentFactory
         bool includeRouteNumber,
         bool includeStudentSuffix)
     {
+        if(context.IsCombined)return context.WorkName;
         var work = (string.IsNullOrWhiteSpace(context.RouteName) ? context.WorkName : context.RouteName).Trim();
         var routeNumber = string.IsNullOrWhiteSpace(context.RouteNumber)
             ? "-"
@@ -726,6 +730,7 @@ internal static class OehsOfficialDocumentFactory
         Brush? foreground = null)
     {
         var block = MakeText(text, fontSize, bold, alignment, foreground, new Thickness(0));
+        FitText(block,width,height);
         block.Width = width;
         block.Height = height;
         FixedPage.SetLeft(block, x);
@@ -800,6 +805,8 @@ internal static class OehsOfficialDocumentFactory
         Thickness? padding = null)
     {
         var block = MakeText(text, fontSize, bold, alignment, Black, new Thickness(0));
+        var inset=padding ?? new Thickness(5,2,5,2);
+        FitText(block,width-inset.Left-inset.Right-1.3,height-inset.Top-inset.Bottom-1.3);
         var border = new Border
         {
             Width = width,
@@ -814,6 +821,16 @@ internal static class OehsOfficialDocumentFactory
         FixedPage.SetLeft(border, x);
         FixedPage.SetTop(border, y);
         page.Children.Add(border);
+    }
+
+    private static void FitText(TextBlock block,double width,double height)
+    {
+        block.Measure(new Size(Math.Max(1,width),double.PositiveInfinity));
+        while(block.DesiredSize.Height>height && block.FontSize>5)
+        {
+            block.FontSize=Math.Max(5,block.FontSize-0.25);
+            block.Measure(new Size(Math.Max(1,width),double.PositiveInfinity));
+        }
     }
 
     private static TextBlock MakeText(

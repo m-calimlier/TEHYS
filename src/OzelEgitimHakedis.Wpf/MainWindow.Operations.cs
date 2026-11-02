@@ -63,7 +63,7 @@ public partial class MainWindow
     }
     private static string BuildOutputFingerprint(OehsOfficialDocumentContext context) =>
         OutputEvidenceStore.HashContext(JsonSerializer.Serialize(context with {GeneratedDate=new DateOnly(2000,1,1)})+
-            "|template-operations-3-combined|"+typeof(PdfVectorWriter).Assembly.GetName().Version);
+            "|template-operations-4-contractor-combined|"+typeof(PdfVectorWriter).Assembly.GetName().Version);
     private bool HasCurrentOutput(ProgressPaymentHistoryData payment)
     {
         try

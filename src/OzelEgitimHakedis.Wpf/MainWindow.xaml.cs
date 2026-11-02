@@ -5793,7 +5793,7 @@ public partial class MainWindow : Window
         var batchTitle = item.BatchDisplayName ?? $"Hakediş No {item.ProgressPaymentNumber?.ToString(CultureInfo.CurrentCulture) ?? "-"}";
         var message = batch.Length == 1
             ? $"{batchTitle} arşive eklendi.\n\n{Path.GetFileName(archivedPaths[0])}"
-            : $"{batch.Length} hatlık aylık kayıt arşivlendi.\n{batchTitle}\nHatlar: {routeSummary}\n\nHer hat için ayrı arşiv ve dört PDF belgesi oluşturuldu; hat bazlı hakediş numaraları korunmuştur.";
+            : $"{batch.Length} hatlık aylık kayıt arşivlendi.\n{batchTitle}\nHatlar: {routeSummary}\n\nHat ayrıntıları arşivde korunmuştur. Resmî çıktılar seçili hatların toplamıyla tek belge takımı olarak hazırlanır.";
         ArchiveStatusTextBlock.Text = "ARŞİV OLUŞTURULDU";
         ClearProgressEntryFields();
         SetProgressEditorMode(false);
@@ -7446,11 +7446,19 @@ public partial class MainWindow : Window
     {
         if (_homeOutputPayment is null && !EnsureRouteForOutput()) return null;
         var latest = _homeOutputPayment ?? GetSelectedOutputPayment();
-        if (latest is null || !EnsurePaymentPreflight(latest)) return null;
+        if (latest is null || GetOutputBatchPayments(latest).Any(payment=>!EnsurePaymentPreflight(payment))) return null;
         return BuildOfficialDocumentContextForPayment(latest);
     }
 
     private OehsOfficialDocumentContext? BuildOfficialDocumentContextForPayment(ProgressPaymentHistoryData latest)
+    {
+        var members = GetOutputBatchPayments(latest);
+        var contexts = members.Select(BuildSingleRouteDocumentContext).ToArray();
+        if (contexts.Any(context => context is null)) return null;
+        return OehsCombinedDocumentContext.Combine(contexts.Select(context => context!).ToArray());
+    }
+
+    private OehsOfficialDocumentContext? BuildSingleRouteDocumentContext(ProgressPaymentHistoryData latest)
     {
         ArgumentNullException.ThrowIfNull(latest);
 
@@ -7706,8 +7714,11 @@ public partial class MainWindow : Window
             string? metadataError = null;
             try
             {
-                SaveRouteDocumentsArchiveMetadata(latest, targetPaths);
-                OutputEvidenceStore.Save(OehsRuntimePaths.DesktopRoot, latest.Id, BuildOutputFingerprint(context), targetPaths, latest.Input.ProgramType);
+                foreach(var member in GetOutputBatchPayments(latest))
+                {
+                    SaveRouteDocumentsArchiveMetadata(member, targetPaths);
+                    OutputEvidenceStore.Save(OehsRuntimePaths.DesktopRoot, member.Id, BuildOutputFingerprint(context), targetPaths, member.Input.ProgramType);
+                }
                 RefreshHomeOperations();
             }
             catch (Exception ex)
