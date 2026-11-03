@@ -21,9 +21,9 @@ public partial class MainWindow
         UpdateRecordPeriodOptions(false);
         var filter=ReadRecordFilter(false);var status=Choice(HistoryStatusFilter);
         var archived=ReadOperationArchives().Select(a=>(a.ProgressPayment.Id,a.ProgressPayment.Input.ProgramType)).ToHashSet();
-        var items=_progressHistory.Where(p=>PaymentOperationsService.Matches(p,filter) &&
-            (status!="Archived" || archived.Contains((p.Id,p.Input.ProgramType))) && (status!="Unarchived" || !archived.Contains((p.Id,p.Input.ProgramType)))).ToArray();
-        HistoryFilterSummary.Text=$"{ProgramLabel(filter.Program)} · {items.Length} / {_progressHistory.Count} kayıt"+
+        var items=_progressHistory.GroupBy(ProgressPaymentBatchService.GroupKey).Where(g=>g.Any(p=>PaymentOperationsService.Matches(p,filter) &&
+            (status!="Archived" || archived.Contains((p.Id,p.Input.ProgramType))) && (status!="Unarchived" || !archived.Contains((p.Id,p.Input.ProgramType))))).SelectMany(g=>g).ToArray();
+        HistoryFilterSummary.Text=$"{ProgramLabel(filter.Program)} · {items.GroupBy(ProgressPaymentBatchService.GroupKey).Count()} / {_progressHistory.GroupBy(ProgressPaymentBatchService.GroupKey).Count()} kayıt"+
             (items.Length==0?(_progressHistory.Count==0?" · Henüz kayıt yok.":" · Filtreye uyan kayıt yok."):"");
         return ProgressPaymentReportService.OrderByPaymentPeriod(items);
     }
@@ -42,11 +42,13 @@ public partial class MainWindow
         }
         var latest=ArchiveShowRevisions.IsChecked==true?valid:valid.GroupBy(x=>(x.Archive.ProgressPayment.Id,x.Archive.ProgressPayment.Input.ProgramType))
             .Select(g=>g.OrderByDescending(x=>x.Archive.Revision).First()).ToList();
-        var result=latest.Where(x=>PaymentOperationsService.Matches(x.Archive.ProgressPayment,filter)&&status!="Invalid")
-            .Select(x=>x.Row).ToList();
+        var result=latest.GroupBy(x=>ProgressPaymentBatchService.GroupKey(x.Archive.ProgressPayment))
+            .Where(g=>g.Any(x=>PaymentOperationsService.Matches(x.Archive.ProgressPayment,filter))&&status!="Invalid")
+            .SelectMany(g=>g.Select(x=>x.Row)).ToList();
         // Unknown identities cannot safely be assigned to a program. Keep errors visible.
         if(status!="Valid") result.AddRange(invalid);
-        ArchiveFilterSummary.Text=$"{ProgramLabel(filter.Program)} · {result.Count} sonuç · {invalid.Count} okunamayan dosya"+
+        var visibleCount=result.Count==0?0:GroupArchiveRows(result).Count;
+        ArchiveFilterSummary.Text=$"{ProgramLabel(filter.Program)} · {visibleCount} sonuç · {invalid.Count} okunamayan dosya"+
             (result.Count==0?(rows.Count==0?" · Henüz arşiv yok.":" · Filtreye uyan arşiv yok."):"");
         return result;
     }

@@ -106,7 +106,13 @@ public partial class MainWindow
         public decimal MinimumWageSupport
         {
             get => _minimumWageSupport;
-            set { var amount = MinimumWageSupportEnabled ? value : 0m; if (_minimumWageSupport == amount) return; _minimumWageSupport = amount; Changed(); }
+            set
+            {
+                if (value != 0m && !MinimumWageSupportEnabled) MinimumWageSupportEnabled = true;
+                if (_minimumWageSupport == value) return;
+                _minimumWageSupport = value;
+                Changed();
+            }
         }
         public void Configure(TransportationProgramType program, decimal contractAmount, bool vatExempt, ProgressPaymentCalculationConstants constants)
         {

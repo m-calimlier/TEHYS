@@ -193,7 +193,7 @@
                     <Border Grid.Row="1" Margin="11.5,6,11.5,8" Padding="8.5,7" CornerRadius="9" Background="#082845" BorderBrush="#73581E" BorderThickness="1">
                         <StackPanel>
                             <TextBlock Text="Created by" Foreground="#A8BCD0" FontSize="11" FontWeight="SemiBold"/>
-                            <TextBlock Text="Aşkın KESKİNBALTA" Foreground="{StaticResource Gold500Brush}" FontSize="11.5" FontWeight="Bold" Margin="0,2,0,0"/>
+                            <TextBlock x:Name="CreatorCreditsTextBlock" Text="Aşkın KESKİNBALTA&#x0a;&amp; Murat ÇALIMLIER" Foreground="{StaticResource Gold500Brush}" FontSize="11" FontWeight="SemiBold" TextWrapping="Wrap" Margin="0,2,0,0"/>
                             <Border Height="2" Width="74" Background="{StaticResource Gold500Brush}" HorizontalAlignment="Left" Margin="0,6,0,0" CornerRadius="1"/>
                         </StackPanel>
                     </Border>
@@ -678,7 +678,7 @@
                                                     <Grid.ColumnDefinitions><ColumnDefinition Width="120"/><ColumnDefinition Width="1.2*"/><ColumnDefinition Width="145"/><ColumnDefinition Width="1.2*"/></Grid.ColumnDefinitions>
                                                     <Grid.RowDefinitions><RowDefinition Height="Auto"/><RowDefinition Height="Auto"/><RowDefinition Height="Auto"/><RowDefinition Height="Auto"/><RowDefinition Height="Auto"/><RowDefinition Height="Auto"/><RowDefinition Height="Auto"/><RowDefinition Height="Auto"/><RowDefinition Height="Auto"/></Grid.RowDefinitions>
                                                     <TextBlock Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="4" Text="Dönemsel hakediş girdileri" Foreground="#B9CBDA" FontSize="11.5" Margin="0,6"/>
-                                                    <TextBlock x:Name="WorkDaysLabel" TextWrapping="Wrap" Grid.Row="1" Grid.Column="0" Text="Döneme Esas Taşıma Hakediş Gün Sayısı (Döneme Esas THGS)" Foreground="#D8E4EF" Style="{StaticResource FieldLabel}" Margin="0,5"/>
+                                                    <TextBlock x:Name="WorkDaysLabel" TextWrapping="Wrap" Grid.Row="1" Grid.Column="0" Text="Hakediş Gün Sayısı" Foreground="#D8E4EF" Style="{StaticResource FieldLabel}" Margin="0,5"/>
                                                     <TextBox x:Name="WorkDaysTextBox" Grid.Row="1" Grid.Column="1" Margin="6" Style="{StaticResource PremiumFieldTextBox}" ToolTip="Seçilen ayda fiilen verilen taşıma hizmetinin iş gününü girin."/>
                                                     <TextBlock x:Name="DailyPriceLabel" Grid.Row="1" Grid.Column="2" Text="Taşıma Günlük Fiyatı" Foreground="#D8E4EF" Style="{StaticResource FieldLabel}" Margin="8,5,0,5"/>
                                                     <TextBox x:Name="DailyPriceTextBox" Grid.Row="1" Grid.Column="3" Margin="6" Style="{StaticResource PremiumFieldTextBox}" IsReadOnly="True" ToolTip="Hat kaydındaki taşıma günlük fiyatından otomatik alınır."/>
@@ -799,11 +799,11 @@
                                                             </DataGrid.CellStyle>
                                                             <DataGrid.Columns>
 
-                                                                <DataGridTextColumn Header="Hat" Binding="{Binding RouteDisplayText}" IsReadOnly="True" Width="190"/>
+                                                                <DataGridTextColumn Header="Hat No" Binding="{Binding RouteNumber}" IsReadOnly="True" Width="65"/>
                                                                 <DataGridTemplateColumn Header="Dönem içi değişiklik" Width="170"><DataGridTemplateColumn.CellTemplate><DataTemplate><Button Content="{Binding PeriodChangeButtonText}" ToolTip="{Binding PeriodSummary}" Tag="{Binding}" Click="HybridPeriodChange_Click" Padding="5,2"/></DataTemplate></DataGridTemplateColumn.CellTemplate></DataGridTemplateColumn>
                                                                 <DataGridTextColumn Header="Hattın Adı" Binding="{Binding RouteName, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Width="170"/>
 <DataGridTextColumn Header="Ele Geçen" Binding="{Binding NetPayableText}" IsReadOnly="True" Width="125"/>
-                                                                <DataGridTextColumn Header="Döneme Esas Taşıma Hakediş Gün Sayısı (Döneme Esas THGS)" Binding="{Binding WorkDays, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, ValidatesOnExceptions=True, NotifyOnValidationError=True}" Width="180"/>
+                                                                <DataGridTextColumn Header="Hakediş Gün Sayısı" Binding="{Binding WorkDays, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, ValidatesOnExceptions=True, NotifyOnValidationError=True}" Width="110"/>
                                                                 <DataGridTextColumn Header="Taşıma Günlük Fiyatı" Binding="{Binding DailyPrice, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, Converter={StaticResource TurkishMoneyConverter}, ValidatesOnExceptions=True, NotifyOnValidationError=True}" IsReadOnly="False" Width="112"/>
                                                                 <DataGridTextColumn Header="Taşıma İskonto" Binding="{Binding DiscountAmount, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, Converter={StaticResource TurkishMoneyConverter}, ValidatesOnExceptions=True, NotifyOnValidationError=True}" Width="105"/>
                                                                 <DataGridTextColumn Header="Taşıma Fiyat Farkı KDV Hariç" Binding="{Binding PriceDifference, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, Converter={StaticResource TurkishMoneyConverter}, ValidatesOnExceptions=True, NotifyOnValidationError=True}" Width="190"/>
@@ -813,23 +813,7 @@
                                                                 <DataGridTextColumn Header="Rehber Personel Fiyat Farkı KDV Hariç" Binding="{Binding GuidePriceDifference, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, Converter={StaticResource TurkishMoneyConverter}, ValidatesOnExceptions=True, NotifyOnValidationError=True}" Width="230"/>
                                                                 <DataGridTextColumn Header="Vergi Borcu" Binding="{Binding TaxDebt, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, Converter={StaticResource TurkishMoneyConverter}, ValidatesOnExceptions=True, NotifyOnValidationError=True}" Width="100"/>
                                                                 <DataGridTextColumn Header="SGK Borcu" Binding="{Binding SocialSecurityDebt, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, Converter={StaticResource TurkishMoneyConverter}, ValidatesOnExceptions=True, NotifyOnValidationError=True}" Width="100"/>
-                                                                <DataGridCheckBoxColumn Header="Asgari Ücret Desteği Kullan" Binding="{Binding MinimumWageSupportEnabled, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, ValidatesOnExceptions=True, NotifyOnValidationError=True}" Width="155"/>
-                                                                <DataGridTextColumn Header="Asgari Ücret Desteği" Binding="{Binding MinimumWageSupport, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, Converter={StaticResource TurkishMoneyConverter}, ValidatesOnExceptions=True, NotifyOnValidationError=True}" Width="125">
-                                                                    <DataGridTextColumn.ElementStyle>
-                                                                        <Style TargetType="{x:Type TextBlock}">
-                                                                            <Style.Triggers>
-                                                                                <DataTrigger Binding="{Binding MinimumWageSupportEnabled}" Value="False">
-                                                                                    <Setter Property="Opacity" Value="0.5"/>
-                                                                                </DataTrigger>
-                                                                            </Style.Triggers>
-                                                                        </Style>
-                                                                    </DataGridTextColumn.ElementStyle>
-                                                                    <DataGridTextColumn.EditingElementStyle>
-                                                                        <Style TargetType="{x:Type TextBox}">
-                                                                            <Setter Property="IsEnabled" Value="{Binding MinimumWageSupportEnabled}"/>
-                                                                        </Style>
-                                                                    </DataGridTextColumn.EditingElementStyle>
-                                                                </DataGridTextColumn>
+                                                                <DataGridTextColumn Header="Asgari Ücret Desteği" Binding="{Binding MinimumWageSupport, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, Converter={StaticResource TurkishMoneyConverter}, ValidatesOnExceptions=True, NotifyOnValidationError=True}" Width="125"/>
                                                                 <DataGridTextColumn Header="Denetim Cezası" Binding="{Binding InspectionPenalty, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, Converter={StaticResource TurkishMoneyConverter}, ValidatesOnExceptions=True, NotifyOnValidationError=True}" Width="105"/>
                                                             </DataGrid.Columns>
                                                         </DataGrid>
@@ -1260,7 +1244,7 @@
     <Grid.RowDefinitions><RowDefinition Height="Auto"/><RowDefinition/><RowDefinition Height="Auto"/></Grid.RowDefinitions>
     <StackPanel>
         <TextBlock Text="ÇIKTILAR" Style="{StaticResource PageTitle}"/>
-        <TextBlock Text="İhale ve hattı seçin; istediğiniz hakediş döneminin belgelerini hazırlayın." Style="{StaticResource PageSubtitle}"/>
+        <TextBlock Text="İhale ve yükleniciyi seçin; istediğiniz hakediş döneminin belgelerini hazırlayın." Style="{StaticResource PageSubtitle}"/>
         <Border Style="{StaticResource Card}" Padding="10" Margin="0,0,0,10"><Grid>
             <Grid.ColumnDefinitions><ColumnDefinition/><ColumnDefinition/></Grid.ColumnDefinitions>
             <StackPanel Margin="0,0,10,0"><TextBlock Text="İhale (İKN)" Style="{StaticResource FieldLabel}" Margin="0,0,0,5"/>
@@ -1271,11 +1255,10 @@
                     </StackPanel></DataTemplate></ComboBox.ItemTemplate>
                 </ComboBox>
             </StackPanel>
-            <StackPanel Grid.Column="1"><TextBlock Text="Hat / Yüklenici" Style="{StaticResource FieldLabel}" Margin="0,0,0,5"/>
+            <StackPanel Grid.Column="1"><TextBlock Text="Yüklenici" Style="{StaticResource FieldLabel}" Margin="0,0,0,5"/>
                 <ComboBox x:Name="ReportRouteComboBox" Height="42" Style="{StaticResource FieldComboBox}" SelectionChanged="ReportRouteComboBox_SelectionChanged" TabIndex="1">
-                    <ComboBox.ItemTemplate><DataTemplate><StackPanel ToolTip="{Binding DisplayText}">
-                        <TextBlock Text="{Binding PanelTitleText}" FontWeight="SemiBold" TextTrimming="CharacterEllipsis"/>
-                        <TextBlock Text="{Binding ContractorName}" FontSize="10" TextTrimming="CharacterEllipsis"/>
+                    <ComboBox.ItemTemplate><DataTemplate><StackPanel>
+                        <TextBlock Text="{Binding ContractorName}" FontWeight="SemiBold" TextTrimming="CharacterEllipsis"/>
                     </StackPanel></DataTemplate></ComboBox.ItemTemplate>
                 </ComboBox>
             </StackPanel>
@@ -1283,7 +1266,7 @@
     </StackPanel>
     <ScrollViewer Grid.Row="1" VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled" Padding="0,0,4,0"><StackPanel>
         <UniformGrid Columns="3" Margin="0,0,0,10">
-            <Border Style="{StaticResource CardCompact}" Margin="0,0,6,0"><StackPanel><TextBlock Text="BU HATTAKİ KAYIT" Style="{StaticResource FieldLabel}"/><TextBlock x:Name="ReportCountTextBlock" Text="0" Foreground="White" FontSize="20" FontWeight="Bold" Margin="0,4,0,0"/></StackPanel></Border>
+            <Border Style="{StaticResource CardCompact}" Margin="0,0,6,0"><StackPanel><TextBlock Text="YÜKLENİCİ KAYITLARI" Style="{StaticResource FieldLabel}"/><TextBlock x:Name="ReportCountTextBlock" Text="0" Foreground="White" FontSize="20" FontWeight="Bold" Margin="0,4,0,0"/></StackPanel></Border>
             <Border Style="{StaticResource CardCompact}" Margin="3,0,3,0"><StackPanel><TextBlock Text="SEÇİLİ KAYIT • BRÜT" Style="{StaticResource FieldLabel}"/><TextBlock x:Name="ReportGrossTextBlock" Text="0,00 ₺" Foreground="White" FontSize="18" FontWeight="Bold" Margin="0,4,0,0"/></StackPanel></Border>
             <Border Style="{StaticResource CardCompact}" Margin="6,0,0,0"><StackPanel><TextBlock Text="SEÇİLİ KAYIT • NET" Style="{StaticResource FieldLabel}"/><TextBlock x:Name="ReportNetTextBlock" Text="0,00 ₺" Foreground="#F4C247" FontSize="18" FontWeight="Bold" Margin="0,4,0,0"/></StackPanel></Border>
         </UniformGrid>
@@ -1303,7 +1286,7 @@
                         </Grid></Border>
                     </DataTemplate></ListBox.ItemTemplate>
                 </ListBox>
-                <Border x:Name="ReportEmptyStateBorder" Style="{StaticResource StatusBanner}" Margin="0,5,0,0"><TextBlock x:Name="ReportEmptyStateTextBlock" Text="Kayıtları görmek için ihale ve hat seçin." Foreground="{StaticResource Text900Brush}" TextWrapping="Wrap"/></Border>
+                <Border x:Name="ReportEmptyStateBorder" Style="{StaticResource StatusBanner}" Margin="0,5,0,0"><TextBlock x:Name="ReportEmptyStateTextBlock" Text="Kayıtları görmek için ihale ve yüklenici seçin." Foreground="{StaticResource Text900Brush}" TextWrapping="Wrap"/></Border>
             </StackPanel></Border>
             <Border Grid.Column="1" Style="{StaticResource Card}" Padding="10" Margin="5,0,0,0"><StackPanel>
                 <TextBlock Text="SEÇİLİ HAKEDİŞ" Foreground="#F4C247" FontWeight="Bold"/>

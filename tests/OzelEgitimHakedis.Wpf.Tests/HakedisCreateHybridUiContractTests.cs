@@ -2219,7 +2219,7 @@ public sealed partial class HakedisCreateHybridUiContractTests
                 StringComparer.Ordinal);
         foreach (var editableHeader in new[]
         {
-            "Hattın Adı", "Taşıma Günlük Fiyatı", "Rehber Personel Günlük Fiyat", "Döneme Esas Taşıma Hakediş Gün Sayısı (Döneme Esas THGS)", "Taşıma İskonto", "Taşıma Fiyat Farkı KDV Hariç",
+            "Hattın Adı", "Taşıma Günlük Fiyatı", "Rehber Personel Günlük Fiyat", "Hakediş Gün Sayısı", "Taşıma İskonto", "Taşıma Fiyat Farkı KDV Hariç",
             "Rehber İş Günü (bu ay)", "Rehber İskonto", "Rehber Personel Fiyat Farkı KDV Hariç",
             "Vergi Borcu", "SGK Borcu", "Denetim Cezası"
         })
@@ -2229,7 +2229,7 @@ public sealed partial class HakedisCreateHybridUiContractTests
                 (string?)columns[editableHeader].Attribute("Binding") ?? string.Empty, StringComparison.Ordinal);
         }
 
-        foreach (var readOnlyHeader in new[] { "Hat" })
+        foreach (var readOnlyHeader in new[] { "Hat No" })
         {
             Assert.Contains(readOnlyHeader, columns.Keys);
             Assert.Equal("True", (string?)columns[readOnlyHeader].Attribute("IsReadOnly"));

@@ -20,7 +20,12 @@ public partial class MainWindow
     }
 
     private static bool IsOutputPaymentForRoute(ProgressPaymentHistoryData payment, RouteDraft route) =>
-        PaymentOperationsService.RouteKey(payment) == HybridRouteKey(route);
+        payment.Input.ProgramType==route.ProgramType &&
+        OehsIdentityService.BuildContractKey(payment.TenderNumber ?? "",payment.ContractNumber ?? "",payment.Input.ProgramType)==
+        OehsIdentityService.BuildContractKey(route.TenderNumber,route.ContractNumber,route.ProgramType) &&
+        (!string.IsNullOrWhiteSpace(route.ContractorTaxOrIdentityNumber)
+            ? OehsIdentityService.NormalizeIdentity(payment.ContractorTaxOrIdentityNumber)==OehsIdentityService.NormalizeIdentity(route.ContractorTaxOrIdentityNumber)
+            : PaymentOperationsService.RouteKey(payment)==HybridRouteKey(route));
 
     private ProgressPaymentHistoryData? GetSelectedOutputPayment()
     {
@@ -52,11 +57,13 @@ public partial class MainWindow
             var previous = (ReportItemsControl.SelectedItem as ReportRow)?.Payment;
             ReportItemsControl.ItemsSource = _reportRows;
             _reportRows.Clear();
-            foreach (var payment in GetSelectedRoutePayments().OrderByDescending(p => p.PeriodDate ?? DateOnly.MinValue).ThenByDescending(p => p.CreatedAt))
+            foreach (var payment in GetSelectedRoutePayments().GroupBy(ProgressPaymentBatchService.GroupKey)
+                .Select(g=>g.OrderBy(p=>p.RouteNumber,StringComparer.OrdinalIgnoreCase).First())
+                .OrderByDescending(p => p.PeriodDate ?? DateOnly.MinValue).ThenByDescending(p => p.CreatedAt))
             {
                 var title = $"Hakediş No {payment.ProgressPaymentNumber?.ToString(CultureInfo.CurrentCulture) ?? "—"}";
-                if (!string.IsNullOrWhiteSpace(payment.BatchDisplayName)) title += $" • {payment.BatchDisplayName}";
-                _reportRows.Add(new ReportRow(payment, title, OutputPeriodText(payment), FormatMoney(payment.Calculation.GrossAmount), FormatMoney(payment.Calculation.NetPayable)));
+                var members=GetOutputBatchPayments(payment);
+                _reportRows.Add(new ReportRow(payment, title, OutputPeriodText(payment), FormatMoney(members.Sum(p=>p.Calculation.GrossAmount)), FormatMoney(members.Sum(p=>p.Calculation.NetPayable))));
             }
             ReportItemsControl.SelectedItem = _reportRows.FirstOrDefault(row => previous is not null && row.Payment.Id == previous.Id && row.Payment.Input.ProgramType == previous.Input.ProgramType)
                 ?? _reportRows.FirstOrDefault();
@@ -75,13 +82,14 @@ public partial class MainWindow
         var payment = GetSelectedOutputPayment();
         ReportCountTextBlock.Text = _reportRows.Count.ToString(CultureInfo.CurrentCulture);
         ReportItemsControl.Visibility = _reportRows.Count == 0 ? Visibility.Collapsed : Visibility.Visible;
-        ReportGrossTextBlock.Text = FormatMoney(payment?.Calculation.GrossAmount ?? 0m);
-        ReportNetTextBlock.Text = FormatMoney(payment?.Calculation.NetPayable ?? 0m);
+        var selectedMembers=payment is null?Array.Empty<ProgressPaymentHistoryData>():GetOutputBatchPayments(payment);
+        ReportGrossTextBlock.Text = FormatMoney(selectedMembers.Sum(p=>p.Calculation.GrossAmount));
+        ReportNetTextBlock.Text = FormatMoney(selectedMembers.Sum(p=>p.Calculation.NetPayable));
         ServiceReportSheetNameTextBlock.Text = OfficialTemplateProfile.For(payment?.Input.ProgramType ??
             (ReportRouteComboBox.SelectedItem as RouteDraft)?.ProgramType ?? GetSelectedTransportationProgramType()).ServiceReportSheetName;
         ReportEmptyStateBorder.Visibility = _reportRows.Count == 0 ? Visibility.Visible : Visibility.Collapsed;
-        ReportEmptyStateTextBlock.Text = TryGetOutputRoute(out _) ? "Bu hatta kayıtlı hakediş yok. Önce Hakediş Oluştur ekranından bir kayıt oluşturun."
-            : "Kayıtları görmek için üstten ihale ve hat seçin.";
+        ReportEmptyStateTextBlock.Text = TryGetOutputRoute(out _) ? "Bu yükleniciye kayıtlı hakediş yok. Önce Hakediş Oluştur ekranından bir kayıt oluşturun."
+            : "Kayıtları görmek için üstten ihale ve yüklenici seçin.";
         if (clearOperationStatus) ReportOperationStatusTextBlock.Text = string.Empty;
 
         var ready = false;
@@ -98,11 +106,11 @@ public partial class MainWindow
         }
         else
         {
-            var issues = PaymentIssues(payment);
-            ready = issues.Count == 0;
+            var issues = selectedMembers.SelectMany(PaymentIssues).Distinct().ToArray();
+            ready = issues.Length == 0;
             ReportDetailTitleTextBlock.Text = $"{OutputPeriodText(payment)} • Hakediş No {payment.ProgressPaymentNumber?.ToString(CultureInfo.CurrentCulture) ?? "—"}";
             var program = payment.Input.ProgramType == TransportationProgramType.SpecialEducation ? "Özel Eğitim Taşıma" : "Temel Eğitim/Ortaöğretim Taşıma";
-            ReportDetailMetaTextBlock.Text = $"{program}\nYüklenici: {payment.ContractorName ?? "—"}\nHat {payment.RouteNumber}: {payment.RouteName ?? "—"}";
+            ReportDetailMetaTextBlock.Text = $"{program}\nYüklenici: {payment.ContractorName ?? "—"}";
             var folder = OutputDirectoryForPayment(payment);
             ReportPdfTargetTextBlock.Text = $"Klasör: {folder}"; ReportPdfTargetTextBlock.ToolTip = folder;
             OpenReportsFolderButton.IsEnabled = Directory.Exists(folder);

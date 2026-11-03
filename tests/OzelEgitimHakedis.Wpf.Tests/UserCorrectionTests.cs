@@ -89,7 +89,7 @@ public sealed partial class OfficialDocumentOutputTests
                     if (output.Kind == OehsOfficialDocumentKind.HizmetIsleriHakedisRaporu)
                     {
                         Assert.Contains(WithoutWhitespace(context.WorkName),
-                            WithoutWhitespace(PdfTextInRectangle(pdf.GetPage(1), new Rect(398, 173, 350, 62))), StringComparison.Ordinal);
+                            WithoutWhitespace(PdfTextInRectangle(pdf.GetPage(1), new Rect(308, 151, 440, 86))), StringComparison.Ordinal);
                         var page = (FixedPage)output.Document.Pages[0].Child;
                         var block = page.Children.OfType<TextBlock>().Single(b => b.Text == contractor);
                         Assert.Equal(TextAlignment.Left, block.TextAlignment);

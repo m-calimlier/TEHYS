@@ -84,7 +84,7 @@ internal static class OehsOfficialDocumentFactory
             BuildHakedisRaporu(context),
             BuildHizmetIsleriHakedisRaporu(context),
             BuildKabulTutanagi(context),
-            BuildHakedisIcmali(context));
+            BuildHakedisIcmali(context, 4));
     }
 
     public static IReadOnlyList<OehsOfficialDocumentOutput> BuildSeparate(OehsOfficialDocumentContext context)
@@ -150,7 +150,7 @@ internal static class OehsOfficialDocumentFactory
 
         // The source workbook prints the title above the form; its outer rule
         // starts below the title and the side borders continue past the main table.
-        AddOuterFrame(page, x, 56, w, 1014, openBottom: true);
+        AddOuterFrame(page, x, 56, w, 1014);
         var paymentNo = c.ProgressPaymentNumber?.ToString(Turkish) ?? "-";
         var date = FormatDate(c.PeriodDate);
 
@@ -233,9 +233,9 @@ internal static class OehsOfficialDocumentFactory
 
         y += 29;
         var footerY = Math.Max(y + 12, 790);
-        AddText(page, "Yüklenici", x + 45, footerY, w - 90, 22, 10, true, TextAlignment.Left);
-        AddText(page, c.ContractorName, x + 12, footerY + 23, w - 24, 36, 9.5, false, TextAlignment.Left);
-        AddSignatures(page, footerY + 45, c, "M.Y.H.B.Y. Örnek No :4/10",
+        AddText(page, "Yüklenici", x + 12, footerY, 180, 22, 10, true, TextAlignment.Left);
+        AddText(page, c.ContractorName, x + 12, footerY + 23, 140, 42, 9.5, false, TextAlignment.Left);
+        AddSignatures(page, footerY + 70, c, "M.Y.H.B.Y. Örnek No :4/10",
             leftX: 115, leftWidth: 205, rightX: 435, rightWidth: 200,
             nameOffset: 34, roleOffset: 53, dateOffset: 72, directorOffset: 108, titleOffset: 126, footerY: 1080);
         return page;
@@ -262,7 +262,6 @@ internal static class OehsOfficialDocumentFactory
 
         // Frame encloses the form body; the signature block remains below it,
         // following the uploaded one-page reference PDF.
-        AddCell(page, "", x, 25, w, 835, 9, false, TextAlignment.Left, White, new Thickness(0));
         AddText(page, "HİZMET İŞLERİ HAK EDİŞ RAPORU", x, 29, w, 30, 15, true, TextAlignment.Center);
 
         AddText(page, "Tarihi", x + 145, 81, 155, 19, 9.5, true, TextAlignment.Left);
@@ -270,14 +269,13 @@ internal static class OehsOfficialDocumentFactory
         AddText(page, FormatDate(c.GeneratedDate), x + 366, 81, 360, 19, 9.5, false, TextAlignment.Left);
         AddText(page, "No.su", x + 145, 99, 155, 19, 9.5, true, TextAlignment.Left);
         AddText(page, ":", x + 326, 99, 14, 19, 9.5, true, TextAlignment.Center);
-        AddText(page, string.IsNullOrWhiteSpace(c.RouteNumber) ? "-" : c.RouteNumber.Trim(), x + 366, 99, 360, 19, 9.5, false, TextAlignment.Left);
+        AddText(page, c.ProgressPaymentNumber?.ToString(Turkish) ?? "-", x + 366, 99, 360, 19, 9.5, false, TextAlignment.Left);
         AddText(page, "Uygulama Yılı", x + 145, 117, 155, 19, 9.5, true, TextAlignment.Left);
         AddText(page, ":", x + 326, 117, 14, 19, 9.5, true, TextAlignment.Center);
         AddText(page, (c.PeriodDate?.Year ?? c.GeneratedDate.Year).ToString(Turkish), x + 366, 117, 360, 19, 9.5, false, TextAlignment.Left);
 
-        AddText(page, $"İKN: {c.TenderNumber}", x + 356, 151, w - 360, 20, 8.6, false, TextAlignment.Left);
-        AddText(page, "Yapılan Hizmetin Adı", x + 2, 173, 310, 62, 9.5, true, TextAlignment.Left);
-        AddText(page, ":", x + 324, 173, 14, 62, 9.5, true, TextAlignment.Center);
+        AddText(page, "Yapılan Hizmetin Adı", x + 2, 151, 235, 86, 9.5, true, TextAlignment.Left);
+        AddText(page, ":", x + 244, 151, 14, 86, 9.5, true, TextAlignment.Center);
         var serviceName = BuildWorkTitle(c, includeRouteNumber: false, includeStudentSuffix: true);
         // Older snapshots can carry a separate contract work description; retain it
         // alongside the route title, without repeating the same derived name.
@@ -285,7 +283,7 @@ internal static class OehsOfficialDocumentFactory
             && !string.Equals(c.WorkName.Trim(), serviceName, StringComparison.OrdinalIgnoreCase)
             && !string.Equals(c.WorkName.Trim(), c.RouteName.Trim(), StringComparison.OrdinalIgnoreCase))
             serviceName += "\n" + c.WorkName.Trim();
-        AddText(page, serviceName, x + 356, 173, w - 360, 62, 8.6, true, TextAlignment.Left);
+        AddText(page, serviceName, x + 266, 151, w - 270, 86, 8.6, true, TextAlignment.Left);
 
         var info = new (string Label, string Value)[]
         {
@@ -313,6 +311,7 @@ internal static class OehsOfficialDocumentFactory
         }
 
         var y = infoY + 15;
+        var financialTop=y;
         var colWidths = new[] { 160d, 190d, 170d, w - 160d - 190d - 170d };
         var headings = new[]
         {
@@ -324,7 +323,8 @@ internal static class OehsOfficialDocumentFactory
         var tx = x;
         for (var i = 0; i < colWidths.Length; i++)
         {
-            AddCell(page, headings[i], tx, y, colWidths[i], 32, 8.8, false, TextAlignment.Center);
+            AddText(page, headings[i], tx, y, colWidths[i], 32, 8.8, false, TextAlignment.Center);
+            AddRule(page,tx+18,y+30,colWidths[i]-36,0.65);
             tx += colWidths[i];
         }
         y += 32;
@@ -336,34 +336,40 @@ internal static class OehsOfficialDocumentFactory
             tx = x;
             for (var col = 0; col < colWidths.Length; col++)
             {
-                AddCell(page, values[col], tx, y, colWidths[col], 19, 8.2, false, TextAlignment.Center);
+                AddText(page, values[col], tx, y, colWidths[col], 19, 8.2, false, TextAlignment.Center);
                 tx += colWidths[col];
             }
             y += 19;
         }
 
-        AddCell(page, "Süre Uzatım Kararlarının", x, y, w, 20, 9.2, false, TextAlignment.Left);
+        AddOuterFrame(page,x,financialTop,w,y-financialTop);
+        var extensionsTop=y;
+        AddText(page, "Süre Uzatım Kararlarının", x+5, y, w-10, 20, 9.2, false, TextAlignment.Left);
+        AddRule(page,x+5,y+18,160,0.65);
         y += 20;
         var extensionWidths = new[] { 135d, 130d, 220d, w - 135d - 130d - 220d };
         var extensionHeads = new[] { "Tarih", "Sayısı", "Verilen Süre", "İş Bitim Tarihi" };
         tx = x;
         for (var i = 0; i < extensionWidths.Length; i++)
         {
-            AddCell(page, extensionHeads[i], tx, y, extensionWidths[i], 22, 8.5, false, TextAlignment.Center);
+            AddText(page, extensionHeads[i], tx, y, extensionWidths[i], 22, 8.5, false, TextAlignment.Center);
+            AddRule(page,tx+30,y+20,extensionWidths[i]-60,0.65);
             tx += extensionWidths[i];
         }
         y += 22;
-        for (var row = 0; row < 4; row++)
+        for (var row = 0; row < 6; row++)
         {
             tx = x;
             for (var col = 0; col < extensionWidths.Length; col++)
             {
-                AddCell(page, ".................", tx, y, extensionWidths[col], 15, 8, false, TextAlignment.Center);
+                AddText(page, ".................", tx, y, extensionWidths[col], 10, 8, false, TextAlignment.Center);
                 tx += extensionWidths[col];
             }
-            y += 15;
+            y += 10;
         }
 
+        AddOuterFrame(page,x,extensionsTop,w,y-extensionsTop);
+        AddOuterFrame(page,x,25,w,835);
         AddSignatures(page, 878, c, "M.Y.H.B.Y. Örnek No: 4",
             leftX: 100, leftWidth: 220, rightX: 480, rightWidth: 220,
             nameOffset: 40, roleOffset: 61, dateOffset: 121, directorOffset: 163, titleOffset: 181, footerY: 1080);
@@ -375,16 +381,16 @@ internal static class OehsOfficialDocumentFactory
         var page = NewPage();
         const double x = 50;
         const double w = 693;
-        // Draw the white form frame before its contents; otherwise it covers the title.
-        AddCell(page, "", x, 38, w, 414, 9, false, TextAlignment.Left, White, new Thickness(0));
+        // The transparent outer rule is drawn after the cells so its full width remains visible.
         AddText(page, "HİZMET İŞLERİ KABUL TUTANAĞI", x, 40, w, 22, 15, true, TextAlignment.Center);
-        AddText(page, $"İKN: {c.TenderNumber}", x, 18, w, 18, 8.6, false, TextAlignment.Left);
 
         var servicePeriod = ProgressPaymentAcceptancePeriodService.BuildServicePeriod(
             c.PeriodDate ?? c.GeneratedDate,
             c.ContractStartDate,
             c.ContractEndDate);
         var endDate = c.ContractEndDate;
+        var isJune=c.PeriodDate?.Month==6;
+        var completedDate=isJune?endDate:servicePeriod.End;
         var rows = new (string Label, string Value, double Height)[]
         {
             ("İşin adı", BuildWorkTitle(c, includeRouteNumber: false, includeStudentSuffix: true), 112),
@@ -393,9 +399,9 @@ internal static class OehsOfficialDocumentFactory
             ("Sözleşme bedeli", FormatMoney(c.ContractAmount), 35),
             ("Sözleşmeye göre işin süresi (takvim günü)", FormatAcceptanceDuration(c), 35),
             ("Sözleşmeye göre işin bitirilmesi gereken tarih", FormatDate(endDate), 35),
-            ("Varsa süre uzatımları", "", 35),
+            ("Varsa süre uzatımları", isJune && endDate.HasValue?$"Süre uzatımı verilmemiş olup, {FormatDate(endDate)} tarihinde bitmiştir":"", 35),
             ("Süre uzatımı dahil işin bitirilmesi gereken tarih", FormatDate(endDate), 35),
-            ("İşin bitirildiği tarih", FormatLongDate(servicePeriod.End), 35)
+            ("İşin bitirildiği tarih", isJune?completedDate?.ToDateTime(TimeOnly.MinValue).ToString("dd.MM.yyyy dddd",Turkish) ?? "-":FormatLongDate(completedDate), 35)
         };
 
         var y = 60d;
@@ -418,15 +424,16 @@ internal static class OehsOfficialDocumentFactory
         AddText(page, paragraphOne, x + 2, paragraphOneY, w - 4, 124, 9.5, false, TextAlignment.Justify);
         AddText(page, paragraphTwo, x + 2, paragraphTwoY, w - 4, 44, 9.5, false, TextAlignment.Justify);
 
-        AddText(page, "Yüklenici", x + 28, 775, w - 56, 20, 10, true, TextAlignment.Center);
-        AddText(page, c.ContractorName, x + 28, 796, w - 56, 30, 9.5, false, TextAlignment.Center);
+        AddOuterFrame(page,x,38,w,414);
+        AddText(page, "Yüklenici", x + 12, 775, 180, 20, 10, true, TextAlignment.Left);
+        AddText(page, c.ContractorName, x + 12, 796, 140, 60, 9.5, false, TextAlignment.Left);
         AddSignatures(page, 894, c, "",
             leftX: 100, leftWidth: 220, rightX: 480, rightWidth: 220,
             nameOffset: 35, roleOffset: 53, dateOffset: 88, directorOffset: 124, titleOffset: 142, footerY: 1087);
         return page;
     }
 
-    private static FixedPage BuildHakedisIcmali(OehsOfficialDocumentContext c)
+    private static FixedPage BuildHakedisIcmali(OehsOfficialDocumentContext c, int pageNumber = 1)
     {
         var page = NewPage();
         const double x = 20;
@@ -434,7 +441,7 @@ internal static class OehsOfficialDocumentFactory
         AddText(page, "HAKEDİŞ İCMALİ", x, 16, w, 28, 15, true, TextAlignment.Center);
 
         AddCell(page, BuildWorkTitle(c, includeRouteNumber: false, includeStudentSuffix: true), x, 47, 574, 70, 8.8, true, TextAlignment.Left, White, new Thickness(5, 3, 5, 2));
-        AddCell(page, "Sayfa No : 1", x + 574, 47, w - 574, 23.3, 9.5, true, TextAlignment.Left);
+        AddCell(page, $"Sayfa No : {pageNumber}", x + 574, 47, w - 574, 23.3, 9.5, true, TextAlignment.Left);
         AddCell(page, $"Hakediş No : {c.ProgressPaymentNumber?.ToString(Turkish) ?? "-"}", x + 574, 70.3, w - 574, 23.3, 9.5, true, TextAlignment.Left);
         if(!c.IsCombined)AddCell(page, $"Hat No : {c.RouteNumber}", x + 574, 93.6, w - 574, 23.4, 9.5, true, TextAlignment.Left);
 
@@ -549,6 +556,8 @@ internal static class OehsOfficialDocumentFactory
         AddCell(page, "A", x, y, widths[0], 33, 10, true, TextAlignment.Center, TotalGray);
         AddCell(page, "T  O  P  L  A  M", x + widths[0], y, widths[1] + widths[2] + widths[3], 33, 10, true, TextAlignment.Center, TotalGray);
         y += 51;
+        AddOuterFrame(page,x,47,w,y-18-47);
+        var deductionsTop=y;
 
         AddCell(page, "", x, y, widths[0], 29, 9, false, TextAlignment.Center, White);
         AddCell(page, "Hakediş İçeriğinden Yapılan Kesintiler", x + widths[0], y, w - widths[0], 29, 10, true, TextAlignment.Center, White);
@@ -568,10 +577,12 @@ internal static class OehsOfficialDocumentFactory
         AddCell(page, "Toplam Kesinti Tutarı", labelX, y, labelWidth, 30, 10, true, TextAlignment.Right, TotalGray, new Thickness(3, 2, 8, 2));
         AddCell(page, FormatMoney(c.PreviousDeduction + c.Calculation.TotalDeductions, false), amountX, y, widths[4], 30, 10, true, TextAlignment.Right, TotalGray, new Thickness(3, 2, 8, 2));
         y += 46;
+        AddOuterFrame(page,x,deductionsTop,w,y-16-deductionsTop);
         AddCell(page, "C", x, y, widths[0], 30, 10, true, TextAlignment.Center, TotalGray);
         AddCell(page, "Toplam Hakediş Tutarı : ( A - B )", labelX, y, labelWidth, 30, 10, true, TextAlignment.Right, TotalGray, new Thickness(3, 2, 8, 2));
         AddCell(page, FormatMoney(sumService + sumDifference - c.PreviousDeduction - c.Calculation.TotalDeductions, false), amountX, y, widths[4], 30, 10, true, TextAlignment.Right, TotalGray, new Thickness(3, 2, 8, 2));
 
+        AddOuterFrame(page,x,y,w,30);
         AddSignatures(page, 858, c, "M.Y.H.B.Y. Örnek No :4/9",
             leftX: 80, leftWidth: 200, rightX: 540, rightWidth: 190,
             nameOffset: 37, roleOffset: 55, dateOffset: 92, directorOffset: 130, titleOffset: 148, footerY: 1063);
@@ -779,7 +790,8 @@ internal static class OehsOfficialDocumentFactory
         var block = MakeText(text, fontSize, bold, TextAlignment.Center, Black, new Thickness(0));
         block.TextWrapping = TextWrapping.NoWrap;
         block.Width = cellHeight;
-        block.Height = cellWidth;
+        block.Measure(new Size(cellHeight,double.PositiveInfinity));
+        block.Height = Math.Max(block.DesiredSize.Height,fontSize*1.6);
         // Center the text line inside the rotated element on both axes:
         // TextAlignment centers along the long axis; VerticalAlignment centers
         // the line across the original cell width before the -90° rotation.
@@ -787,7 +799,7 @@ internal static class OehsOfficialDocumentFactory
         block.RenderTransformOrigin = new Point(0.5, 0.5);
         block.RenderTransform = new RotateTransform(angle);
         FixedPage.SetLeft(block, x + (cellWidth - cellHeight) / 2d);
-        FixedPage.SetTop(block, y + (cellHeight - cellWidth) / 2d);
+        FixedPage.SetTop(block, y + (cellHeight - block.Height) / 2d);
         page.Children.Add(block);
     }
 
@@ -826,11 +838,17 @@ internal static class OehsOfficialDocumentFactory
     private static void FitText(TextBlock block,double width,double height)
     {
         block.Measure(new Size(Math.Max(1,width),double.PositiveInfinity));
-        while(block.DesiredSize.Height>height && block.FontSize>5)
+        while((block.DesiredSize.Height>height || block.Text.Length>80 && PdfVectorWriter.RequiredTextHeight(block,width)>height) && block.FontSize>5)
         {
             block.FontSize=Math.Max(5,block.FontSize-0.25);
             block.Measure(new Size(Math.Max(1,width),double.PositiveInfinity));
         }
+    }
+
+    private static void AddRule(FixedPage page,double x,double y,double width,double thickness)
+    {
+        var line=new Border {Width=width,Height=thickness,Background=Black};
+        FixedPage.SetLeft(line,x);FixedPage.SetTop(line,y);page.Children.Add(line);
     }
 
     private static TextBlock MakeText(

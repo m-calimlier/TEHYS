@@ -1148,36 +1148,18 @@ public partial class MainWindow : Window
         decimal savedAmount = 0m)
     {
         var hasContract = programType.HasValue;
-        var isBasicOrSecondary = programType == TransportationProgramType.BasicOrSecondary;
         var visibility = hasContract ? Visibility.Visible : Visibility.Collapsed;
 
         MinimumWageSupportLabel.Visibility = visibility;
         MinimumWageSupportTextBox.Visibility = visibility;
-        MinimumWageSupportEnabledCheckBox.Visibility =
-            hasContract && isBasicOrSecondary ? Visibility.Visible : Visibility.Collapsed;
+        MinimumWageSupportEnabledCheckBox.Visibility = Visibility.Collapsed;
 
         _suppressMinimumWageSupportToggle = true;
         try
         {
-            if (isBasicOrSecondary)
-            {
-                MinimumWageSupportEnabledCheckBox.IsChecked =
-                    restoreSavedValue && savedAmount > 0m;
-                MinimumWageSupportTextBox.IsEnabled =
-                    MinimumWageSupportEnabledCheckBox.IsChecked == true;
-
-                // Temel Eğitim/Ortaöğretim Taşıma için yeni giriş varsayılanı sıfırdır.
-                // Kayıt yüklenirken pozitif tutar varsa yukarıda etkinleştirilir.
-                if (!MinimumWageSupportTextBox.IsEnabled)
-                    MinimumWageSupportTextBox.Text = "0";
-            }
-            else
-            {
-                // Özel Eğitim Taşıma'de mevcut giriş davranışı korunur; destek alanı
-                // onay kutusu olmadan doğrudan kullanılabilir.
-                MinimumWageSupportEnabledCheckBox.IsChecked = true;
-                MinimumWageSupportTextBox.IsEnabled = hasContract;
-            }
+            MinimumWageSupportEnabledCheckBox.IsChecked = true;
+            MinimumWageSupportTextBox.IsEnabled = hasContract;
+            if(restoreSavedValue)MinimumWageSupportTextBox.Text=FormatCalculationInput(savedAmount);
         }
         finally
         {
@@ -1195,10 +1177,7 @@ public partial class MainWindow : Window
         if (!IsInitialized || _suppressMinimumWageSupportToggle)
             return;
 
-        var enabled = MinimumWageSupportEnabledCheckBox.IsChecked == true;
-        MinimumWageSupportTextBox.IsEnabled = enabled;
-        if (!enabled)
-            MinimumWageSupportTextBox.Text = "0";
+        MinimumWageSupportTextBox.IsEnabled = MinimumWageSupportLabel.Visibility==Visibility.Visible;
     }
 
     private void UpdateContractSelectors()
@@ -4911,16 +4890,11 @@ public partial class MainWindow : Window
         }
 
         // Asgari ücret desteği her iki kaynak Excel'de de kesinti alanıdır.
-        // Temel Eğitim/Ortaöğretim Taşıma'de tutar yalnızca kullanıcı onay kutusunu açtıysa alınır.
+        // Her iki programda tutar doğrudan kullanıcı girişinden alınır.
         if (!TryParseDecimalOrZero(MinimumWageSupportTextBox.Text, out minimumWageSupport) ||
             minimumWageSupport < 0)
         {
             invalidFields.Add((MinimumWageSupportTextBox, "Asgari Ücret Desteği"));
-        }
-        if (selectedContract.ProgramType == TransportationProgramType.BasicOrSecondary &&
-            MinimumWageSupportEnabledCheckBox.IsChecked != true)
-        {
-            minimumWageSupport = 0m;
         }
 
         if (!TryParseRequiredMoney(DailyPriceTextBox.Text, out var dailyPrice) || dailyPrice < 0)
@@ -5496,9 +5470,6 @@ public partial class MainWindow : Window
             issues.Add("Denetim cezası geçersiz.");
         }
 
-        if (selectedProgram == TransportationProgramType.BasicOrSecondary &&
-            MinimumWageSupportEnabledCheckBox.IsChecked != true)
-            minimumWageSupport = 0m;
 
         var transportService = g * h;
         var transportNet = transportService + i - j;
@@ -5929,7 +5900,7 @@ public partial class MainWindow : Window
         var selectedPath = (ArchiveItemsControl.SelectedItem as ArchiveRow)?.FullPath;
         _archiveRows.Clear();
 
-        foreach (var row in FilterArchives())
+        foreach (var row in GroupArchiveRows(FilterArchives()))
         {
             _archiveRows.Add(new ArchiveRow(
                 row.FullPath,
@@ -5952,6 +5923,10 @@ public partial class MainWindow : Window
     {
         if (sender is not Button { Tag: ArchiveRow row })
             return;
+
+        var chosen=ChooseArchiveMember(row);
+        if(chosen is null)return;
+        row=chosen;
 
         if (sender is Button loadButton &&
             string.Equals(loadButton.Content?.ToString(), "ÇAĞIR", StringComparison.OrdinalIgnoreCase))
@@ -6082,8 +6057,8 @@ public partial class MainWindow : Window
 
     private void EditArchiveButton_Click(object sender, RoutedEventArgs e)
     {
-        if (sender is Button { Tag: ArchiveRow row })
-            BeginCorrectionFromArchive(row);
+        if (sender is Button { Tag: ArchiveRow row } && ChooseArchiveMember(row) is {} chosen)
+            BeginCorrectionFromArchive(chosen);
     }
 
     private void BeginCorrectionFromArchive(ArchiveRow row)
@@ -6122,16 +6097,18 @@ public partial class MainWindow : Window
 
         var orderedHistory = FilterHistory();
 
-        for (var index = 0; index < orderedHistory.Count; index++)
+        foreach (var group in orderedHistory.GroupBy(ProgressPaymentBatchService.GroupKey))
         {
-            var item = orderedHistory[index];
+            var members=group.OrderBy(x=>x.RouteNumber,StringComparer.OrdinalIgnoreCase).ToArray();
+            var item = members[0];
             var recordedAt = item.CreatedAt.Kind == DateTimeKind.Utc ? item.CreatedAt.ToLocalTime() : item.CreatedAt;
             var batchTitle = item.BatchDisplayName;
             var displayNumber = !string.IsNullOrWhiteSpace(batchTitle)
                 ? $"{batchTitle} • Hat {item.RouteNumber ?? "-"} • Hakediş No {item.ProgressPaymentNumber?.ToString(CultureInfo.CurrentCulture) ?? "-"}"
                 : item.ProgressPaymentNumber.HasValue
                     ? $"Hakediş No {item.ProgressPaymentNumber.Value} • İhale/Dosya: {item.TenderNumber ?? "-"} • Hat: {item.RouteNumber ?? "-"}"
-                    : $"Hesaplama {index + 1} • İhale/Dosya: {item.TenderNumber ?? "-"} • Hat: {item.RouteNumber ?? "-"}";
+                    : $"Hesaplama • İhale/Dosya: {item.TenderNumber ?? "-"} • Hat: {item.RouteNumber ?? "-"}";
+            if(members.Length>1)displayNumber=GroupRecordTitle(members);
             var periodText = item.PeriodDate.HasValue
                 ? $"Dönem: {CultureInfo.GetCultureInfo("tr-TR").TextInfo.ToTitleCase(item.PeriodDate.Value.ToString("MMMM yyyy", CultureInfo.GetCultureInfo("tr-TR")))} • Yüklenici: {item.ContractorName ?? "-"} • Kayıt: {recordedAt:dd.MM.yyyy HH:mm}"
                 : $"Yüklenici: {item.ContractorName ?? "-"} • Kayıt: {recordedAt:dd.MM.yyyy HH:mm}";
@@ -6140,11 +6117,11 @@ public partial class MainWindow : Window
                 item.Id,
                 displayNumber,
                 periodText,
-                FormatMoney(item.Calculation.TotalAmount),
-                FormatMoney(item.Calculation.NetPayable), item.Input.ProgramType));
+                FormatMoney(members.Sum(p=>p.Calculation.TotalAmount)),
+                FormatMoney(members.Sum(p=>p.Calculation.NetPayable)), item.Input.ProgramType));
         }
 
-        HistoryCountTextBlock.Text = orderedHistory.Count.ToString(CultureInfo.CurrentCulture);
+        HistoryCountTextBlock.Text = _historyRows.Count.ToString(CultureInfo.CurrentCulture);
         HistoryNetTotalTextBlock.Text = FormatMoney(orderedHistory.Sum(x => x.Calculation.NetPayable));
         HistoryItemsControl.SelectedItem = _historyRows.FirstOrDefault(row => selected is not null && row.Id == selected.Id && row.ProgramType == selected.ProgramType);
         HistoryOperationStatusTextBlock.Text = string.Empty;
@@ -6178,7 +6155,7 @@ public partial class MainWindow : Window
         ClearArchiveCorrectionState();
         if (sender is Button { Tag: HistoryRow row })
         {
-            var item = GetHistoryItemFromRow(row);
+            var item = ChooseHistoryMember(row);
             if (item is not null)
                 BeginHistoryOrArchiveCorrection(item);
         }
@@ -6613,7 +6590,7 @@ public partial class MainWindow : Window
     private void DeleteHistoryButton_Click(object sender, RoutedEventArgs e)
     {
         if (sender is not Button { Tag: HistoryRow row }) return;
-        var item = GetHistoryItemFromRow(row);
+        var item = ChooseHistoryMember(row);
         if (item is null) return;
 
         var title = item.ProgressPaymentNumber.HasValue
@@ -6930,13 +6907,14 @@ public partial class MainWindow : Window
     {
         var routes = contract is null
             ? Array.Empty<RouteDraft>()
-            : _routes.Where(x => IsRouteForContract(x, contract)).ToArray();
+            : _routes.Where(x => IsRouteForContract(x, contract))
+                .GroupBy(x=>string.IsNullOrWhiteSpace(x.ContractorTaxOrIdentityNumber)?HybridRouteKey(x):OehsIdentityService.NormalizeIdentity(x.ContractorTaxOrIdentityNumber))
+                .Select(g=>g.First()).ToArray();
 
         var previous = ReportRouteComboBox.SelectedItem as RouteDraft;
         ReportRouteComboBox.ItemsSource = routes;
         if (previous is not null)
             ReportRouteComboBox.SelectedItem = routes.FirstOrDefault(x =>
-                string.Equals(x.RouteNumber, previous.RouteNumber, StringComparison.OrdinalIgnoreCase) &&
                 string.Equals(x.ContractNumber, previous.ContractNumber, StringComparison.OrdinalIgnoreCase) &&
                 string.Equals(
                     OehsIdentityService.NormalizeIdentity(x.ContractorTaxOrIdentityNumber),
@@ -7607,7 +7585,7 @@ public partial class MainWindow : Window
     {
         if (GetSelectedOutputPayment() is not null) return true;
         UpdateReportView();
-        ShowOutputStatus("İhale, hat ve hakediş seçimini kontrol edin. Kayıt güncellendiyse bilgileri tekrar doğrulayıp işlemi yineleyin.", warning: true);
+        ShowOutputStatus("İhale, yüklenici ve hakediş seçimini kontrol edin. Kayıt güncellendiyse bilgileri tekrar doğrulayıp işlemi yineleyin.", warning: true);
         return false;
     }
 

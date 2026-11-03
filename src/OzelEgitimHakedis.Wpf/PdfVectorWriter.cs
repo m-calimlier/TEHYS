@@ -311,6 +311,17 @@ public static class PdfVectorWriter
         return true;
     }
 
+    internal static double RequiredTextHeight(TextBlock block,double width)
+    {
+        using var pdf=new PdfDocument();
+        var page=pdf.AddPage();
+        using var gfx=XGraphics.FromPdfPage(page);
+        var size=Math.Max(1,ToPoint(block.FontSize));
+        var font=CreateFont(NormalizeFontFamily(block.FontFamily?.Source),size,FontStyleFor(block));
+        var lines=WrapText(gfx,block.Text,font,Math.Max(1,ToPoint(width)));
+        return lines.Count*Math.Max(size*1.18,font.GetHeight())/DipToPoint;
+    }
+
     private static void DrawTextBlockContent(XGraphics gfx, TextBlock block, string text, XRect rect)
     {
         if (TryBrush(block.Background, out var background))

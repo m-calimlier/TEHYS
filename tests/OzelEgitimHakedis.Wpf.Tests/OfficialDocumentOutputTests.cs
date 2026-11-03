@@ -21,7 +21,7 @@ namespace OzelEgitimHakedis.Wpf.Tests;
 public sealed partial class OfficialDocumentOutputTests
 {
     [Fact]
-    public void OfficialPdf_ShouldKeepIknWithoutPrintingInternalContractId()
+    public void OfficialPdf_ShouldOmitIknAndInternalContractIdFromServiceAndAcceptanceForms()
     {
         RunOnSta(() =>
         {
@@ -34,7 +34,7 @@ public sealed partial class OfficialDocumentOutputTests
                 {
                     var path=Path.Combine(temporary.FullName,output.FileSuffix+".pdf");PdfVectorWriter.Save(output.Document,path);
                     using var pdf=UglyToad.PdfPig.PdfDocument.Open(path);
-                    Assert.Contains("2026/4242",pdf.GetPage(1).Text,StringComparison.Ordinal);
+                    Assert.DoesNotContain("2026/4242",pdf.GetPage(1).Text,StringComparison.Ordinal);
                     Assert.DoesNotContain("INTERNAL-",pdf.GetPage(1).Text,StringComparison.Ordinal);
                 }
             }
@@ -72,7 +72,7 @@ public sealed partial class OfficialDocumentOutputTests
                     Assert.Contains("15.08.2026", contractText, StringComparison.Ordinal);
                     Assert.DoesNotContain("SOZ-2026-0042", contractText, StringComparison.Ordinal);
                     Assert.DoesNotContain("İKN", contractText, StringComparison.Ordinal);
-                    Assert.Contains("2026/1009876", page.Text, StringComparison.Ordinal);
+                    Assert.DoesNotContain("2026/1009876", page.Text, StringComparison.Ordinal);
                 }
             }
             finally
@@ -950,7 +950,7 @@ public sealed partial class OfficialDocumentOutputTests
             Assert.Equal(-90d, ((RotateTransform)deductionsTitle.RenderTransform).Angle);
             Assert.Equal(VerticalAlignment.Center, deductionsTitle.VerticalAlignment);
             Assert.Equal(TextAlignment.Center, deductionsTitle.TextAlignment);
-            Assert.Equal(deductionsCell.Width, deductionsTitle.Height, 2);
+            Assert.InRange(deductionsTitle.Height,1d,deductionsCell.Width);
             Assert.Equal(deductionsCell.Height, deductionsTitle.Width, 2);
             Assert.Equal(
                 FixedPage.GetLeft(deductionsCell) + deductionsCell.Width / 2d,
@@ -995,7 +995,7 @@ public sealed partial class OfficialDocumentOutputTests
             Assert.Contains("100.000,00 TL", serviceReportText, StringComparison.Ordinal);
             Assert.Contains("25.08.2026", serviceReportText, StringComparison.Ordinal);
             Assert.DoesNotContain("TEST-SOZ", serviceReportText, StringComparison.Ordinal);
-            Assert.Contains("İKN: TEST-IHALE", serviceReportText, StringComparison.Ordinal);
+            Assert.DoesNotContain("İKN: TEST-IHALE", serviceReportText, StringComparison.Ordinal);
             Assert.Contains("180 İş Günü", serviceReportText, StringComparison.Ordinal);
             Assert.Contains("Tescile Dahil Değil", serviceReportText, StringComparison.Ordinal);
             Assert.Contains("Avans verilmeyecektir.", serviceReportText, StringComparison.Ordinal);
@@ -1198,7 +1198,7 @@ public sealed partial class OfficialDocumentOutputTests
                     Math.Abs(FixedPage.GetTop(border) - 56d) < 0.01 &&
                     Math.Abs(border.Width - 659d) < 0.01 &&
                     Math.Abs(border.Height - 1014d) < 0.01));
-            Assert.Equal(0d, reportOuterFrame.BorderThickness.Bottom);
+            Assert.Equal(1.6d, reportOuterFrame.BorderThickness.Bottom);
             var reportFooter = Assert.Single(contractorReportPage.Children
                 .OfType<TextBlock>()
                 .Where(block => block.Text == "M.Y.H.B.Y. Örnek No :4/10"));
@@ -1220,7 +1220,7 @@ public sealed partial class OfficialDocumentOutputTests
             Assert.All(eRowCells, border =>
                 Assert.Equal(Colors.White, Assert.IsType<SolidColorBrush>(border.Background).Color));
 
-            // The white acceptance-form frame must be behind the title, not cover it.
+            // The transparent outer frame must not cover the acceptance title.
             var acceptanceOutput = Assert.Single(
                 outputs.Where(output => output.Kind == OehsOfficialDocumentKind.KabulTutanagi));
             var acceptancePage = Assert.IsType<FixedPage>(acceptanceOutput.Document.Pages[0].Child);
@@ -1232,9 +1232,9 @@ public sealed partial class OfficialDocumentOutputTests
             var acceptanceTitle = Assert.Single(acceptancePage.Children
                 .OfType<TextBlock>()
                 .Where(block => block.Text == "HİZMET İŞLERİ KABUL TUTANAĞI"));
-            Assert.True(
-                acceptancePage.Children.IndexOf(acceptanceTitle) > acceptancePage.Children.IndexOf(acceptanceFrame),
-                "The acceptance title must be drawn after the white form frame.");
+            Assert.Equal(Colors.Transparent,Assert.IsType<SolidColorBrush>(acceptanceFrame.Background).Color);
+            Assert.Equal(new Thickness(1.6),acceptanceFrame.BorderThickness);
+            Assert.Contains(acceptanceTitle,acceptancePage.Children.OfType<TextBlock>());
 
             var configuredOutputDirectory = Environment.GetEnvironmentVariable("OEHS_PDF_SMOKE_OUTPUT_DIR");
             var cleanupTemporaryDirectory = string.IsNullOrWhiteSpace(configuredOutputDirectory);

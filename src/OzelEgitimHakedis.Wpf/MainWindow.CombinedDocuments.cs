@@ -7,17 +7,9 @@ public partial class MainWindow
 {
     private ProgressPaymentHistoryData[] GetOutputBatchPayments(ProgressPaymentHistoryData selected)
     {
-        static bool Same(string? a,string? b) => string.Equals(OehsIdentityService.NormalizeIdentity(a),OehsIdentityService.NormalizeIdentity(b),StringComparison.Ordinal);
-        var identity=OehsIdentityService.NormalizeIdentity(selected.ContractorTaxOrIdentityNumber);
-        if(identity.Length==0 || string.IsNullOrWhiteSpace(selected.TenderNumber) || string.IsNullOrWhiteSpace(selected.ContractNumber))return new[]{selected};
+        var key=ProgressPaymentBatchService.GroupKey(selected);
         return _progressHistory.Where(p=>p.Id!=selected.Id).Append(selected)
-            .Where(p=>p.Input.ProgramType==selected.Input.ProgramType && p.PeriodDate==selected.PeriodDate
-                && Same(p.TenderNumber,selected.TenderNumber) && Same(p.ContractNumber,selected.ContractNumber)
-                && Same(p.ContractorTaxOrIdentityNumber,selected.ContractorTaxOrIdentityNumber))
-            .Where(p=>selected.BatchId.HasValue ? p.BatchId==selected.BatchId
-                : p.Id==selected.Id || !string.IsNullOrWhiteSpace(selected.BatchRouteNumbers)
-                    && p.BatchId is null && p.CreatedAt==selected.CreatedAt && p.ProgressPaymentNumber==selected.ProgressPaymentNumber
-                    && p.BatchRouteNumbers==selected.BatchRouteNumbers)
+            .Where(p=>ProgressPaymentBatchService.GroupKey(p)==key)
             .GroupBy(PaymentOperationsService.RouteKey).Select(g=>g.OrderByDescending(p=>p.CreatedAt).First())
             .OrderBy(p=>p.RouteNumber,StringComparer.OrdinalIgnoreCase).ToArray();
     }
