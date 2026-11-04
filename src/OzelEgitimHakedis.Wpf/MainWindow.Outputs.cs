@@ -57,13 +57,11 @@ public partial class MainWindow
             var previous = (ReportItemsControl.SelectedItem as ReportRow)?.Payment;
             ReportItemsControl.ItemsSource = _reportRows;
             _reportRows.Clear();
-            foreach (var payment in GetSelectedRoutePayments().GroupBy(ProgressPaymentBatchService.GroupKey)
-                .Select(g=>g.OrderBy(p=>p.RouteNumber,StringComparer.OrdinalIgnoreCase).First())
-                .OrderByDescending(p => p.PeriodDate ?? DateOnly.MinValue).ThenByDescending(p => p.CreatedAt))
+            foreach (var record in OutputScreenModel.Records(GetSelectedRoutePayments()))
             {
+                var payment = record.Payment;
                 var title = $"Hakediş No {payment.ProgressPaymentNumber?.ToString(CultureInfo.CurrentCulture) ?? "—"}";
-                var members=GetOutputBatchPayments(payment);
-                _reportRows.Add(new ReportRow(payment, title, OutputPeriodText(payment), FormatMoney(members.Sum(p=>p.Calculation.GrossAmount)), FormatMoney(members.Sum(p=>p.Calculation.NetPayable))));
+                _reportRows.Add(new ReportRow(payment, title, OutputPeriodText(payment), FormatMoney(record.Gross), FormatMoney(record.Net)));
             }
             ReportItemsControl.SelectedItem = _reportRows.FirstOrDefault(row => previous is not null && row.Payment.Id == previous.Id && row.Payment.Input.ProgramType == previous.Input.ProgramType)
                 ?? _reportRows.FirstOrDefault();

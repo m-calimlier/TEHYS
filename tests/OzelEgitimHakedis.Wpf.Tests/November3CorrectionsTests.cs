@@ -30,7 +30,7 @@ public sealed partial class OfficialDocumentOutputTests
             foreach(var index in new[]{0,2})
             {
                 var block=Assert.Single(document.Pages[index].Child.Children.OfType<TextBlock>().Where(b=>b.Text==context.ContractorName));
-                Assert.Equal(TextAlignment.Left,block.TextAlignment);
+                Assert.Equal(TextAlignment.Center,block.TextAlignment);
                 Assert.True(FixedPage.GetLeft(block)<100);
             }
             var root=new DirectoryInfo(AppContext.BaseDirectory);
@@ -66,6 +66,28 @@ public sealed partial class OfficialDocumentOutputTests
 
 public sealed partial class HakedisCreateHybridUiContractTests
 {
+    [Theory]
+    [InlineData(185)]
+    [InlineData(215)]
+    public void CreatorCredits_ShouldFitEntireFooterAtMinimumWindowHeight(double width)
+    {
+        RunOnSta(() =>
+        {
+            var credits=NamedElement(LoadMainWindowXaml(),"CreatorCreditsTextBlock");
+            var navigation=credits.Ancestors().First(e=>e.Name.LocalName=="Grid");
+            var layout=LoadLayoutFragment(navigation);
+            ArrangeLayout(layout,width,526);
+            var names=(TextBlock)layout.FindName("CreatorCreditsTextBlock");
+            var footer=(Border)((FrameworkElement)names.Parent).Parent;
+            var bounds=names.TransformToAncestor(footer).TransformBounds(new Rect(names.RenderSize));
+            Assert.True(bounds.Bottom<=footer.ActualHeight-footer.Padding.Bottom-1, $"Names extend to {bounds.Bottom} in footer height {footer.ActualHeight}");
+            var decoration=((StackPanel)names.Parent).Children.OfType<Border>().Single();
+            var decorationBounds=decoration.TransformToAncestor(footer).TransformBounds(new Rect(decoration.RenderSize));
+            Assert.True(decorationBounds.Bottom<=footer.ActualHeight-footer.Padding.Bottom+0.5);
+            SavePaymentDetailsPreview(layout,$"credits-full-navigation-{width:0}.png");
+        });
+    }
+
     [Fact]
     public void November3_HybridColumns_ShouldSeparateNumberAndAllowManualSupport()
     {

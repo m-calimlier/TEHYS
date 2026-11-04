@@ -27,6 +27,6 @@ sayısal değerleridir; Excel içinde sonradan girdi değişirse otomatik
 yeniden hesaplama yapılmaz.
 
 PAYLAŞMA
-GitHub Releases sayfasındaki TEHYS-0.1.4-win-x64.zip dosyasını indirin.
+GitHub Releases sayfasındaki TEHYS-0.1.5-win-x64.zip dosyasını indirin.
 Arkadaşınıza doğrudan ZIP'i veya Releases bağlantısını gönderebilirsiniz.
 Source code dosyaları çalıştırılabilir program değildir.

@@ -49,13 +49,13 @@ public sealed partial class OfficialDocumentOutputTests
             };
             var page = (FixedPage)OehsOfficialDocumentFactory.BuildSeparate(context)
                 .Single(o => o.Kind == OehsOfficialDocumentKind.KabulTutanagi).Document.Pages[0].Child;
-            var text = GetCellTextAt(page, 360, 417);
+            var text = GetCellTextAt(page, 360, 420.2);
             Assert.Equal(new DateOnly(2026, 10, lastDay).ToString("dd MMMM yyyy dddd", CultureInfo.GetCultureInfo("tr-TR")), text);
             // Earlier historical period must not use the later contract end.
             context = context with { ContractEndDate = new DateOnly(2027, 6, 30) };
             page = (FixedPage)OehsOfficialDocumentFactory.BuildSeparate(context)
                 .Single(o => o.Kind == OehsOfficialDocumentKind.KabulTutanagi).Document.Pages[0].Child;
-            Assert.Equal("31 Ekim 2026 Cumartesi", GetCellTextAt(page, 360, 417));
+            Assert.Equal("31 Ekim 2026 Cumartesi", GetCellTextAt(page, 360, 420.2));
         });
     }
 
@@ -89,18 +89,18 @@ public sealed partial class OfficialDocumentOutputTests
                     if (output.Kind == OehsOfficialDocumentKind.HizmetIsleriHakedisRaporu)
                     {
                         Assert.Contains(WithoutWhitespace(context.WorkName),
-                            WithoutWhitespace(PdfTextInRectangle(pdf.GetPage(1), new Rect(308, 151, 440, 86))), StringComparison.Ordinal);
+                            WithoutWhitespace(PdfTextInRectangle(pdf.GetPage(1), new Rect(398, 139, 297, 79))), StringComparison.Ordinal);
                         var page = (FixedPage)output.Document.Pages[0].Child;
                         var block = page.Children.OfType<TextBlock>().Single(b => b.Text == contractor);
                         Assert.Equal(TextAlignment.Left, block.TextAlignment);
                         Assert.Equal(VerticalAlignment.Center, block.VerticalAlignment);
-                        Assert.True(block.Height >= 35);
+                        Assert.True(block.Height >= 25);
                     }
                     if (output.Kind == OehsOfficialDocumentKind.KabulTutanagi)
                     {
                         var page = (FixedPage)output.Document.Pages[0].Child;
                         var block = (TextBlock)page.Children.OfType<Border>()
-                            .Single(b => FixedPage.GetLeft(b) == 360 && FixedPage.GetTop(b) == 172).Child;
+                            .Single(b => FixedPage.GetLeft(b) == 360 && Math.Abs(FixedPage.GetTop(b) - 178) < 0.01).Child;
                         Assert.Equal(TextAlignment.Left, block.TextAlignment);
                         Assert.Equal(VerticalAlignment.Center, block.VerticalAlignment);
                     }

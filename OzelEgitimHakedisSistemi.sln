@@ -1,4 +1,4 @@
-Microsoft Visual Studio Solution File, Format Version 12.00
+﻿Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 18
 VisualStudioVersion = 18.9.12120.119 stable
 MinimumVisualStudioVersion = 10.0.40219.1
@@ -9,6 +9,14 @@ EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "OzelEgitimHakedis.Tests", "tests\OzelEgitimHakedis.Tests\OzelEgitimHakedis.Tests.csproj", "{D0F0C1AF-06AB-4A0C-8E98-4161D8E3A103}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "OzelEgitimHakedis.Wpf.Tests", "tests\OzelEgitimHakedis.Wpf.Tests\OzelEgitimHakedis.Wpf.Tests.csproj", "{D0F0C1AF-06AB-4A0C-8E98-4161D8E3A104}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{FECDDBC9-B410-4D72-966D-FD2DC22F9666}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OzelEgitimHakedis.Documents", "src\OzelEgitimHakedis.Documents\OzelEgitimHakedis.Documents.csproj", "{BD00C125-99B5-44B1-B596-F1200E7A7BC1}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "tools", "tools", "{5B1EBB4A-33C4-416A-B3F0-01BB5AC4D643}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Tehys.Performance", "tools\Tehys.Performance\Tehys.Performance.csproj", "{FCF57880-D3D7-4C19-AD40-ABEDE19A2875}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -32,8 +40,20 @@ Global
 		{D0F0C1AF-06AB-4A0C-8E98-4161D8E3A104}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{D0F0C1AF-06AB-4A0C-8E98-4161D8E3A104}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{D0F0C1AF-06AB-4A0C-8E98-4161D8E3A104}.Release|Any CPU.Build.0 = Release|Any CPU
+		{BD00C125-99B5-44B1-B596-F1200E7A7BC1}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{BD00C125-99B5-44B1-B596-F1200E7A7BC1}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{BD00C125-99B5-44B1-B596-F1200E7A7BC1}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{BD00C125-99B5-44B1-B596-F1200E7A7BC1}.Release|Any CPU.Build.0 = Release|Any CPU
+		{FCF57880-D3D7-4C19-AD40-ABEDE19A2875}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{FCF57880-D3D7-4C19-AD40-ABEDE19A2875}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{FCF57880-D3D7-4C19-AD40-ABEDE19A2875}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{FCF57880-D3D7-4C19-AD40-ABEDE19A2875}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{BD00C125-99B5-44B1-B596-F1200E7A7BC1} = {FECDDBC9-B410-4D72-966D-FD2DC22F9666}
+		{FCF57880-D3D7-4C19-AD40-ABEDE19A2875} = {5B1EBB4A-33C4-416A-B3F0-01BB5AC4D643}
 	EndGlobalSection
 EndGlobal

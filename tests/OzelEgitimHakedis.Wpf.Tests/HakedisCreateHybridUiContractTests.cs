@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.IO;
 using System.Linq;
 using System.Text.RegularExpressions;
@@ -663,7 +663,7 @@ public sealed partial class HakedisCreateHybridUiContractTests
             var differences=Assert.IsAssignableFrom<System.Collections.Generic.IEnumerable<PaymentDifference>>(
                 Invoke(window,"CompareContractorFields",firm with {Phone="+90 532 123 45 67"},firm with {Phone="05321234567"}));
             Assert.Empty(differences);
-            var source=File.ReadAllText(LoadProjectFile("src","OzelEgitimHakedis.Wpf","MainWindow.xaml.cs"));
+            var source=ReadMainWindowSource();
             Assert.Contains("CompareContractorFields(originalArchive.Contractor, updatedArchive.Contractor)",MethodBody(source,"SaveArchiveCorrectionSnapshot"),StringComparison.Ordinal);
         });
     }
@@ -810,7 +810,7 @@ public sealed partial class HakedisCreateHybridUiContractTests
     }
 
     [Fact]
-    public void GoldFinance_ShouldKeepEightCardsWithVectorSymbolsAndGoldNetCard()
+    public void MidnightFinance_ShouldKeepEightCardsWithVectorSymbolsAndPorcelainNetCard()
     {
         RunOnSta(() =>
         {
@@ -830,7 +830,7 @@ public sealed partial class HakedisCreateHybridUiContractTests
                 Assert.NotEmpty(VisualDescendants<System.Windows.Shapes.Path>(icon));
             }
             var net=(Border)layout.FindName("HomeNetCard");
-            Assert.Equal(Color.FromRgb(244,194,71),Assert.IsType<SolidColorBrush>(net.Background).Color);
+            Assert.Equal(Color.FromRgb(241,245,249),Assert.IsType<SolidColorBrush>(net.Background).Color);
         });
     }
 
@@ -1056,8 +1056,8 @@ public sealed partial class HakedisCreateHybridUiContractTests
                     string InRect(Rect rect)=>string.Concat(page.Letters.Where(letter=>
                         letter.BoundingBox.Left>=rect.Left*0.75-0.5 && letter.BoundingBox.Right<=rect.Right*0.75+0.5 &&
                         letter.BoundingBox.Bottom>=page.Height-rect.Bottom*0.75-0.5 && letter.BoundingBox.Top<=page.Height-rect.Top*0.75+0.5).Select(letter=>letter.Value));
-                    Assert.Contains("250.000,00",InRect(new Rect(398,310,350,25)),StringComparison.Ordinal);
-                    Assert.Contains("01.01.2026",InRect(new Rect(398,364,350,25)),StringComparison.Ordinal);
+                    Assert.Contains("250.000,00",InRect(new Rect(398,268,297,22)),StringComparison.Ordinal);
+                    Assert.Contains("01.01.2026",InRect(new Rect(398,312,297,22)),StringComparison.Ordinal);
                 }
                 }
             }
@@ -1303,7 +1303,7 @@ public sealed partial class HakedisCreateHybridUiContractTests
     [Fact]
     public void HybridCalculation_ShouldReadRowsBeforeSharedFormValidation()
     {
-        var source=File.ReadAllText(LoadProjectFile("src","OzelEgitimHakedis.Wpf","MainWindow.xaml.cs"));
+        var source=ReadMainWindowSource();
         var method=MethodBody(source,"CalculateProgressButton_Click");
         var early=method.IndexOf("TryCalculateHybridSelection(selectedContract)",StringComparison.Ordinal);
         Assert.True(early>=0);
@@ -1599,6 +1599,7 @@ public sealed partial class HakedisCreateHybridUiContractTests
         XNamespace local = "clr-namespace:OzelEgitimHakedis.Wpf;assembly=OEHS";
         var root = new XElement(presentation + "Grid",
             new XAttribute(XNamespace.Xmlns + "x", XamlNamespace),
+            new XAttribute(XNamespace.Xmlns + "local", local.NamespaceName),
             new XAttribute(XNamespace.Xml+"lang","tr-TR"),
             new XElement(presentation + "Grid.Resources", resources.Elements(),
                 new XElement(local + "ContractWorkNameConverter",new XAttribute(XamlNamespace+"Key","ContractWorkNameConverter")),
@@ -2290,8 +2291,7 @@ public sealed partial class HakedisCreateHybridUiContractTests
     [Fact]
     public void ArchiveProgressCorrection_ShouldLoadOnlySnapshotSelectorContext()
     {
-        var source = File.ReadAllText(LoadProjectFile(
-            "src", "OzelEgitimHakedis.Wpf", "MainWindow.xaml.cs"));
+        var source = ReadMainWindowSource();
 
         var historyEdit = MethodBody(source, "BeginProgressHistoryEdit");
         var contextLoader = MethodBody(source, "LoadArchiveProgressEditorContext");
@@ -2315,8 +2315,7 @@ public sealed partial class HakedisCreateHybridUiContractTests
     [Fact]
     public void ArchiveProgressCorrection_ShouldRestoreLiveSelectorsWhenCorrectionStateClears()
     {
-        var source = File.ReadAllText(LoadProjectFile(
-            "src", "OzelEgitimHakedis.Wpf", "MainWindow.xaml.cs"));
+        var source = ReadMainWindowSource();
 
         var clearArchiveState = MethodBody(source, "ClearArchiveCorrectionState");
         var selectorRestore = MethodBody(source, "RestoreLiveProgressEditorSelectorContext");
@@ -2335,8 +2334,7 @@ public sealed partial class HakedisCreateHybridUiContractTests
     [Fact]
     public void NewProgressCalculation_ShouldClearDraftAndRetainCompletedRecordActions()
     {
-        var source = File.ReadAllText(LoadProjectFile(
-            "src", "OzelEgitimHakedis.Wpf", "MainWindow.xaml.cs"));
+        var source = ReadMainWindowSource();
         var reset = MethodBody(source, "ResetNewProgressDraftAfterCalculation");
         var clear = MethodBody(source, "ClearProgressEntryFields");
 
@@ -2372,8 +2370,7 @@ public sealed partial class HakedisCreateHybridUiContractTests
     [Fact]
     public void NewSingleRouteCalculation_ShouldResetOnlyAfterPersistenceAndOutsideCorrections()
     {
-        var source = File.ReadAllText(LoadProjectFile(
-            "src", "OzelEgitimHakedis.Wpf", "MainWindow.xaml.cs"));
+        var source = ReadMainWindowSource();
         var calculate = MethodBody(source, "CalculateProgressButton_Click");
         var resetIndex = calculate.IndexOf("ResetNewProgressDraftAfterCalculation(historyItem);", StringComparison.Ordinal);
 
@@ -2394,8 +2391,7 @@ public sealed partial class HakedisCreateHybridUiContractTests
     [Fact]
     public void NewMultiRouteCalculation_ShouldResetOnlyAfterPersistenceAndKeepActionsVisible()
     {
-        var source = File.ReadAllText(LoadProjectFile(
-            "src", "OzelEgitimHakedis.Wpf", "MainWindow.xaml.cs"));
+        var source = ReadMainWindowSource();
         var save = MethodBody(source, "SaveMultiRouteProgressPayment");
         var resetIndex = save.IndexOf("ResetNewProgressDraftAfterCalculation(batch[^1]);", StringComparison.Ordinal);
 
@@ -2408,6 +2404,10 @@ public sealed partial class HakedisCreateHybridUiContractTests
         Assert.DoesNotContain("ArchiveCurrentProgressButton.Visibility = Visibility.Collapsed;", save[resetIndex..], StringComparison.Ordinal);
         Assert.Equal(2, Regex.Matches(source, @"ResetNewProgressDraftAfterCalculation\((?:historyItem|batch\[\^1\])\);").Count);
     }
+
+    private static string ReadMainWindowSource() => string.Join(Environment.NewLine,
+        Directory.GetFiles(Path.GetDirectoryName(LoadProjectFile("src", "OzelEgitimHakedis.Wpf", "MainWindow.xaml.cs"))!, "MainWindow*.cs")
+            .OrderBy(path => path, StringComparer.Ordinal).Select(File.ReadAllText));
 
     private static string BlockAfter(string source, string marker)
     {

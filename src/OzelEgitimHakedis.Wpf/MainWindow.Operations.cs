@@ -1,4 +1,4 @@
-using System.Globalization;
+﻿using System.Globalization;
 using System.IO;
 using System.Text.Json;
 using System.Windows;
@@ -57,13 +57,13 @@ public partial class MainWindow
     {
         var issues=PaymentIssues(payment);
         if(issues.Count==0) return true;
-        MessageBox.Show(this,"Belge oluşturmadan önce şu bilgileri tamamlayın:\n\n"+string.Join("\n",issues.Select(i=>"• "+i.Message)),
+        NightMessageBox.Show(this,"Belge oluşturmadan önce şu bilgileri tamamlayın:\n\n"+string.Join("\n",issues.Select(i=>"• "+i.Message)),
             "OEHS — Belge kontrolü",MessageBoxButton.OK,MessageBoxImage.Information);
         return false;
     }
     private static string BuildOutputFingerprint(OehsOfficialDocumentContext context) =>
         OutputEvidenceStore.HashContext(JsonSerializer.Serialize(context with {GeneratedDate=new DateOnly(2000,1,1)})+
-            "|template-operations-5-november-corrections|"+typeof(PdfVectorWriter).Assembly.GetName().Version);
+            "|template-operations-6-original-pdf-layout|"+typeof(PdfVectorWriter).Assembly.GetName().Version);
     private bool HasCurrentOutput(ProgressPaymentHistoryData payment)
     {
         try
@@ -152,7 +152,7 @@ public partial class MainWindow
     private void HomeSetup_Click(object sender,RoutedEventArgs e)
     {
         if(HomeProgram is not {} program || IsArchiveCorrection) return;
-        if(HasOpenWorkForRestore()) {MessageBox.Show(this,"Önce açık formu kaydedin veya temizleyin.","OEHS",MessageBoxButton.OK,MessageBoxImage.Information);return;}
+        if(HasOpenWorkForRestore()) {NightMessageBox.Show(this,"Önce açık formu kaydedin veya temizleyin.","OEHS",MessageBoxButton.OK,MessageBoxImage.Information);return;}
         TransportProgramTypeComboBox.SelectedItem=TransportProgramTypeComboBox.Items.Cast<ComboBoxItem>().FirstOrDefault(i=>i.Tag?.ToString()==program.ToString());
         NavigationButton_Click(_contracts.Any(c=>c.ProgramType==program)?NavLines:NavContract,new RoutedEventArgs());
     }
@@ -165,7 +165,7 @@ public partial class MainWindow
     {
         if(HomeMonthlyGrid.SelectedItem is not MonthlyPaymentRow row || IsArchiveCorrection) return;
         if(_editingHistoryId.HasValue || _editingRoute is not null || _editingContractTender is not null || _editingContractorKey is not null)
-        {MessageBox.Show(this,"Önce açık düzenlemeyi kaydedin veya iptal edin.","OEHS",MessageBoxButton.OK,MessageBoxImage.Information);return;}
+        {NightMessageBox.Show(this,"Önce açık düzenlemeyi kaydedin veya iptal edin.","OEHS",MessageBoxButton.OK,MessageBoxImage.Information);return;}
         if(target=="Contract" && row.Contract is not null) {EditContractButton_Click(new Button{Tag=row.Contract},new RoutedEventArgs());return;}
         if(target=="Lines")
         {
@@ -193,7 +193,7 @@ public partial class MainWindow
         if(HomeMonthlyGrid.SelectedItem is not MonthlyPaymentRow {Payment:{} selected}) return;
         var payment=_progressHistory.FirstOrDefault(p=>p.Id==selected.Id&&p.Input.ProgramType==selected.Input.ProgramType);
         if(payment is not null && payment!=selected)
-        {MessageBox.Show(this,"Seçili hakediş değişmiş. Güncel tutarları yeniden kontrol edin.","OEHS",MessageBoxButton.OK,MessageBoxImage.Information);RefreshHomeOperations();return;}
+        {NightMessageBox.Show(this,"Seçili hakediş değişmiş. Güncel tutarları yeniden kontrol edin.","OEHS",MessageBoxButton.OK,MessageBoxImage.Information);RefreshHomeOperations();return;}
         if(payment is null || !EnsurePaymentPreflight(payment)) {RefreshHomeOperations();return;}
         _homeOutputPayment=payment;
         try {if(sender is Button {Tag:"Save"}) CreateSaveAllRouteDocumentsButton_Click(sender,e);else PreviewAllRouteDocumentsButton_Click(sender,e);}

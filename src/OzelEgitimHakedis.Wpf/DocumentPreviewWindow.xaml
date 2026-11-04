@@ -4,12 +4,13 @@
         Title="TEHYS — Belge Önizleme"
         Width="1080" Height="820" MinWidth="820" MinHeight="620"
         WindowStartupLocation="CenterOwner"
-        Background="#E9EEF4"
+        Background="#061E32" Foreground="#F0F6FC"
         UseLayoutRounding="True"
         SnapsToDevicePixels="True">
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="56"/>
+            <RowDefinition Height="48"/>
             <RowDefinition Height="*"/>
         </Grid.RowDefinitions>
         <Border Background="#031C38" Padding="20,0">
@@ -26,9 +27,36 @@
                            HorizontalAlignment="Right"/>
             </Grid>
         </Border>
+        <Border Grid.Row="1" Background="#12354D" BorderBrush="#466780" BorderThickness="0,0,0,1" Padding="12,5">
+            <DockPanel LastChildFill="False">
+                <Button Content="Yazdır" DockPanel.Dock="Right" Click="Print_Click" Style="{StaticResource ModernButton}" MinWidth="100" Margin="8,0,0,0"/>
+                <Button Content="Sayfada bul" DockPanel.Dock="Right" Command="ApplicationCommands.Find" CommandTarget="{Binding ElementName=Viewer}" Margin="8,0,0,0"/>
+                <Button Content="İlk" Click="First_Click" MinWidth="45" ToolTip="İlk sayfa"/>
+                <Button Content="‹" Click="Previous_Click" MinWidth="36" Margin="5,0" ToolTip="Önceki sayfa"/>
+                <TextBlock Text="{Binding MasterPageNumber, ElementName=Viewer}" Margin="8,0,2,0"/>
+                <TextBlock Text=" / " Margin="2,0"/>
+                <TextBlock Text="{Binding PageCount, ElementName=Viewer}" Margin="2,0,8,0"/>
+                <Button Content="›" Click="Next_Click" MinWidth="36" Margin="5,0" ToolTip="Sonraki sayfa"/>
+                <Button Content="Son" Click="Last_Click" MinWidth="45" ToolTip="Son sayfa"/>
+                <Button Content="−" Click="ZoomOut_Click" MinWidth="36" Margin="18,0,5,0" ToolTip="Uzaklaştır"/>
+                <TextBlock Text="{Binding Zoom, ElementName=Viewer, StringFormat={}{0:0}%}" MinWidth="45" TextAlignment="Center"/>
+                <Button Content="+" Click="ZoomIn_Click" MinWidth="36" Margin="5,0" ToolTip="Yakınlaştır"/>
+                <Button Content="Genişliğe sığdır" Click="Fit_Click" Margin="8,0,0,0"/>
+            </DockPanel>
+        </Border>
         <DocumentViewer x:Name="Viewer"
-                        Grid.Row="1"
+                        Grid.Row="2"
                         Margin="12"
-                        Background="#DCE4EC"/>
+                        Background="#09283F">
+            <DocumentViewer.Template>
+                <ControlTemplate TargetType="DocumentViewer">
+                    <DockPanel Background="{TemplateBinding Background}">
+                        <ContentControl x:Name="PART_FindToolBarHost" DockPanel.Dock="Bottom"/>
+                        <ScrollViewer x:Name="PART_ContentHost" Focusable="False"
+                            Background="{TemplateBinding Background}" HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Auto"/>
+                    </DockPanel>
+                </ControlTemplate>
+            </DocumentViewer.Template>
+        </DocumentViewer>
     </Grid>
 </Window>

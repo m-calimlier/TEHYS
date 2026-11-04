@@ -1,4 +1,4 @@
-using System.Globalization;
+﻿using System.Globalization;
 using System.IO;
 using System.Windows;
 using System.Windows.Controls;
@@ -121,7 +121,7 @@ public partial class MainWindow
         if (!UpdateHybridRoutesButton.IsEnabled) return;
         var changed = _multiRoutePaymentRows.Where(row => row.HasChanges).ToArray();
         var message = string.Join(Environment.NewLine, changed.Select(row => row.RouteDisplayText));
-        var confirmed = MessageBox.Show(
+        var confirmed = NightMessageBox.Show(
             "Aşağıdaki hatların kaynak bilgileri ve seçilen aya ait tablo girdileri kaydedilsin mi?\n\n" +
             message + "\n\nÖnceki resmî hakedişler ve arşivler değişmez. Vazgeçerseniz tablo düzenlemeleri korunur.",
             "Tablo değişikliklerini kaydet", MessageBoxButton.YesNo, MessageBoxImage.Question,

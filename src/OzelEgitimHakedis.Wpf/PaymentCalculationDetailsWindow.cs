@@ -1,4 +1,4 @@
-using System.Globalization;
+﻿using System.Globalization;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
@@ -41,8 +41,8 @@ public sealed class PaymentCalculationDetailsWindow : Window
         {
             Name = "CalculationDetailsGrid", IsReadOnly = true, AutoGenerateColumns = false,
             CanUserAddRows = false, CanUserDeleteRows = false, CanUserReorderColumns = false,
-            HeadersVisibility = DataGridHeadersVisibility.Column, Background = Brushes.White, Foreground = Brushes.Black,
-            RowBackground = Brushes.White, AlternatingRowBackground = new SolidColorBrush(Color.FromRgb(239, 244, 249)),
+            HeadersVisibility = DataGridHeadersVisibility.Column, Background=NightTheme.Surface, Foreground = NightTheme.Text,
+            RowBackground=NightTheme.Surface, AlternatingRowBackground = NightTheme.Alternate,
             ItemsSource = PaymentCalculationDetailsService.Build(payment, history),
             HorizontalScrollBarVisibility = ScrollBarVisibility.Auto, VerticalScrollBarVisibility = ScrollBarVisibility.Auto,
             EnableRowVirtualization = true, MinRowHeight = 36

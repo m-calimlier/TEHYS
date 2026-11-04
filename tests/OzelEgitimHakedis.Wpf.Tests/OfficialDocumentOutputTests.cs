@@ -66,8 +66,8 @@ public sealed partial class OfficialDocumentOutputTests
                     using var pdf = UglyToad.PdfPig.PdfDocument.Open(path);
                     var page = pdf.GetPage(1);
                     var row = output.Kind == OehsOfficialDocumentKind.HizmetIsleriHakedisRaporu
-                        ? new Rect(398, 364, 350, 25)
-                        : new Rect(360, 207, 383, 35);
+                        ? new Rect(398, 312, 297, 22)
+                        : new Rect(360, 212.6, 383, 34.6);
                     var contractText = PdfTextInRectangle(page, row);
                     Assert.Contains("15.08.2026", contractText, StringComparison.Ordinal);
                     Assert.DoesNotContain("SOZ-2026-0042", contractText, StringComparison.Ordinal);
@@ -373,7 +373,7 @@ public sealed partial class OfficialDocumentOutputTests
             Assert.Equal(332516.074511856m, recalculated.Calculation.NetPayable);
             var output = OehsOfficialDocumentFactory.BuildSeparate(context)
                 .Single(document => document.Kind == OehsOfficialDocumentKind.HakedisRaporu);
-            Assert.Equal("332.516,08 TL", GetCellTextAt((FixedPage)output.Document.Pages[0].Child, 476d, 796d));
+            Assert.Equal("332.516,08 TL", GetCellTextAt((FixedPage)output.Document.Pages[0].Child, 476d, 785d));
         });
     }
 
@@ -476,9 +476,9 @@ public sealed partial class OfficialDocumentOutputTests
                 .Single(document => document.Kind == OehsOfficialDocumentKind.HakedisIcmali);
             var page = (FixedPage)output.Document.Pages[0].Child;
 
-            Assert.Equal("Hizmet Alımı İşi Ekim 2026", GetCellTextAt(page, 89d, 167d));
-            Assert.Equal(expectedService, GetCellTextAt(page, 291d, 167d));
-            Assert.Equal(expectedService, GetCellTextAt(page, 593d, 519d));
+            Assert.Equal("Hizmet Alımı İşi Ekim 2026", GetCellTextAt(page, 89d, 184d));
+            Assert.Equal(expectedService, GetCellTextAt(page, 274d, 184d));
+            Assert.Equal(expectedService, GetCellTextAt(page, 577d, 536d));
         });
     }
 
@@ -512,12 +512,12 @@ public sealed partial class OfficialDocumentOutputTests
                 .Single(document => document.Kind == OehsOfficialDocumentKind.HakedisIcmali);
             var page = (FixedPage)output.Document.Pages[0].Child;
 
-            Assert.Equal("Hizmet Alımı İşi Ekim 2026", GetCellTextAt(page, 89d, 167d));
-            Assert.Equal("₺0,00", GetCellTextAt(page, 291d, 167d));
-            Assert.Equal("₺0,00", GetCellTextAt(page, 486d, 167d));
-            Assert.Equal("₺0,00", GetCellTextAt(page, 593d, 167d));
-            Assert.Equal("₺0,00", GetCellTextAt(page, 593d, 519d));
-            Assert.Equal(string.Empty, GetCellTextAt(page, 89d, 199d));
+            Assert.Equal("Hizmet Alımı İşi Ekim 2026", GetCellTextAt(page, 89d, 184d));
+            Assert.Equal("₺0,00", GetCellTextAt(page, 274d, 184d));
+            Assert.Equal("₺0,00", GetCellTextAt(page, 470d, 184d));
+            Assert.Equal("₺0,00", GetCellTextAt(page, 577d, 184d));
+            Assert.Equal("₺0,00", GetCellTextAt(page, 577d, 536d));
+            Assert.Equal(string.Empty, GetCellTextAt(page, 89d, 216d));
         });
     }
 
@@ -535,11 +535,11 @@ public sealed partial class OfficialDocumentOutputTests
                 .Single(document => document.Kind == OehsOfficialDocumentKind.HakedisIcmali);
             var page = (FixedPage)output.Document.Pages[0].Child;
 
-            Assert.Equal("Hizmet Alımı İşi Ekim 2026", GetCellTextAt(page, 89d, 167d));
-            Assert.Equal("₺0,00", GetCellTextAt(page, 291d, 167d));
-            Assert.Equal(expectedTotal, GetCellTextAt(page, 593d, 167d));
-            Assert.Equal(expectedTotal, GetCellTextAt(page, 593d, 519d));
-            Assert.Equal(string.Empty, GetCellTextAt(page, 89d, 199d));
+            Assert.Equal("Hizmet Alımı İşi Ekim 2026", GetCellTextAt(page, 89d, 184d));
+            Assert.Equal("₺0,00", GetCellTextAt(page, 274d, 184d));
+            Assert.Equal(expectedTotal, GetCellTextAt(page, 577d, 184d));
+            Assert.Equal(expectedTotal, GetCellTextAt(page, 577d, 536d));
+            Assert.Equal(string.Empty, GetCellTextAt(page, 89d, 216d));
         });
     }
 
@@ -561,9 +561,9 @@ public sealed partial class OfficialDocumentOutputTests
                 .Single(document => document.Kind == OehsOfficialDocumentKind.HakedisRaporu);
             var page = (FixedPage)output.Document.Pages[0].Child;
 
-            Assert.Equal("B", GetCellTextAt(page, 67d, 201d));
-            Assert.Equal("Fiyat Farkı Tutarı", GetCellTextAt(page, 120d, 201d));
-            Assert.Equal(expected, GetCellTextAt(page, 476d, 201d));
+            Assert.Equal("B", GetCellTextAt(page, 67d, 211d));
+            Assert.Equal("Fiyat Farkı Tutarı", GetCellTextAt(page, 120d, 211d));
+            Assert.Equal(expected, GetCellTextAt(page, 476d, 211d));
 
             var directory = Directory.CreateTempSubdirectory("oehs-report-b-");
             try
@@ -572,7 +572,7 @@ public sealed partial class OfficialDocumentOutputTests
                 PdfVectorWriter.Save(output.Document, path);
                 using var pdf = UglyToad.PdfPig.PdfDocument.Open(path);
                 Assert.Equal(WithoutWhitespace(expected),
-                    WithoutWhitespace(PdfTextInRectangle(pdf.GetPage(1), new Rect(476d, 201d, 250d, 29d))));
+                    WithoutWhitespace(PdfTextInRectangle(pdf.GetPage(1), new Rect(476d, 211d, 250d, 28d))));
             }
             finally
             {
@@ -597,9 +597,9 @@ public sealed partial class OfficialDocumentOutputTests
                 .Single(document => document.Kind == OehsOfficialDocumentKind.HakedisIcmali);
             var page = (FixedPage)output.Document.Pages[0].Child;
 
-            Assert.Equal(expectedDifference, GetCellTextAt(page, 486d, 167d));
-            Assert.Equal(expectedTotal, GetCellTextAt(page, 593d, 167d));
-            Assert.Equal(expectedTotal, GetCellTextAt(page, 593d, 519d));
+            Assert.Equal(expectedDifference, GetCellTextAt(page, 470d, 184d));
+            Assert.Equal(expectedTotal, GetCellTextAt(page, 577d, 184d));
+            Assert.Equal(expectedTotal, GetCellTextAt(page, 577d, 536d));
         });
     }
 
@@ -621,9 +621,9 @@ public sealed partial class OfficialDocumentOutputTests
                 .Single(document => document.Kind == OehsOfficialDocumentKind.HakedisIcmali);
             var page = (FixedPage)output.Document.Pages[0].Child;
 
-            Assert.Equal("Hizmet Alımı İşi Temmuz 2027", GetCellTextAt(page, 89d, 167d));
-            Assert.Equal("₺125,00", GetCellTextAt(page, 486d, 167d));
-            Assert.Equal("₺1.125,00", GetCellTextAt(page, 593d, 167d));
+            Assert.Equal("Hizmet Alımı İşi Temmuz 2027", GetCellTextAt(page, 89d, 184d));
+            Assert.Equal("₺125,00", GetCellTextAt(page, 470d, 184d));
+            Assert.Equal("₺1.125,00", GetCellTextAt(page, 577d, 184d));
         });
     }
 
@@ -640,8 +640,8 @@ public sealed partial class OfficialDocumentOutputTests
                 .Single(document => document.Kind == OehsOfficialDocumentKind.HakedisIcmali);
             var page = (FixedPage)output.Document.Pages[0].Child;
 
-            Assert.Equal(string.Empty, GetCellTextAt(page, 89d, 167d));
-            Assert.Equal("₺0,00", GetCellTextAt(page, 593d, 519d));
+            Assert.Equal(string.Empty, GetCellTextAt(page, 89d, 184d));
+            Assert.Equal("₺0,00", GetCellTextAt(page, 577d, 536d));
         });
     }
 
@@ -966,16 +966,16 @@ public sealed partial class OfficialDocumentOutputTests
             // With two 100 TL base periods, 20 TL previous F and 10 TL current F:
             // A=220, B=10, C=230, D=120, E=110, F=0.
             // The workbook's D11 already includes the current raw price difference, so G/D13=110.
-            Assert.Equal("220,00 TL", GetCellTextAt(paymentPage, 476d, 172d)); // A
-            Assert.Equal("10,00 TL", GetCellTextAt(paymentPage, 476d, 201d));  // B
-            Assert.Equal("230,00 TL", GetCellTextAt(paymentPage, 476d, 230d)); // C = A + B
-            Assert.Equal("120,000 TL", GetCellTextAt(paymentPage, 476d, 293d)); // Special Education D keeps the source three-decimal precision
-            Assert.Equal("110,00 TL", GetCellTextAt(paymentPage, 476d, 322d)); // E = C - D
-            Assert.Equal("0,00 TL", GetCellTextAt(paymentPage, 476d, 351d));   // F
-            Assert.Equal("110,00 TL", GetCellTextAt(paymentPage, 476d, 380d)); // G = D11 + D12
-            Assert.Equal("5,00 TL", GetCellTextAt(paymentPage, 476d, 768d));   // H
-            Assert.Equal("105,00 TL", GetCellTextAt(paymentPage, 476d, 796d)); // I = G - H
-            Assert.Equal("Bu Hakedişin Tutarı ( C - D )", GetCellTextAt(paymentPage, 120d, 322d));
+            Assert.Equal("220,00 TL", GetCellTextAt(paymentPage, 476d, 183d)); // A
+            Assert.Equal("10,00 TL", GetCellTextAt(paymentPage, 476d, 211d));  // B
+            Assert.Equal("230,00 TL", GetCellTextAt(paymentPage, 476d, 239d)); // C = A + B
+            Assert.Equal("120,000 TL", GetCellTextAt(paymentPage, 476d, 301d)); // Special Education D keeps the source three-decimal precision
+            Assert.Equal("110,00 TL", GetCellTextAt(paymentPage, 476d, 329d)); // E = C - D
+            Assert.Equal("0,00 TL", GetCellTextAt(paymentPage, 476d, 357d));   // F
+            Assert.Equal("110,00 TL", GetCellTextAt(paymentPage, 476d, 385d)); // G = D11 + D12
+            Assert.Equal("5,00 TL", GetCellTextAt(paymentPage, 476d, 757d));   // H
+            Assert.Equal("105,00 TL", GetCellTextAt(paymentPage, 476d, 785d)); // I = G - H
+            Assert.Equal("Bu Hakedişin Tutarı ( C - D )", GetCellTextAt(paymentPage, 120d, 329d));
             Assert.Contains("Hakediş No : 2", paymentText, StringComparison.Ordinal);
             Assert.Contains("KESİNTİLER VE MAHSUPLAR", paymentText, StringComparison.Ordinal);
             Assert.Contains("KDV (taşıma %10 + rehber %20)", paymentText, StringComparison.Ordinal);
@@ -1156,7 +1156,7 @@ public sealed partial class OfficialDocumentOutputTests
             // PDF templates therefore use the configured signatories.
             var contractorReportPage = Assert.IsType<FixedPage>(paymentOutput.Document.Pages[0].Child);
             Assert.Contains("Örnek Yüklenici", GetPageText(contractorReportPage), StringComparison.Ordinal);
-            Assert.Contains("M.Y.H.B.Y. Örnek No :4/10", GetPageText(contractorReportPage), StringComparison.Ordinal);
+            Assert.DoesNotContain("M.Y.H.B.Y. Örnek No :4/10", GetPageText(contractorReportPage), StringComparison.Ordinal);
 
             foreach (var output in outputs)
             {
@@ -1195,16 +1195,10 @@ public sealed partial class OfficialDocumentOutputTests
                 .OfType<Border>()
                 .Where(border =>
                     Math.Abs(FixedPage.GetLeft(border) - 67d) < 0.01 &&
-                    Math.Abs(FixedPage.GetTop(border) - 56d) < 0.01 &&
+                    Math.Abs(FixedPage.GetTop(border) - 71d) < 0.01 &&
                     Math.Abs(border.Width - 659d) < 0.01 &&
-                    Math.Abs(border.Height - 1014d) < 0.01));
+                    Math.Abs(border.Height - 1002d) < 0.01));
             Assert.Equal(1.6d, reportOuterFrame.BorderThickness.Bottom);
-            var reportFooter = Assert.Single(contractorReportPage.Children
-                .OfType<TextBlock>()
-                .Where(block => block.Text == "M.Y.H.B.Y. Örnek No :4/10"));
-            Assert.True(
-                FixedPage.GetTop(reportFooter) >= FixedPage.GetTop(reportOuterFrame) + reportOuterFrame.Height,
-                "The report number footer must sit below the outer frame so the frame border cannot cross its text.");
             var reportTitle = Assert.Single(contractorReportPage.Children
                 .OfType<TextBlock>()
                 .Where(block => block.Text == "HAK EDİŞ RAPORU"));
@@ -1214,7 +1208,7 @@ public sealed partial class OfficialDocumentOutputTests
             
             var eRowCells = contractorReportPage.Children
                 .OfType<Border>()
-                .Where(border => Math.Abs(FixedPage.GetTop(border) - 322d) < 0.01)
+                .Where(border => Math.Abs(FixedPage.GetTop(border) - 329d) < 0.01)
                 .ToArray();
             Assert.Equal(3, eRowCells.Length);
             Assert.All(eRowCells, border =>

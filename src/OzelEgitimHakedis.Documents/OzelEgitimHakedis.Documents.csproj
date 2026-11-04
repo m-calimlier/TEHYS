@@ -1,0 +1,4 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup><TargetFramework>net8.0-windows</TargetFramework><UseWPF>true</UseWPF><EnableWindowsTargeting>true</EnableWindowsTargeting><RootNamespace>OzelEgitimHakedis.Wpf</RootNamespace></PropertyGroup>
+  <ItemGroup><ProjectReference Include="../OzelEgitimHakedis.Core/OzelEgitimHakedis.Core.csproj"/><PackageReference Include="PDFsharp-WPF" Version="6.2.4"/></ItemGroup>
+</Project>

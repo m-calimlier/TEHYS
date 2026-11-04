@@ -130,7 +130,7 @@ public partial class MainWindow
         {
             get
             {
-                try { return ProgressPaymentCalculator.Calculate(CreateInput(),_constants); }
+                try { return PaymentScreenModel.Calculate(CreateInput(),_constants); }
                 catch(Exception ex) when(ex is ArgumentException or OverflowException) { return null; }
             }
         }

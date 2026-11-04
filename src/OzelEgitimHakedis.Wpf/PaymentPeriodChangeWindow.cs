@@ -1,4 +1,4 @@
-using System.Collections.ObjectModel;
+﻿using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Globalization;
 using System.Windows;
@@ -63,6 +63,7 @@ internal sealed class PaymentPeriodChangeWindow : Window
         var cancel=new Button { Content="Vazgeç",IsCancel=true,MinWidth=105,Padding=new Thickness(12,8,12,8),Margin=new Thickness(0,0,8,0) };
         cancel.Click+=(_,_)=>Close();
         var apply=new Button { Content="Uygula",MinWidth=115,Padding=new Thickness(12,8,12,8) };
+        if (Application.Current?.TryFindResource("ModernButton") is Style primary) apply.Style = primary;
         apply.Click+=(_,_)=> { if(TryApplyChanges()) DialogResult=true; };
         buttons.Children.Add(cancel);buttons.Children.Add(apply);footer.Children.Add(buttons);root.Children.Add(footer);
         var body=new StackPanel();
@@ -86,7 +87,7 @@ internal sealed class PaymentPeriodChangeWindow : Window
         var panel=new StackPanel { Margin=new Thickness(0,0,0,16) };
         panel.Children.Add(new TextBlock { Text=title,Foreground=Brushes.Gold,FontWeight=FontWeights.Bold,Margin=new Thickness(0,0,0,6) });
         var grid=new DataGrid { ItemsSource=rows,AutoGenerateColumns=false,CanUserAddRows=false,CanUserDeleteRows=false,
-            CanUserSortColumns=false,MaxHeight=195,MinHeight=105,RowHeight=31,Foreground=Brushes.Black,Background=Brushes.White,SelectionMode=DataGridSelectionMode.Single };
+            CanUserSortColumns=false,MaxHeight=195,MinHeight=105,RowHeight=31,Foreground=NightTheme.Text,Background=NightTheme.Surface,SelectionMode=DataGridSelectionMode.Single };
         void Column(string header,string path,double width,bool readOnly=false) => grid.Columns.Add(new DataGridTextColumn
         { Header=header,Binding=new Binding(path){Mode=readOnly?BindingMode.OneWay:BindingMode.TwoWay,UpdateSourceTrigger=UpdateSourceTrigger.PropertyChanged},Width=width,IsReadOnly=readOnly });
         Column("Gün",nameof(PaymentPeriodEntry.DaysText),90);

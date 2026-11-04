@@ -1,4 +1,4 @@
-using System.IO;
+﻿using System.IO;
 using System.Windows;
 using OzelEgitimHakedis.Core.Services;
 
@@ -17,9 +17,9 @@ public partial class MainWindow
             await Task.Run(()=>BackupService().Create(dialog.FileName));
             BackupStatusText.Text=$"Son başarılı yedek: {DateTime.Now:dd.MM.yyyy HH:mm}\n{dialog.FileName}";
             File.WriteAllText(Path.Combine(OehsRuntimePaths.DataRoot,"last-backup.txt"),BackupStatusText.Text);
-            MessageBox.Show(this,"Tam yedek oluşturuldu. Kaydedilmemiş form girdileri pakete dahil değildir.","OEHS — Yedek",MessageBoxButton.OK,MessageBoxImage.Information);
+            NightMessageBox.Show(this,"Tam yedek oluşturuldu. Kaydedilmemiş form girdileri pakete dahil değildir.","OEHS — Yedek",MessageBoxButton.OK,MessageBoxImage.Information);
         }
-        catch(Exception ex) {MessageBox.Show(this,"Yedek oluşturulamadı:\n"+ex.Message,"OEHS",MessageBoxButton.OK,MessageBoxImage.Error);}
+        catch(Exception ex) {NightMessageBox.Show(this,"Yedek oluşturulamadı:\n"+ex.Message,"OEHS",MessageBoxButton.OK,MessageBoxImage.Error);}
         finally {IsEnabled=true;}
     }
     private bool HasOpenWorkForRestore() => IsArchiveEditing || _editingHistoryId.HasValue || _historyCorrectionTargetId.HasValue ||
@@ -38,7 +38,7 @@ public partial class MainWindow
         (!TurkishMoneyInput.TryParse(box.Text, out var amount) || amount != 0m));
     private async void BackupRestore_Click(object sender,RoutedEventArgs e)
     {
-        if(HasOpenWorkForRestore()) {MessageBox.Show(this,"Önce açık düzenlemeyi kaydedin veya formu temizleyin. Geri yükleme kaydedilmemiş girdileri değiştirebilir.","OEHS",MessageBoxButton.OK,MessageBoxImage.Information);return;}
+        if(HasOpenWorkForRestore()) {NightMessageBox.Show(this,"Önce açık düzenlemeyi kaydedin veya formu temizleyin. Geri yükleme kaydedilmemiş girdileri değiştirebilir.","OEHS",MessageBoxButton.OK,MessageBoxImage.Information);return;}
         var dialog=new Microsoft.Win32.OpenFileDialog {Filter="OEHS tam yedek|*.oehs-backup.zip|ZIP|*.zip"};
         if(dialog.ShowDialog(this)!=true) return;
         IsEnabled=false;
@@ -49,7 +49,7 @@ public partial class MainWindow
                 $"Sözleşme: {summary.ContractCount} · Hat: {summary.RouteCount} · Hakediş: {summary.PaymentCount}\n"+
                 $"Arşiv revizyonu: {summary.ArchiveCount} · PDF: {summary.PdfCount} · Dosya: {summary.FileCount}\n\n"+
                 "İki programın mevcut kayıtları ve çıktı klasörü bu yedekle değiştirilecek. Önce mevcut veriler için otomatik kurtarma yedeği alınır. Devam edilsin mi?";
-            if(MessageBox.Show(this,message,"OEHS — Yedeği incele",MessageBoxButton.YesNo,MessageBoxImage.Warning,MessageBoxResult.No)!=MessageBoxResult.Yes) return;
+            if(NightMessageBox.Show(this,message,"OEHS — Yedeği incele",MessageBoxButton.YesNo,MessageBoxImage.Warning,MessageBoxResult.No)!=MessageBoxResult.Yes) return;
             var recovery=await Task.Run(()=>
             {
                 if(OutputEvidenceStore.FileHash(dialog.FileName)!=summary.PackageHash) throw new IOException("İncelenen paket değişmiş. Yeniden seçin.");
@@ -62,9 +62,9 @@ public partial class MainWindow
             UpdateHistoryView();UpdateArchiveView();RefreshHomeOperations();LoadSignatoriesIntoFields();
             _windowLayoutPreference=WindowLayoutPreferenceStore.Load();ApplyWindowLayoutPreference(_windowLayoutPreference);
             BackupStatusText.Text="Yedek geri yüklendi. Önceki verilerin kurtarma paketi:\n"+recovery;
-            MessageBox.Show(this,BackupStatusText.Text,"OEHS — Geri yükleme",MessageBoxButton.OK,MessageBoxImage.Information);
+            NightMessageBox.Show(this,BackupStatusText.Text,"OEHS — Geri yükleme",MessageBoxButton.OK,MessageBoxImage.Information);
         }
-        catch(Exception ex) {MessageBox.Show(this,"Geri yükleme tamamlanamadı:\n"+ex.Message,"OEHS",MessageBoxButton.OK,MessageBoxImage.Error);}
+        catch(Exception ex) {NightMessageBox.Show(this,"Geri yükleme tamamlanamadı:\n"+ex.Message,"OEHS",MessageBoxButton.OK,MessageBoxImage.Error);}
         finally {IsEnabled=true;}
     }
 }
