@@ -1,4 +1,4 @@
-TAŞIMALI EĞİTİM HAKEDİŞ YÖNETİM SİSTEMİ (TEHYS) 0.1.4
+﻿TAŞIMALI EĞİTİM HAKEDİŞ YÖNETİM SİSTEMİ (TEHYS) 0.1.5
 
 WINDOWS 64-BİT İÇİN
 ZIP dosyasının tamamını bir klasöre çıkarın ve TEHYS.exe dosyasını açın.

@@ -1,8 +1,8 @@
-# Taşımalı Eğitim Hakediş Yönetim Sistemi (TEHYS)
+﻿# Taşımalı Eğitim Hakediş Yönetim Sistemi (TEHYS)
 
 Temel Eğitim ve Özel Eğitim taşıma hakedişleri için güncel Windows uygulaması.
 **Çalıştırılabilir paket:** [GitHub Releases — en güncel sürüm](https://github.com/mcalimlier/OzelEgitimHakedisSistemi/releases/latest).
-Assets bölümünden `TEHYS-0.1.5-win-x64.zip` indirin, tamamen çıkarın ve `TEHYS.exe` açın.
+Assets bölümünden kurulum için `TEHYS-0.1.5-Setup-win-x64.exe` indirin. Taşınabilir kullanım için `TEHYS-0.1.5-win-x64.zip` dosyasını tamamen çıkarıp `TEHYS.exe` açın.
 Excel veya ayrıca .NET kurulumu gerekmez. İlk kullanımda resmî belge imzacılarını kendi kurumunuza göre düzenleyin.
 Hakediş Oluştur içindeki Excel aktarımı, görünen girdi sütunlarının sağına her hattın hesaplanan KDV, tevkifat, damga vergisi, ek kesin teminat, diğer kesintiler, brüt ve net tutarlarını sayısal hücrelerle ekler.
 Kaynak proje/modül adları ve mevcut veri klasörleri uyumluluk için korunur.
