@@ -1,0 +1,64 @@
+name: OEHS Automatic EXE
+
+on:
+  push:
+    branches:
+      - main
+      - feature/official-payment-document-templates
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: oehs-exe-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  package:
+    runs-on: windows-latest
+    steps:
+      - name: Checkout source
+        uses: actions/checkout@v4
+
+      - name: Setup .NET 8
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '8.0.x'
+
+      - name: Restore projects
+        shell: pwsh
+        run: |
+          dotnet restore .\src\OzelEgitimHakedis.Wpf\OzelEgitimHakedis.Wpf.csproj
+          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+          dotnet restore .\tests\OzelEgitimHakedis.Tests\OzelEgitimHakedis.Tests.csproj
+          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+          dotnet restore .\tests\OzelEgitimHakedis.Wpf.Tests\OzelEgitimHakedis.Wpf.Tests.csproj
+          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+
+      - name: Run core tests
+        run: dotnet test .\tests\OzelEgitimHakedis.Tests\OzelEgitimHakedis.Tests.csproj --configuration Release --no-restore
+
+      - name: Run WPF tests
+        run: dotnet test .\tests\OzelEgitimHakedis.Wpf.Tests\OzelEgitimHakedis.Wpf.Tests.csproj --configuration Release --no-restore
+
+      - name: Publish self-contained Windows x64 EXE
+        shell: pwsh
+        run: |
+          dotnet publish .\src\OzelEgitimHakedis.Wpf\OzelEgitimHakedis.Wpf.csproj --configuration Release --runtime win-x64 --self-contained true --output .\artifacts\OEHS /p:PublishSingleFile=true /p:IncludeNativeLibrariesForSelfExtract=true
+          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+          if (-not (Test-Path .\artifacts\OEHS\OEHS.exe)) { throw 'OEHS.exe was not produced.' }
+          Set-Content -Path .\artifacts\OEHS\BUILD-INFO.txt -Value @(
+            "Branch: ${{ github.ref_name }}"
+            "Commit: ${{ github.sha }}"
+            "Run: ${{ github.run_id }}"
+          )
+
+      - name: Upload current EXE package
+        uses: actions/upload-artifact@v4
+        with:
+          name: OEHS-Windows-x64-${{ github.run_number }}
+          path: artifacts/OEHS/
+          if-no-files-found: error
+          retention-days: 14
+          compression-level: 6
