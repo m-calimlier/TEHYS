@@ -61,6 +61,7 @@ public partial class MainWindow
             UpdateContractorSummary();UpdateContractSummaryView();UpdateSummaryView();UpdateReportView();UpdateAcceptanceView();
             UpdateHistoryView();UpdateArchiveView();RefreshHomeOperations();LoadSignatoriesIntoFields();
             _windowLayoutPreference=WindowLayoutPreferenceStore.Load();ApplyWindowLayoutPreference(_windowLayoutPreference);
+            RefreshPeriodManagementStatus();
             BackupStatusText.Text="Yedek geri yüklendi. Önceki verilerin kurtarma paketi:\n"+recovery;
             NightMessageBox.Show(this,BackupStatusText.Text,"OEHS — Geri yükleme",MessageBoxButton.OK,MessageBoxImage.Information);
         }

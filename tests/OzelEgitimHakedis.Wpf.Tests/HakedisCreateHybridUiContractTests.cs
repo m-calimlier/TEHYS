@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.IO;
 using System.Linq;
 using System.Text.RegularExpressions;
@@ -31,7 +31,7 @@ public sealed partial class HakedisCreateHybridUiContractTests
     private static readonly int[] SelectedRouteCounts = new[]{1,2};
     private static readonly string[] InvalidSharedInputNames = new[]{"WorkDaysTextBox","DailyPriceTextBox","PriceDifferenceTextBox","TaxDebtTextBox"};
     private static readonly string[] HomeDetailPanelNames = new[]{"HomeMonthlyGrid","HomePreflightPanel"};
-    private static readonly string[] HomeOutputActionNames = new[]{"HomePreviewButton","HomeSavePdfsButton"};
+    private static readonly string[] HomeOutputActionNames = new[]{"HomeSavePdfsButton"};
     private static readonly string[] ProgressMoneyInputNames = new[] { "WorkDaysTextBox", "DailyPriceTextBox", "PriceDifferenceTextBox", "MinimumWageSupportTextBox" };
     private static readonly string[] InitiallyHiddenPanelNames = new[] { "HomePanel", "ProgressPanel", "SummaryPanel", "AcceptancePanel", "RecordsPanel", "PlaceholderPanel" };
 
@@ -1363,7 +1363,6 @@ public sealed partial class HakedisCreateHybridUiContractTests
                 Invoke(window,"RefreshHomeOperations");
                 Assert.Empty(grid.Items.Cast<object>());
                 Assert.False(Field<Button>(window,"HomeSavePdfsButton").IsEnabled);
-                Assert.False(Field<Button>(window,"HomePreviewButton").IsEnabled);
                 Assert.False(Field<Button>(window,"HomeNextActionButton").IsEnabled);
                 Assert.Contains("seçin",Field<TextBlock>(window,"HomePaymentSummary").Text,StringComparison.Ordinal);
             }

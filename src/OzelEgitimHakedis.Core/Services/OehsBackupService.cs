@@ -18,7 +18,7 @@ public sealed class OehsBackupService
     private static readonly HashSet<string> DataNames = new(StringComparer.OrdinalIgnoreCase)
     {
         "oehs-special-education.json", "oehs-basic-secondary.json", "official-document-settings.json",
-        "window-layout.json", "window-layout-preference.json", ".fresh-start-version"
+        "window-layout.json", "window-layout-preference.json", ".fresh-start-version", "period-info.json"
     };
     public OehsBackupService(string dataRoot, string outputRoot)
     {

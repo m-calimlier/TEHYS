@@ -40,7 +40,6 @@ public sealed partial class HakedisCreateHybridUiContractTests
             Assert.Equal("0", Field<TextBlock>(window, "ReportCountTextBlock").Text);
             Assert.Empty(Collection(window, "_reportRows"));
             Assert.False(Field<Button>(window, "SaveReportsPdfsButton").IsEnabled);
-            Assert.False(Field<Button>(window, "PreviewReportsButton").IsEnabled);
             Assert.False(Field<Button>(window, "PrintReportsButton").IsEnabled);
         });
     }
@@ -156,7 +155,6 @@ public sealed partial class HakedisCreateHybridUiContractTests
             else Collection(window, "_progressHistory")[0] = ((ProgressPaymentHistoryData)Collection(window, "_progressHistory")[0]!) with { PeriodDate = null };
             Invoke(window, "UpdateReportView");
             Assert.False(Field<Button>(window, "SaveReportsPdfsButton").IsEnabled);
-            Assert.False(Field<Button>(window, "PreviewReportsButton").IsEnabled);
             Assert.False(Field<Button>(window, "PrintReportsButton").IsEnabled);
             Assert.Contains(missingFirm ? "Yüklenici" : "dönemi", Field<TextBlock>(window, "ReportReadinessTextBlock").Text, StringComparison.Ordinal);
         });
@@ -200,7 +198,7 @@ public sealed partial class HakedisCreateHybridUiContractTests
             ((Border)layout.FindName("ReportEmptyStateBorder")).Visibility = Visibility.Collapsed;
             ArrangeLayout(layout, width - 253, height - 98);
             Assert.True(tender.ActualWidth >= 200); Assert.Equal(tender.ActualHeight, routes.ActualHeight);
-            foreach (var button in VisualDescendants<Button>(layout).Where(button => button.Name is "SaveReportsPdfsButton" or "PreviewReportsButton" or "PrintReportsButton" or "OpenReportsFolderButton"))
+            foreach (var button in VisualDescendants<Button>(layout).Where(button => button.Name is "SaveReportsPdfsButton" or "PrintReportsButton" or "OpenReportsFolderButton"))
             {
                 var bounds = button.TransformToAncestor(layout).TransformBounds(new Rect(button.RenderSize));
                 Assert.InRange(bounds.Bottom, 1, layout.ActualHeight + 1); Assert.InRange(bounds.Right, 1, layout.ActualWidth + 1);

@@ -157,22 +157,6 @@ public partial class MainWindow
         });
 
         var buttons = new StackPanel { Orientation = Orientation.Horizontal, HorizontalAlignment = HorizontalAlignment.Right };
-        var folderButton = new Button
-        {
-            Content = "KLASÖRÜ AÇ",
-            Width = 150,
-            Height = 42,
-            Style = (Style)FindResource("SecondaryButton"),
-            Margin = new Thickness(0, 0, 10, 0)
-        };
-        folderButton.Click += (_, _) =>
-        {
-            Directory.CreateDirectory(targetFolder);
-            Process.Start(new ProcessStartInfo { FileName = targetFolder, UseShellExecute = true });
-            dialog.DialogResult = true;
-            dialog.Close();
-        };
-
         var okButton = new Button
         {
             Content = "TAMAM",
@@ -186,12 +170,21 @@ public partial class MainWindow
             dialog.Close();
         };
 
-        buttons.Children.Add(folderButton);
         buttons.Children.Add(okButton);
         panel.Children.Add(buttons);
 
         dialog.Content = panel;
         dialog.ShowDialog();
+        try
+        {
+            Process.Start(new ProcessStartInfo { FileName = targetFolder, UseShellExecute = true });
+        }
+        catch (Exception ex) when (ex is System.ComponentModel.Win32Exception or InvalidOperationException or IOException or UnauthorizedAccessException)
+        {
+            NightMessageBox.Show(this,
+                $"PDF kaydedildi; ancak kayıt klasörü açılamadı.\n\n{targetFolder}\n\n{ex.Message}",
+                "TEHYS — Klasör Açılamadı", MessageBoxButton.OK, MessageBoxImage.Warning);
+        }
     }
 
     private static int ExtractArchiveRevision(string path)

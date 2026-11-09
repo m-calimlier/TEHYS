@@ -1,4 +1,4 @@
-using System.Diagnostics;
+﻿using System.Diagnostics;
 using System.Globalization;
 using System.IO;
 using System.Windows;
@@ -116,7 +116,7 @@ public partial class MainWindow
             ReportReadinessTextBlock.Foreground = ready ? Brushes.DarkGreen : Brushes.Firebrick;
             ReportReadinessTextBlock.Text = ready ? "Seçili kayıt için dört belge hazır." : "Önce tamamlayın:\n" + string.Join("\n", issues.Select(issue => "• " + issue.Message));
         }
-        PreviewReportsButton.IsEnabled = PrintReportsButton.IsEnabled = SaveReportsPdfsButton.IsEnabled = ready;
+        PrintReportsButton.IsEnabled = SaveReportsPdfsButton.IsEnabled = ready;
     }
 
     private void ShowOutputStatus(string message, bool warning = false)

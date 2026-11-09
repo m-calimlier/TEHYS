@@ -138,6 +138,7 @@ public partial class MainWindow : Window
         ClearProgressEntryFields();
         UpdateProgressRouteDefaults();
         InitializeOperations();
+        RefreshPeriodManagementStatus();
     }
 
     private enum ArchiveCorrectionSection

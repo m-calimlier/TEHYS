@@ -140,26 +140,6 @@ public partial class MainWindow
         return context is null ? null : OehsOfficialDocumentFactory.BuildCombined(context);
     }
 
-    private void PreviewAllRouteDocumentsButton_Click(object sender, RoutedEventArgs e)
-    {
-        try
-        {
-            var document = BuildSelectedRouteOutputDocument();
-            if (document is null)
-                return;
-
-            new DocumentPreviewWindow(document) { Owner = this }.ShowDialog();
-        }
-        catch (Exception ex)
-        {
-            NightMessageBox.Show(
-                $"Belge önizlemesi açılamadı.\n\n{ex.Message}",
-                "OEHS — Belge Önizleme",
-                MessageBoxButton.OK,
-                MessageBoxImage.Error);
-        }
-    }
-
     private void PrintAllRouteDocumentsButton_Click(object sender, RoutedEventArgs e)
     {
         try
@@ -313,7 +293,7 @@ public partial class MainWindow
             CalculationStatusTextBlock.Text =
                 $"Dört sayfalı tek PDF oluşturuldu: {Path.GetFileName(targetPaths[0])}.";
 
-            if (!metadataSaved && _homeOutputPayment is not null)
+            if (!metadataSaved)
             {
                 NightMessageBox.Show(
                     this,
@@ -324,14 +304,13 @@ public partial class MainWindow
             }
 
             var savedNames = string.Join(Environment.NewLine, targetPaths.Select(Path.GetFileName));
-            if (_homeOutputPayment is not null)
-                ShowPdfSaveInfoDialog(targetFolder, savedNames, targetPaths[0]);
-            else
+            if (_homeOutputPayment is null)
             {
                 RefreshOutputSelection(clearOperationStatus: false);
-                ShowOutputStatus(metadataSaved ? "Dört sayfalı tek PDF kaydedildi. PDF klasörünü aç düğmesiyle dosyalara ulaşabilirsiniz."
+                ShowOutputStatus(metadataSaved ? "Dört sayfalı tek PDF kaydedildi."
                     : $"Dört sayfalı tek PDF kaydedildi; arşiv bilgi kaydı tamamlanamadı: {metadataError}", warning: !metadataSaved);
             }
+            ShowPdfSaveInfoDialog(targetFolder, savedNames, targetPaths[0]);
         }
         catch (Exception ex)
         {

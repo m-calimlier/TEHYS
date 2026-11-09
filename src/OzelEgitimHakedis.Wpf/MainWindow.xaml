@@ -339,7 +339,7 @@
     <TextBlock x:Name="HomePaymentAmounts" Foreground="#C5D7E7" TextWrapping="Wrap"/>
     <ItemsControl x:Name="HomeIssuesList" Margin="0,6,0,0"><ItemsControl.ItemTemplate><DataTemplate><Button Content="{Binding Message}" Tag="{Binding}" Click="HomeIssue_Click" Style="{StaticResource SecondaryButton}" HorizontalAlignment="Left" Margin="0,2" ToolTip="İlgili kaydı aç"/></DataTemplate></ItemsControl.ItemTemplate></ItemsControl>
     <Expander Header="İmzacı ve hesaplama ayrıntıları" Foreground="#C5D7E7" Margin="0,8,0,0"><TextBlock x:Name="HomePaymentDetails" Foreground="#C5D7E7" TextWrapping="Wrap" Margin="0,6"/></Expander>
-    <WrapPanel Margin="0,10,0,0"><Button Content="Hakedişi aç" Click="HomeNextAction_Click" Style="{StaticResource SecondaryButton}" Margin="0,0,8,6"/><Button x:Name="HomePreviewButton" Content="Belgeleri önizle" Tag="Preview" Click="HomeOutput_Click" Style="{StaticResource SecondaryButton}" Margin="0,0,8,6" IsEnabled="False"/><Button x:Name="HomeSavePdfsButton" Content="Dört belgeyi tek PDF kaydet" Tag="Save" Click="HomeOutput_Click" Style="{StaticResource ModernButton}" Margin="0,0,0,6" IsEnabled="False"/></WrapPanel>
+    <WrapPanel Margin="0,10,0,0"><Button Content="Hakedişi aç" Click="HomeNextAction_Click" Style="{StaticResource SecondaryButton}" Margin="0,0,8,6"/><Button x:Name="HomeSavePdfsButton" Content="Dört belgeyi tek PDF kaydet" Tag="Save" Click="HomeOutput_Click" Style="{StaticResource ModernButton}" Margin="0,0,0,6" IsEnabled="False"/></WrapPanel>
    </StackPanel></Border>
 
   </StackPanel>
@@ -1304,7 +1304,6 @@
     <Border Grid.Row="2" Style="{StaticResource Card}" Padding="10" Margin="0,8,0,0"><StackPanel>
         <WrapPanel>
             <Button x:Name="SaveReportsPdfsButton" Click="CreateSaveAllRouteDocumentsButton_Click" Style="{StaticResource ModernButton}" IsEnabled="False" Height="38" MinWidth="195" Margin="0,0,8,5" TabIndex="3"><StackPanel Orientation="Horizontal"><TextBlock Text="&#xE74E;" FontFamily="Segoe MDL2 Assets" Margin="0,0,8,0"/><TextBlock Text="TEK PDF KAYDET"/></StackPanel></Button>
-            <Button x:Name="PreviewReportsButton" Click="PreviewAllRouteDocumentsButton_Click" Style="{StaticResource SecondaryButton}" IsEnabled="False" Height="38" MinWidth="135" Margin="0,0,8,5" TabIndex="4"><StackPanel Orientation="Horizontal"><TextBlock Text="&#xE8A7;" FontFamily="Segoe MDL2 Assets" Margin="0,0,8,0"/><TextBlock Text="ÖNİZLE"/></StackPanel></Button>
             <Button x:Name="PrintReportsButton" Click="PrintAllRouteDocumentsButton_Click" Style="{StaticResource SecondaryButton}" IsEnabled="False" Height="38" MinWidth="120" Margin="0,0,8,5" TabIndex="5"><StackPanel Orientation="Horizontal"><TextBlock Text="&#xE749;" FontFamily="Segoe MDL2 Assets" Margin="0,0,8,0"/><TextBlock Text="YAZDIR"/></StackPanel></Button>
             <Button x:Name="OpenReportsFolderButton" Click="OpenReportsFolder_Click" Style="{StaticResource SecondaryButton}" IsEnabled="False" Height="38" MinWidth="175" Margin="0,0,0,5" TabIndex="6"><StackPanel Orientation="Horizontal"><TextBlock Text="&#xE8B7;" FontFamily="Segoe MDL2 Assets" Margin="0,0,8,0"/><TextBlock Text="PDF KLASÖRÜNÜ AÇ"/></StackPanel></Button>
         </WrapPanel>
@@ -1324,6 +1323,18 @@
     <Border Style="{StaticResource Card}" Margin="0,0,0,10"><StackPanel><TextBlock Text="YEDEKLEME VE GERİ YÜKLEME" Style="{StaticResource CardTitle}"/><TextBlock Text="İki eğitim türünün kayıtları, arşiv revizyonları, ayarlar ve PDF'ler tek pakette saklanır." Foreground="#C5D7E7" TextWrapping="Wrap" Margin="0,6,0,10"/>
         <WrapPanel><Button x:Name="BackupCreateButton" Content="TAM YEDEK AL" Click="BackupCreate_Click" Style="{StaticResource ModernButton}" Height="38" MinWidth="170" Margin="0,0,8,6"/><Button x:Name="BackupRestoreButton" Content="YEDEĞİ İNCELE VE GERİ YÜKLE" Click="BackupRestore_Click" Style="{StaticResource SecondaryButton}" Height="38" MinWidth="245" Margin="0,0,0,6"/></WrapPanel>
         <TextBlock x:Name="BackupStatusText" Text="Yalnızca kaydedilmiş veriler yedeklenir." Foreground="#C5D7E7" TextWrapping="Wrap" Margin="0,4,0,0"/>
+    </StackPanel></Border>
+    <Border x:Name="PeriodManagementCard" Style="{StaticResource Card}" Margin="0,0,0,10"><StackPanel>
+        <TextBlock Text="DÖNEM YÖNETİMİ" Style="{StaticResource CardTitle}"/>
+        <TextBlock Text="Özel Eğitim ile Temel Eğitim/Ortaöğretim kayıtları ve çıktıları birlikte arşivlenir. Yedek doğrulandıktan sonra yeni dönem boş açılır. Bu işlem tek bir ihale veya ay için değildir." Foreground="#C5D7E7" TextWrapping="Wrap" Margin="0,6,0,12"/>
+        <WrapPanel>
+            <StackPanel Margin="0,0,16,8"><TextBlock Text="Arşivlenecek eğitim yılı (ör. 2025-2026)" Foreground="#C5D7E7" Margin="0,0,0,4"/><TextBox x:Name="ClosingPeriodTextBox" Style="{StaticResource FieldTextBox}" Width="265" MaxLength="9"/></StackPanel>
+            <StackPanel Margin="0,0,0,8"><TextBlock Text="Yeni eğitim yılı (ör. 2026-2027)" Foreground="#C5D7E7" Margin="0,0,0,4"/><TextBox x:Name="NewPeriodTextBox" Style="{StaticResource FieldTextBox}" Width="265" MaxLength="9"/></StackPanel>
+        </WrapPanel>
+        <CheckBox x:Name="PreservePeriodSettingsCheckBox" Content="İmzacı ve pencere ayarlarını koru (önerilen)" IsChecked="True" Foreground="#C5D7E7" Margin="0,4,0,8"/>
+        <TextBlock Text="İhaleler, firmalar, hatlar, hakedişler, taslaklar ve eski çıktılar yeni dönemde bulunmaz. Hesaplama sabitleri varsayılanlara döner; yeni dönem oranlarını kontrol edin. Ayarları koruma seçeneği kapalıysa imzacı ve pencere ayarları da varsayılanlara döner." Foreground="#C5D7E7" FontSize="11" TextWrapping="Wrap" Margin="0,0,0,12"/>
+        <Button x:Name="StartNewPeriodButton" Content="DÖNEMİ ARŞİVLE VE YENİ DÖNEM BAŞLAT" Click="StartNewPeriod_Click" Style="{StaticResource SecondaryButton}" MinHeight="42" HorizontalAlignment="Left" Padding="14,8"/>
+        <TextBlock x:Name="PeriodManagementStatusText" Text="Eski döneme dönmek için yukarıdaki Yedeği İncele ve Geri Yükle işlemini kullanabilirsiniz." Foreground="#C5D7E7" TextWrapping="Wrap" Margin="0,8,0,0"/>
     </StackPanel></Border>
     <Border Style="{StaticResource Card}" Margin="0,0,0,10"><StackPanel><TextBlock Text="PENCERE GÖRÜNÜMÜ" Style="{StaticResource CardTitle}"/><TextBlock Text="Program penceresinin boyutunu seçin." Foreground="#C5D7E7" Margin="0,6,0,8"/>
         <ComboBox x:Name="WindowLayoutModeComboBox" SelectedValuePath="Tag" SelectionChanged="WindowLayoutModeComboBox_SelectionChanged" Style="{StaticResource FieldComboBox}" Height="38" MaxWidth="480" HorizontalAlignment="Left" MinWidth="300">

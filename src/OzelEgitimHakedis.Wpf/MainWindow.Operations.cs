@@ -115,7 +115,7 @@ public partial class MainWindow
     private void RefreshSelectedPayment()
     {
         if(!_operationsReady) return;
-        HomePreviewButton.IsEnabled=false;HomeSavePdfsButton.IsEnabled=false;HomeNextActionButton.IsEnabled=false;
+        HomeSavePdfsButton.IsEnabled=false;HomeNextActionButton.IsEnabled=false;
         HomePaymentAmounts.Text="";HomePaymentDetails.Text="";HomeIssuesList.ItemsSource=null;
         if(HomeMonthlyGrid.SelectedItem is not MonthlyPaymentRow row)
         {HomePaymentSummary.Text="Kontrol etmek için listeden bir hat seçin.";return;}
@@ -135,8 +135,7 @@ public partial class MainWindow
             var s=OehsOfficialDocumentSettingsStore.Load();
             HomePaymentDetails.Text=$"Düzenleyen: {s.PreparerName} · {s.PreparerRole}\nKontrol: {s.ControllerName} · {s.ControllerRole}\nOnay: {s.ApproverName} · {s.ApproverRole}\n"+
                 "Hesaplanan net: "+FormatMoney(p.Calculation.NetPayable)+"\nKullanılan oranlar: "+DescribeRates(p.Calculation.AppliedConstants??_calculationConstants);
-            HomePreviewButton.IsEnabled=row.Issues.Count==0 && context is not null;
-            HomeSavePdfsButton.IsEnabled=HomePreviewButton.IsEnabled;
+            HomeSavePdfsButton.IsEnabled=row.Issues.Count==0 && context is not null;
         }
         catch(Exception ex) when(ex is IOException or UnauthorizedAccessException or JsonException or InvalidOperationException)
         {HomePaymentDetails.Text="Belge kontrolü tamamlanamadı: "+ex.Message;}
@@ -196,7 +195,7 @@ public partial class MainWindow
         {NightMessageBox.Show(this,"Seçili hakediş değişmiş. Güncel tutarları yeniden kontrol edin.","OEHS",MessageBoxButton.OK,MessageBoxImage.Information);RefreshHomeOperations();return;}
         if(payment is null || !EnsurePaymentPreflight(payment)) {RefreshHomeOperations();return;}
         _homeOutputPayment=payment;
-        try {if(sender is Button {Tag:"Save"}) CreateSaveAllRouteDocumentsButton_Click(sender,e);else PreviewAllRouteDocumentsButton_Click(sender,e);}
+        try {CreateSaveAllRouteDocumentsButton_Click(sender,e);}
         finally {_homeOutputPayment=null;RefreshHomeOperations();}
     }
 }
