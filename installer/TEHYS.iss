@@ -1,5 +1,5 @@
 #ifndef AppVersion
-  #define AppVersion "0.1.5"
+  #define AppVersion "0.1.6"
 #endif
 #ifndef PackageDir
   #define PackageDir "..\dist\TEHYS-" + AppVersion + "-win-x64"
@@ -36,6 +36,7 @@ DisableWelcomePage=no
 AppCopyright=Created by Aşkın KESKİNBALTA & Murat ÇALIMLIER
 CloseApplications=yes
 RestartApplications=no
+UsePreviousTasks=no
 VersionInfoVersion={#AppVersion}.0
 VersionInfoDescription=TEHYS kullanıcı kurulumu
 [Languages]
@@ -43,11 +44,12 @@ Name: "turkish"; MessagesFile: "compiler:Languages\Turkish.isl"
 [Messages]
 SetupWindowTitle=TEHYS · Kurulum
 WelcomeLabel1=TEHYS'ye hoş geldiniz
-WelcomeLabel2=Taşımalı Eğitim Hakediş Yönetim Sistemi%n%nÖzel Eğitim Taşıma ve Temel Eğitim/Ortaöğretim Taşıma hakedişlerinizi aynı çalışma ortamında yönetin.%n%nBu sihirbaz program dosyalarını ve seçtiğiniz kısayolları kurar. Mevcut kayıtlarınız, arşivleriniz ve PDF belgeleriniz korunur.%n%nSürüm {#AppVersion} · Windows x64
+WelcomeLabel2=Taşımalı Eğitim Hakediş Yönetim Sistemi%n%nTüm kayıtlar, belgeler, arşivler ve yedekler masaüstündeki OzelEgitimHakedisSistemi klasöründe tutulur.%n%nNormal kurulum eski verilerinizi doğrulayarak bu klasöre taşır. Temiz kurulum seçilirse bu Windows hesabının bilinen TEHYS/OEHS veri klasörleri kalıcı silinir.%n%nSürüm {#AppVersion} · Windows x64
 FinishedHeadingLabel=TEHYS kullanıma hazır
 FinishedLabel=Kurulum tamamlandı.%n%nProgramı Başlat menüsünden veya oluşturduysanız masaüstü kısayolundan açabilirsiniz.%n%nCreated by Aşkın KESKİNBALTA & Murat ÇALIMLIER
 [Tasks]
 Name: "desktopicon"; Description: "Masaüstü kısayolu oluştur"; GroupDescription: "Kısayollar:"
+Name: "cleandata"; Description: "Temiz kurulum — eski kayıtları, yedekleri ve çıktıları sil"; GroupDescription: "Veriler (yalnız bu Windows kullanıcısı):"; Flags: unchecked
 [Files]
 Source: "{#PackageDir}\TEHYS.exe"; DestDir: "{app}"; Flags: ignoreversion
 Source: "{#PackageDir}\KULLANIM.txt"; DestDir: "{app}"; Flags: ignoreversion
@@ -56,6 +58,57 @@ Source: "{#PackageDir}\Lisanslar\*"; DestDir: "{app}\Lisanslar"; Flags: ignoreve
 Name: "{group}\TEHYS"; Filename: "{app}\TEHYS.exe"
 Name: "{group}\TEHYS Kaldır"; Filename: "{uninstallexe}"
 Name: "{userdesktop}\TEHYS"; Filename: "{app}\TEHYS.exe"; Tasks: desktopicon
+[InstallDelete]
+Type: files; Name: "{app}\OEHS_DENEME_PAKETI.flag"
 [Run]
 Filename: "{app}\TEHYS.exe"; Description: "TEHYS programını aç"; Flags: nowait postinstall skipifsilent
 ; User records, archives and PDFs are deliberately absent from Files/UninstallDelete.
+
+[Code]
+function NextButtonClick(CurPageID: Integer): Boolean;
+begin
+  Result := True;
+  if (CurPageID = wpReady) and WizardIsTaskSelected('cleandata') then
+  begin
+    if WizardSilent then
+    begin
+      Log('Temiz kurulum etkileşimli onay gerektirir.');
+      Result := False;
+      Exit;
+    end;
+    Result := MsgBox('TEMİZ KURULUM' + #13#10#13#10 +
+      'Bu Windows kullanıcısının eski kayıtları, ayarları, arşivleri, yedekleri ve PDF çıktıları aşağıdaki bilinen program klasörlerinden kalıcı silinecek:' + #13#10#13#10 +
+      ExpandConstant('{userdesktop}\OzelEgitimHakedisSistemi') + #13#10 +
+      ExpandConstant('{localappdata}\OEHS') + #13#10 + ExpandConstant('{userappdata}\OEHS') + #13#10#13#10 +
+      'Eski sıfırlama/kurtarma kopyaları ve seçili kurulum klasöründeki bilinen eski program dosyaları da temizlenir. Diğer Windows hesaplarına ve başka klasörlere elle kaydedilmiş dosyalara dokunulmaz.' + #13#10#13#10 +
+      'Bu işlem geri alınamaz. Temiz kuruluma devam edilsin mi?', mbConfirmation, MB_YESNO or MB_DEFBUTTON2) = IDYES;
+  end;
+end;
+
+function UpdateReadyMemo(Space, NewLine, MemoUserInfoInfo, MemoDirInfo, MemoTypeInfo,
+  MemoComponentsInfo, MemoGroupInfo, MemoTasksInfo: String): String;
+begin
+  Result := MemoDirInfo + NewLine + NewLine + MemoTasksInfo + NewLine + NewLine +
+    'Veri klasörü:' + NewLine + Space + ExpandConstant('{userdesktop}\OzelEgitimHakedisSistemi') + NewLine +
+    Space + 'Kayitlar / Belgeler / Yedekler / Calisma';
+  if not WizardIsTaskSelected('cleandata') then
+    Result := Result + NewLine + NewLine + 'Mevcut veriler doğrulanarak korunur ve masaüstüne taşınır.';
+end;
+
+procedure CurStepChanged(CurStep: TSetupStep);
+var
+  Mode: String;
+  ExitCode: Integer;
+begin
+  if CurStep = ssInstall then
+  begin
+    ExtractTemporaryFile('TEHYS.exe');
+    Mode := '--installer-prepare';
+    if WizardIsTaskSelected('cleandata') then Mode := '--installer-clean';
+    if not Exec(ExpandConstant('{tmp}\TEHYS.exe'), Mode + ' "' + ExpandConstant('{app}') + '"',
+      ExpandConstant('{tmp}'), SW_HIDE, ewWaitUntilTerminated, ExitCode) then
+      RaiseException('Veri hazırlama aracı başlatılamadı. Kurulum durduruldu.');
+    if ExitCode <> 0 then
+      RaiseException('Veriler hazırlanamadı. Açık tüm TEHYS/OEHS pencerelerini kapatıp klasör izinlerini kontrol edin. Kurulum durduruldu. Kod: ' + IntToStr(ExitCode));
+  end;
+end;

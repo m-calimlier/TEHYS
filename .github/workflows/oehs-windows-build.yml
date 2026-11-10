@@ -25,14 +25,8 @@ jobs:
         with:
           dotnet-version: 8.0.x
 
-      - name: Restore WPF
-        run: dotnet restore ".\src\OzelEgitimHakedis.Wpf\OzelEgitimHakedis.Wpf.csproj"
-
-      - name: Restore Tests
-        run: dotnet restore ".\tests\OzelEgitimHakedis.Tests\OzelEgitimHakedis.Tests.csproj"
-
-      - name: Restore WPF Output Tests
-        run: dotnet restore ".\tests\OzelEgitimHakedis.Wpf.Tests\OzelEgitimHakedis.Wpf.Tests.csproj"
+      - name: Restore full solution
+        run: dotnet restore ".\OzelEgitimHakedisSistemi.sln"
 
       - name: Verify Visual Studio 18 solution metadata
         shell: pwsh
@@ -43,7 +37,7 @@ jobs:
           $projectOutput = dotnet sln ".\OzelEgitimHakedisSistemi.sln" list
           if ($LASTEXITCODE -ne 0) { throw "dotnet sln could not parse OzelEgitimHakedisSistemi.sln." }
           $projects = @($projectOutput | Where-Object { $_ -match "\.csproj\s*$" })
-          if ($projects.Count -ne 4) { throw "Expected four projects in the solution; found $($projects.Count)." }
+          if ($projects.Count -ne 6) { throw "Expected six projects in the solution; found $($projects.Count)." }
 
       - name: Build full solution
         run: dotnet build ".\OzelEgitimHakedisSistemi.sln" --configuration Release --no-restore
@@ -55,7 +49,7 @@ jobs:
         shell: pwsh
         run: |
           $xaml = Get-Content ".\src\OzelEgitimHakedis.Wpf\MainWindow.xaml" -Raw
-          $code = Get-Content ".\src\OzelEgitimHakedis.Wpf\MainWindow.xaml.cs" -Raw
+          $code = (Get-ChildItem ".\src\OzelEgitimHakedis.Wpf" -Filter "MainWindow*.cs" | Sort-Object Name | ForEach-Object { Get-Content -LiteralPath $_.FullName -Raw }) -join "`n"
           [xml]$document = $xaml
           $namespaces = [System.Xml.XmlNamespaceManager]::new($document.NameTable)
           $namespaces.AddNamespace('x', 'http://schemas.microsoft.com/winfx/2006/xaml')
@@ -88,51 +82,15 @@ jobs:
           if ($app -notmatch '<Style x:Key="NavButton"[\s\S]*?<Setter Property="Height" Value="40"/>') { throw "Navigation button height no longer matches the compact layout." }
           if ($app -notmatch '<Style x:Key="PageTitle"[\s\S]*?<Setter Property="FontSize" Value="19.5"/>') { throw "Page title typography was not reduced to the compact target." }
 
-      - name: Verify archive edits and workflow roadmap
+      - name: Verify immutable archive regression coverage
         shell: pwsh
         run: |
-          $code = Get-Content ".\src\OzelEgitimHakedis.Wpf\MainWindow.xaml.cs" -Raw
-          $xaml = Get-Content ".\src\OzelEgitimHakedis.Wpf\MainWindow.xaml" -Raw
-          $archiveTests = Get-Content ".\tests\OzelEgitimHakedis.Tests\ProgressPaymentArchiveStoreTests.cs" -Raw
-          if (-not $code.Contains("değişiklikleri uygulansın mı?")) { throw "Archive edit confirmation prompt is missing." }
-          if (-not $code.Contains("Calculation = ProgressPaymentCalculator.Calculate(updatedArchive.ProgressPayment.Input, _calculationConstants)")) { throw "Archive edits must recalculate the payment from saved inputs using the current persisted calculation constants before replacement." }
-          if (-not $code.Contains("ProgressPaymentArchiveStore.SaveRevision(_editingArchiveSourcePath, updatedArchive)")) { throw "Archive edits must create an immutable new revision and preserve prior revisions." }
-          if (-not $code.Contains("private void ClearProgressEntryFields(bool clearTenderSelection = true)")) { throw "Archive and new-payment entry forms must clear after save/reset." }
-          if ($code -notmatch 'UpdateAcceptanceView\(\);[\s\S]{0,320}ClearContractFormOnly\(\);') { throw "The contract input form must clear after a successful save and view refresh." }
-          if ($code -notmatch 'SetContractorEditorMode\(false\);\s*ContractorStatusTextBlock.Text = "Yeni firma kaydı için alanlar temizlendi\."') { throw "The contractor form must return to create mode after save." }
-          if (-not $code.Contains("Keep the chosen tender/contractor filters")) { throw "Clearing the route form must preserve context for its right-hand saved-record list." }
-          if ($code -notmatch 'ArchiveStatusTextBlock\.Text = "ARŞİV OLUŞTURULDU"[\s\S]{0,900}ClearProgressEntryFields\(\)[\s\S]{0,120}SetProgressEditorMode\(false\)') { throw "The payment form must clear after a successful archive save." }
-          if ($code -notmatch 'SetRouteEditorMode\(false\);') { throw "The route editor must return to create mode after clearing." }
-          foreach ($name in @('HomeMonthlyGrid', 'HomePreflightPanel', 'HomeSavePdfsButton')) { if (-not $xaml.Contains($name)) { throw "Practical home control missing: $name" } }
-          foreach ($step in @('Tag="Contract"', 'Tag="Contractors"', 'Tag="Lines"', 'Tag="Progress"', 'Tag="Archives"', 'Tag="Reports"')) {
-            if (-not $xaml.Contains($step)) { throw "Workflow roadmap navigation target is missing: $step" }
+          $tests = Get-Content ".\tests\OzelEgitimHakedis.Tests\ProgressPaymentArchiveStoreTests.cs" -Raw
+          foreach ($name in @('SaveRevision_ShouldCreateV02AndKeepV01ForRecalculatedPayment', 'SaveRevision_ShouldCreateNewRevisionAndPreserveOriginalWhenRouteChanges')) {
+            if (-not $tests.Contains($name)) { throw "Required immutable archive regression missing: $name" }
           }
-          if ($code -notmatch 'private void ConfigureArchiveCorrectionChangeTracking\(\)') { throw "Archive edit field change tracking is missing." }
-          if (-not $code.Contains("DEĞİŞİKLİK ALGILANDI") -or $code -notmatch 'UpdateProgressCalculationDisplay\(calculation, input\.WorkDays\)') { throw "Live archive correction status and net payment preview are missing." }
-          $loadMethod = [regex]::Match($code, 'private void LoadPersistedData\(\)[\s\S]*?(?=\n    private )').Value
-          if (-not $loadMethod.Contains("ClearContractFormOnly();")) { throw "Persisted tender data must not remain in the editable contract form on startup." }
-          if ($code -notmatch 'private void UpdateProgressContractorAndRoutes\(ContractDraftData\? contract, bool preserveSelection = true\)') { throw "Progress route selection must be explicit instead of defaulting to the first route." }
-          if ($code -match 'ProgressRouteComboBox\.SelectedIndex\s*=\s*0') { throw "The payment form must not automatically select the first route." }
-          if ($code -notmatch 'private void ResetEditorUiToCreateMode\(\)[\s\S]{0,1600}ProgressRouteComboBox\.IsEnabled = true;') { throw "Payment route selection must be re-enabled after leaving archive correction mode." }
-          if (-not $code.Contains("ProgressTenderListBox.SelectedItem = progressContract;")) { throw "The payment tender selector must preserve only an explicitly selected contract and remain blank on launch." }
-          if (-not $code.Contains("private void BeginHistoryOrArchiveCorrection(ProgressPaymentHistoryData item)")) { throw "History edits must resolve archived payments to their authoritative archive record." }
-          if (-not $code.Contains("_progressHistory[matchingHistoryIndex] = recalculatedPayment;")) { throw "Approved archive corrections must update the matching primary history row." }
-          if (-not $code.Contains("private void RefreshHistoryCorrectionStatus()")) { throw "Non-archived history corrections must refresh the live status and calculation preview." }
-          if (-not $code.Contains("private bool ConfirmLiveHistoryCorrection(")) { throw "Non-archived corrections must require confirmation before overwriting history." }
-          if (-not $code.Contains("private void RefreshViewsAfterHistoryCorrection()")) { throw "Corrected history must refresh summary, report, and progress views." }
-          if (-not $code.Contains('ConfirmLiveHistoryCorrection("Hakediş girdileri", historyItem)')) { throw "Editing a history payment must ask for confirmation before replacing its existing row." }
-          $clearProgressMethod = [regex]::Match($code, 'private void ClearProgressEntryFields\(bool clearTenderSelection = true\)[\s\S]*?(?=\n    private )').Value
-          if ([string]::IsNullOrWhiteSpace($clearProgressMethod)) { throw "Could not find ClearProgressEntryFields." }
-          $clearTenderMatch = [regex]::Match($clearProgressMethod, 'if \(clearTenderSelection\)\s*\{(?<body>[\s\S]*?)\n\s*\}')
-          if (-not $clearTenderMatch.Success) { throw "ClearProgressEntryFields must retain a clearTenderSelection branch." }
-          $clearTenderBody = $clearTenderMatch.Groups['body'].Value
-          if (-not $clearTenderBody.Contains('ProgressRouteComboBox.ItemsSource = Array.Empty<RouteDraft>();')) { throw "Clearing a fresh payment form must reset the route choices when the tender is cleared." }
-          if (-not $clearProgressMethod.Contains('_multiRouteDraftCache.Clear();')) { throw "Clearing a fresh payment form must clear the multi-route draft cache." }
-          $conditionalIndex = $clearProgressMethod.IndexOf('if (clearTenderSelection)')
-          $routeSelectionClearIndex = $clearProgressMethod.IndexOf('ProgressRouteComboBox.SelectedItems.Clear();')
-          if ($routeSelectionClearIndex -lt $conditionalIndex) { throw "Clearing a fresh payment form must clear the selected routes after evaluating the tender reset." }
-          if (-not $archiveTests.Contains("SaveRevision_ShouldCreateV02AndKeepV01ForRecalculatedPayment")) { throw "Archive correction must create v02 and preserve v01 in a regression test." }
-          if (-not $archiveTests.Contains("SaveRevision_ShouldCreateNewRevisionAndPreserveOriginalWhenRouteChanges")) { throw "Archive identity corrections must preserve the earlier revision." }
+          # The complete core and WPF suites below verify editor and workflow behavior.
+          # Do not duplicate those behavioral checks as exact source-code strings.
 
       - name: Build Tests
         run: dotnet build ".\tests\OzelEgitimHakedis.Tests\OzelEgitimHakedis.Tests.csproj" --configuration Release --no-restore

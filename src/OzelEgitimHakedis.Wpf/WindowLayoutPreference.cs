@@ -48,8 +48,7 @@ internal static class WindowLayoutPreferenceStore
     {
         try
         {
-            var path = File.Exists(SettingsPath) ? SettingsPath : Path.Combine(
-                Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "OEHS", "window-layout.json");
+            var path = SettingsPath;
             if (!File.Exists(path))
                 return WindowLayoutPreference.Default;
 

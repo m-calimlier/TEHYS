@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
     <OutputType>WinExe</OutputType>
     <TargetFramework>net8.0-windows</TargetFramework>
@@ -9,8 +9,8 @@
     <UseAppHost>true</UseAppHost>
     <ApplicationIcon>Assets/tehys.ico</ApplicationIcon>
     <ApplicationManifest>app.manifest</ApplicationManifest>
-    <Product>TaÃ…Å¸Ã„Â±malÃ„Â± EÃ„Å¸itim HakediÃ…Å¸ YÃƒÂ¶netim Sistemi (TEHYS)</Product>
-    <Description>Ãƒâ€“zel EÃ„Å¸itim ve Temel EÃ„Å¸itim taÃ…Å¸Ã„Â±ma hakediÃ…Å¸leri</Description>
+    <Product>Taşımalı Eğitim Hakediş Yönetim Sistemi (TEHYS)</Product>
+    <Description>Özel Eğitim ve Temel Eğitim taşıma hakedişleri</Description>
   </PropertyGroup>
   <ItemGroup>
     <ProjectReference Include="..\OzelEgitimHakedis.Core\OzelEgitimHakedis.Core.csproj" />

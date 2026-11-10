@@ -1,4 +1,4 @@
-﻿TAŞIMALI EĞİTİM HAKEDİŞ YÖNETİM SİSTEMİ (TEHYS) 0.1.5
+﻿TAŞIMALI EĞİTİM HAKEDİŞ YÖNETİM SİSTEMİ (TEHYS) 0.1.6
 
 WINDOWS 64-BİT İÇİN
 ZIP dosyasının tamamını bir klasöre çıkarın ve TEHYS.exe dosyasını açın.
@@ -13,11 +13,20 @@ Paket hazırlayan kişinin mevcut veri/çıktı/ayar dosyaları pakete eklenmez.
 Uygulamanın başlangıç imzacıları kendi kurumunuz için doğrulanmış değildir.
 
 VERİLER
-Normal uygulama verileri %LOCALAPPDATA%\OEHS altında saklanır.
-PDF ve arşivler Masaüstü\OzelEgitimHakedisSistemi altında tutulur.
-Güncellemeden önce uygulamanın tam yedekleme işlevini kullanın.
-Eski depolama biçiminden ilk geçişte önceki kayıtlar silinmeden
-reset-backup-* ve .pre-reset-* adlarıyla yedeklenebilir; bu yedekleri koruyun.
+Tüm kullanıcı verileri gerçek Windows masaüstündeki
+OzelEgitimHakedisSistemi klasörünün içindedir:
+- Kayitlar: taşıma türlerine göre kayıt dosyaları ve ayarlar.
+- Belgeler: PDF çıktıları ve hakediş arşivleri.
+- Yedekler: tam yedekler, dönem arşivleri ve kurtarma kopyaları.
+- Calisma: işlem sırasında kullanılan geçici dosyalar.
+Normal kurulum eski AppData kayıtlarını doğrulayarak buraya taşır;
+farklı içerikli aynı adlı eski dosyalar ayrıca yedeklenir.
+TEMİZ KURULUM kutusu varsayılan olarak boş gelir. İşaretlenip ayrıca
+onaylanırsa yalnız bu Windows kullanıcısının bilinen TEHYS/OEHS
+veri klasörleri ve eski sıfırlama/kurtarma kopyaları kalıcı silinir.
+Diğer Windows hesapları ve bilinen program klasörlerinin dışında
+elle saklanmış dosyalar temizlenmez. İşlem öncesi gerekli yedeği saklayın.
+Programın normal kaldırılması masaüstündeki kullanıcı verilerini silmez.
 
 EXCEL AKTARIMI
 Hakediş Oluştur ekranındaki EXCEL’E AKTAR, görünen sütunların sağına
@@ -27,6 +36,6 @@ sayısal değerleridir; Excel içinde sonradan girdi değişirse otomatik
 yeniden hesaplama yapılmaz.
 
 PAYLAŞMA
-GitHub Releases sayfasındaki TEHYS-0.1.5-win-x64.zip dosyasını indirin.
+GitHub Releases sayfasındaki TEHYS-0.1.6-win-x64.zip dosyasını indirin.
 Arkadaşınıza doğrudan ZIP'i veya Releases bağlantısını gönderebilirsiniz.
 Source code dosyaları çalıştırılabilir program değildir.

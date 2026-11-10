@@ -1,5 +1,5 @@
-param(
-    [string]$Version = '0.1.5',
+﻿param(
+    [string]$Version = '0.1.6',
     [Parameter(Mandatory)][string]$CompilerPath
 )
 $ErrorActionPreference = 'Stop'

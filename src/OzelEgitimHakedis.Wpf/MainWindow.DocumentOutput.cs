@@ -216,7 +216,7 @@ public partial class MainWindow
 
             // Stage the combined four-page PDF before replacing the final file.
             // Retain the original for rollback if publishing the new file fails.
-            stagingFolder = Path.Combine(Path.GetTempPath(), "oehs-pdf-" + Guid.NewGuid().ToString("N"));
+            stagingFolder = Path.Combine(OehsRuntimePaths.WorkingFolderPath, "pdf-" + Guid.NewGuid().ToString("N"));
             var stagedPaths = outputs
                 .Select((output, index) => Path.Combine(stagingFolder, $"{index}.pdf"))
                 .ToArray();

@@ -8,6 +8,9 @@ public static class OehsFreshStartService
 
     public static bool EnsureFreshStart()
     {
+        // Normal upgrades preserve existing records. Only an explicitly selected
+        // installer clean installation may reset the user's desktop workspace.
+        if (!OehsRuntimePaths.IsIsolatedTestPackage) return false;
         var reset = EnsureFreshStart(
             OehsRuntimePaths.DataRoot,
             OehsRuntimePaths.DesktopRoot);

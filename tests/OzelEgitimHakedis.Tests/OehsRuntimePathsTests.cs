@@ -34,7 +34,7 @@ public sealed class OehsRuntimePathsTests
     }
 
     [Fact]
-    public void StandardLaunch_ShouldKeepExistingUserProfileAndDesktopLocations()
+    public void StandardLaunch_ShouldKeepAllUserDataUnderDesktopWorkspace()
     {
         var packageRoot = Path.Combine(Path.GetTempPath(), "OEHS-Package");
         var localAppData = Path.Combine(Path.GetTempPath(), "OEHS-User", "AppData");
@@ -42,8 +42,8 @@ public sealed class OehsRuntimePathsTests
 
         var paths = OehsRuntimePaths.Resolve(packageRoot, localAppData, desktop, isolatedTestPackage: false);
 
-        var expectedDataRoot = Path.Combine(localAppData, "OEHS");
-        var expectedDesktopRoot = Path.Combine(desktop, "OzelEgitimHakedisSistemi");
+        var expectedDataRoot = Path.Combine(desktop, "OzelEgitimHakedisSistemi", "Kayitlar");
+        var expectedDesktopRoot = Path.Combine(desktop, "OzelEgitimHakedisSistemi", "Belgeler");
         Assert.Equal(expectedDataRoot, paths.DataRoot);
         Assert.Equal(Path.Combine(expectedDataRoot, "oehs-data.json"), paths.ApplicationDataFilePath);
         Assert.Equal(Path.Combine(expectedDesktopRoot, "Arsiv", "Hakedisler"), paths.ArchiveFolderPath);

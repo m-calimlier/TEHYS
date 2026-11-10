@@ -28,7 +28,7 @@ OEHS, özel eğitim hizmetleri için sözleşme/ihale bilgilerini, hatları, yü
 - Arşivleme, arşiv kayıtlarını görüntüleme, geri yükleme ve düzeltme iş akışları
 - PDF ve Excel çıktı akışları
 - Dört hakediş belgesi için ortak önizleme ve PDF çıktısı
-- Resmî belge imza adları ve unvanları için kullanıcı tarafından düzenlenebilir JSON ayarı (`%LOCALAPPDATA%\\OEHS\\official-document-settings.json`)
+- Resmî belge imza adları ve unvanları için kullanıcı tarafından düzenlenebilir JSON ayarı (`Masaüstü\\OzelEgitimHakedisSistemi\\Kayitlar\\official-document-settings.json`)
 - WPF `DocumentViewer` tabanlı belge önizlemesi ve doğrudan Windows yazdırma iletişim kutusu
 - xUnit testleri ve Windows üzerinde derleme/yayın akışı
 
@@ -75,3 +75,7 @@ Arkadaşa gönderilecek Windows x64 test paketi için `OEHS_TEST_PAKETI_OLUSTUR_
 Git'e gönderilen kodun Windows üzerinde gerçekten derlenmesi ve testlerden geçmesi ayrıca doğrulanmalıdır. Önizleme/yazdırma akışı güncellenmiştir; PDF çıktısının vektör tabanlı motora geçirilmesi ve gerçek sayfa düzeninin (Türkçe karakterler, tablolar, uzun tutarlar ve çok sayfalı belgeler) Windows üzerinde gözle kontrol edilmesi ayrı doğrulama konularıdır.
 
 Gerçek kurum verilerini, kişisel bilgileri veya üretim kayıtlarını test paketi içine koymayın.
+
+## 0.1.6 geliştirme sürümü: masaüstünde tek veri klasörü
+
+Tüm kayıtlar ve ayarlar `Masaüstü/OzelEgitimHakedisSistemi/Kayitlar`, PDF ve arşivler `Belgeler`, yedekler `Yedekler` altında tutulur. Normal kurulum eski dosyaları doğrulayarak taşır. İsteğe bağlı **Temiz kurulum** yalnızca kurulumu yapan Windows hesabının bilinen program klasörlerini kalıcı temizler; kutu varsayılan olarak boş ve ayrıca onaylıdır. Bu değişiklik yayımlanmış 0.1.5 paketine geriye dönük uygulanmaz.

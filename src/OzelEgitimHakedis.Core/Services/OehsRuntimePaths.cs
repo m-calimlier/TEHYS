@@ -22,6 +22,19 @@ public static class OehsRuntimePaths
     public static string ArchiveFolderPath => Current.ArchiveFolderPath;
     public static string DesktopRoot => Current.DesktopRoot;
     public static string OfficialDocumentSettingsFilePath => Current.OfficialDocumentSettingsFilePath;
+    public static string WorkspaceRoot => Current.WorkspaceRoot;
+    public static string BackupFolderPath => Path.Combine(WorkspaceRoot, "Yedekler");
+    public static string WorkingFolderPath => Path.Combine(WorkspaceRoot, "Calisma");
+
+    public static void PrepareDesktopStorage(string? installationDirectory = null)
+    {
+        if (IsIsolatedTestPackage) return;
+        OehsDesktopStorageMigration.Ensure(Current,
+            Path.Combine(GetLocalApplicationDataDirectory(), "OEHS"),
+            Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "OEHS"),
+            installationDirectory is not null && File.Exists(Path.Combine(installationDirectory, TestPackageMarkerFileName))
+                ? Path.Combine(installationDirectory, "DenemeVerisi") : null);
+    }
     public static bool IsIsolatedTestPackage =>
         File.Exists(Path.Combine(AppContext.BaseDirectory, TestPackageMarkerFileName));
 
@@ -49,8 +62,9 @@ public static class OehsRuntimePaths
         ArgumentException.ThrowIfNullOrWhiteSpace(localApplicationDataDirectory);
         ArgumentException.ThrowIfNullOrWhiteSpace(desktopDirectory);
 
-        var normalDataRoot = Path.Combine(localApplicationDataDirectory, "OEHS");
-        var normalDesktopRoot = Path.Combine(desktopDirectory, "OzelEgitimHakedisSistemi");
+        var workspace = Path.Combine(desktopDirectory, "OzelEgitimHakedisSistemi");
+        var normalDataRoot = Path.Combine(workspace, "Kayitlar");
+        var normalDesktopRoot = Path.Combine(workspace, "Belgeler");
         return new OehsRuntimePathSet(
             DataRoot: normalDataRoot,
             ApplicationDataFilePath: Path.Combine(normalDataRoot, "oehs-data.json"),
@@ -83,4 +97,7 @@ public sealed record OehsRuntimePathSet(
     string ApplicationDataFilePath,
     string ArchiveFolderPath,
     string DesktopRoot,
-    string OfficialDocumentSettingsFilePath);
+    string OfficialDocumentSettingsFilePath)
+{
+    public string WorkspaceRoot => Path.GetDirectoryName(DataRoot)!;
+}

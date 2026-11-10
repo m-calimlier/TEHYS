@@ -64,7 +64,7 @@ public sealed class OehsPeriodTransitionService
         var service = new OehsBackupService(_data, _outputs);
         // The package service rejects paths inside either live root.
         var pendingArchive = archivePath + "." + Guid.NewGuid().ToString("N") + ".pending";
-        var stage = Directory.CreateTempSubdirectory("oehs-new-period-").FullName;
+        var stage = OehsBackupService.CreateWorkingDirectory(Path.Combine(Path.GetDirectoryName(_data)!, "Calisma"), "new-period");
         try
         {
             service.Create(pendingArchive);

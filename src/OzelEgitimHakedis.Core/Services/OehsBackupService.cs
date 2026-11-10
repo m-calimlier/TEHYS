@@ -72,9 +72,9 @@ public sealed class OehsBackupService
         }
         finally { if(File.Exists(temp)) File.Delete(temp); }
     }
-    public static BackupSummary Inspect(string path)
+    public static BackupSummary Inspect(string path, string? workingRoot = null)
     {
-        var stage=Directory.CreateTempSubdirectory("oehs-backup-check-").FullName;
+        var stage=CreateWorkingDirectory(workingRoot ?? Path.Combine(Path.GetDirectoryName(Path.GetFullPath(path))!, "Calisma"), "backup-check");
         try { return ExtractVerified(path,stage); }
         finally { Directory.Delete(stage,true); }
     }
@@ -145,9 +145,9 @@ public sealed class OehsBackupService
         // Stage on each target volume; renames and rollback never cross volumes.
         var token=Guid.NewGuid().ToString("N");
         var stageData=_data+".restore-"+token; var stageOutput=_outputs+".restore-"+token;
-        var check=Directory.CreateTempSubdirectory("oehs-restore-").FullName;
+        var check=CreateWorkingDirectory(Path.Combine(Path.GetDirectoryName(_data)!, "Calisma"), "restore");
         var moved=new List<(string Target,string Old,bool HadOld)>();
-        var recovery=Path.Combine(Path.GetDirectoryName(_data)!,"OEHS-Recovery-"+DateTime.Now.ToString("yyyyMMdd-HHmmss",System.Globalization.CultureInfo.InvariantCulture)+"-"+token+".oehs-backup.zip");
+        var recovery=Path.Combine(Path.GetDirectoryName(_data)!,"Yedekler","Kurtarma","OEHS-Recovery-"+DateTime.Now.ToString("yyyyMMdd-HHmmss",System.Globalization.CultureInfo.InvariantCulture)+"-"+token+".oehs-backup.zip");
         var rollbackFailed=false;
         try
         {
@@ -157,7 +157,8 @@ public sealed class OehsBackupService
             foreach(var item in new[]{(Key:"data",Target:_data,Stage:stageData),(Key:"outputs",Target:_outputs,Stage:stageOutput)})
             {
                 beforeReplace?.Invoke(item.Key);
-                var old=item.Target+".before-"+token;var hadOld=Directory.Exists(item.Target);
+                var old=Path.Combine(Path.GetDirectoryName(item.Target)!,"Yedekler","GeriYukleme",token,item.Key);var hadOld=Directory.Exists(item.Target);
+                Directory.CreateDirectory(Path.GetDirectoryName(old)!);
                 if(hadOld) Directory.Move(item.Target,old);
                 moved.Add((item.Target,old,hadOld));
                 Directory.Move(item.Stage,item.Target);
@@ -191,6 +192,12 @@ public sealed class OehsBackupService
             var destination=OutputEvidenceStore.ResolveInside(target,Path.GetRelativePath(source,file));
             Directory.CreateDirectory(Path.GetDirectoryName(destination)!);File.Copy(file,destination);
         }
+    }
+    internal static string CreateWorkingDirectory(string root, string purpose)
+    {
+        var path = Path.Combine(root, purpose + "-" + Guid.NewGuid().ToString("N"));
+        Directory.CreateDirectory(path);
+        return path;
     }
     private static void TryDelete(string path)
     {

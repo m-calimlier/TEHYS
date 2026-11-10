@@ -8,14 +8,13 @@ public partial class MainWindow
     private static OehsBackupService BackupService() => new(OehsRuntimePaths.DataRoot,OehsRuntimePaths.DesktopRoot);
     private async void BackupCreate_Click(object sender,RoutedEventArgs e)
     {
-        var dialog=new Microsoft.Win32.SaveFileDialog {Filter="OEHS tam yedek|*.oehs-backup.zip",FileName=$"OEHS-{DateTime.Now:yyyy-MM-dd-HHmm}.oehs-backup.zip",AddExtension=true};
-        if(dialog.ShowDialog(this)!=true) return;
+        var backupPath=Path.Combine(OehsRuntimePaths.BackupFolderPath,"TamYedek",$"TEHYS-{DateTime.Now:yyyyMMdd-HHmmss}-{Guid.NewGuid():N}.oehs-backup.zip");
         IsEnabled=false;
         try
         {
             WindowLayoutPreferenceStore.Save(_windowLayoutPreference);
-            await Task.Run(()=>BackupService().Create(dialog.FileName));
-            BackupStatusText.Text=$"Son başarılı yedek: {DateTime.Now:dd.MM.yyyy HH:mm}\n{dialog.FileName}";
+            await Task.Run(()=>BackupService().Create(backupPath));
+            BackupStatusText.Text=$"Son başarılı yedek: {DateTime.Now:dd.MM.yyyy HH:mm}\n{backupPath}";
             File.WriteAllText(Path.Combine(OehsRuntimePaths.DataRoot,"last-backup.txt"),BackupStatusText.Text);
             NightMessageBox.Show(this,"Tam yedek oluşturuldu. Kaydedilmemiş form girdileri pakete dahil değildir.","OEHS — Yedek",MessageBoxButton.OK,MessageBoxImage.Information);
         }
@@ -44,7 +43,7 @@ public partial class MainWindow
         IsEnabled=false;
         try
         {
-            var service=BackupService();var summary=await Task.Run(()=>OehsBackupService.Inspect(dialog.FileName));
+            var service=BackupService();var summary=await Task.Run(()=>OehsBackupService.Inspect(dialog.FileName,OehsRuntimePaths.WorkingFolderPath));
             var message=$"Yedek tarihi: {summary.CreatedAt.ToLocalTime():dd.MM.yyyy HH:mm}\n"+
                 $"Sözleşme: {summary.ContractCount} · Hat: {summary.RouteCount} · Hakediş: {summary.PaymentCount}\n"+
                 $"Arşiv revizyonu: {summary.ArchiveCount} · PDF: {summary.PdfCount} · Dosya: {summary.FileCount}\n\n"+
