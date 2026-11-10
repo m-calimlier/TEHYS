@@ -155,8 +155,8 @@ internal static class ExcelDocumentExporter
             Row("Rehber İş Günü (bu ay)", input.GuideWorkDays.ToString(CultureInfo.InvariantCulture), "Rehber Personel Günlük Fiyat", Money(input.GuideDailyPrice)),
             Row("Dönem Taşıma Hizmet", Money(item.Calculation.ServiceAmount), "Dönem Rehber Hizmet", Money(item.Calculation.GuideServiceAmount)),
             Row("Toplam Hakediş", Money(item.Calculation.TotalAmount), "Net Ödenecek", Money(item.Calculation.NetPayable)),
-            Row("Düzenleyen", "Aşkın KESKİNBALTA", "Kontrol Eden", "Halil ÖZENÇ"),
-            Row("Onaylayan", "Özgür BAYSAL", "Tarih", DateTime.Today.ToString("dd.MM.yyyy", CultureInfo.InvariantCulture))
+            Row("Düzenleyen", "", "Kontrol Eden", ""),
+            Row("Onaylayan", "", "Tarih", DateTime.Today.ToString("dd.MM.yyyy", CultureInfo.InvariantCulture))
         });
     }
 

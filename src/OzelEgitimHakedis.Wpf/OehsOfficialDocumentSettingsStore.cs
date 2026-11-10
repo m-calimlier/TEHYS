@@ -17,12 +17,12 @@ internal sealed record OehsOfficialDocumentSignatories(
     string ApproverRole)
 {
     public static OehsOfficialDocumentSignatories Defaults => new(
-        PreparerName: "Aşkın KESKİNBALTA",
-        PreparerRole: "Memur",
-        ControllerName: "Halil ÖZENÇ",
-        ControllerRole: "İlçe Milli Eğitim Şube Müdürü",
-        ApproverName: "Özgür BAYSAL",
-        ApproverRole: "İlçe Milli Eğitim Müdürü");
+        PreparerName: "",
+        PreparerRole: "",
+        ControllerName: "",
+        ControllerRole: "",
+        ApproverName: "",
+        ApproverRole: "");
 
     public OehsOfficialDocumentSignatories Normalize()
     {
@@ -41,8 +41,8 @@ internal sealed record OehsOfficialDocumentSignatories(
 }
 
 /// <summary>
-/// Loads signatory configuration from LocalApplicationData. When absent, it
-/// creates a user-editable JSON file with the standard values. Invalid JSON
+/// Loads signatory configuration from the desktop workspace. When absent, it
+/// creates a blank user-editable JSON file. Invalid JSON
 /// fails with a clear error rather than silently printing incorrect signatories.
 /// </summary>
 internal static class OehsOfficialDocumentSettingsStore

@@ -2,7 +2,7 @@
 
 Temel Eğitim ve Özel Eğitim taşıma hakedişleri için güncel Windows uygulaması.
 **Çalıştırılabilir paket:** [GitHub Releases — en güncel sürüm](https://github.com/mcalimlier/OzelEgitimHakedisSistemi/releases/latest).
-Assets bölümünden kurulum için `TEHYS-0.1.5-Setup-win-x64.exe` indirin. Taşınabilir kullanım için `TEHYS-0.1.5-win-x64.zip` dosyasını tamamen çıkarıp `TEHYS.exe` açın.
+Assets bölümünden kurulum için `TEHYS-0.1.6-Setup-win-x64.exe` indirin. Taşınabilir kullanım için `TEHYS-0.1.6-win-x64.zip` dosyasını tamamen çıkarıp `TEHYS.exe` açın.
 Excel veya ayrıca .NET kurulumu gerekmez. İlk kullanımda resmî belge imzacılarını kendi kurumunuza göre düzenleyin.
 Hakediş Oluştur içindeki Excel aktarımı, görünen girdi sütunlarının sağına her hattın hesaplanan KDV, tevkifat, damga vergisi, ek kesin teminat, diğer kesintiler, brüt ve net tutarlarını sayısal hücrelerle ekler.
 Kaynak proje/modül adları ve mevcut veri klasörleri uyumluluk için korunur.
@@ -76,6 +76,8 @@ Git'e gönderilen kodun Windows üzerinde gerçekten derlenmesi ve testlerden ge
 
 Gerçek kurum verilerini, kişisel bilgileri veya üretim kayıtlarını test paketi içine koymayın.
 
-## 0.1.6 geliştirme sürümü: masaüstünde tek veri klasörü
+## 0.1.6: masaüstünde tek veri klasörü
 
-Tüm kayıtlar ve ayarlar `Masaüstü/OzelEgitimHakedisSistemi/Kayitlar`, PDF ve arşivler `Belgeler`, yedekler `Yedekler` altında tutulur. Normal kurulum eski dosyaları doğrulayarak taşır. İsteğe bağlı **Temiz kurulum** yalnızca kurulumu yapan Windows hesabının bilinen program klasörlerini kalıcı temizler; kutu varsayılan olarak boş ve ayrıca onaylıdır. Bu değişiklik yayımlanmış 0.1.5 paketine geriye dönük uygulanmaz.
+Tüm kayıtlar ve ayarlar `Masaüstü/OzelEgitimHakedisSistemi/Kayitlar`, PDF ve arşivler `Belgeler`, yedekler `Yedekler` altında tutulur. Normal kurulum eski dosyaları doğrulayarak taşır. İsteğe bağlı **Temiz kurulum** yalnızca kurulumu yapan Windows hesabının bilinen program klasörlerini kalıcı temizler; kutu varsayılan olarak boş ve ayrıca onaylıdır.
+
+0.1.6 kurulum ve taşınabilir paketleri kullanıcı verisi içermez. İlk kurulumda imzacı adları ve görevleri de boştur; yalnız uygulamanın üretici bilgileri ve hesaplama kuralları korunur.

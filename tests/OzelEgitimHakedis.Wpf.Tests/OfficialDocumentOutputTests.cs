@@ -716,9 +716,9 @@ public sealed partial class OfficialDocumentOutputTests
             var settings = OehsOfficialDocumentSettingsStore.Load(settingsPath);
 
             Assert.True(File.Exists(settingsPath));
-            Assert.Equal("Aşkın KESKİNBALTA", settings.PreparerName);
-            Assert.Equal("Halil ÖZENÇ", settings.ControllerName);
-            Assert.Equal("Özgür BAYSAL", settings.ApproverName);
+            Assert.Equal("", settings.PreparerName);
+            Assert.Equal("", settings.ControllerName);
+            Assert.Equal("", settings.ApproverName);
             Assert.Contains("preparerName", File.ReadAllText(settingsPath), StringComparison.Ordinal);
         }
         finally
@@ -728,7 +728,7 @@ public sealed partial class OfficialDocumentOutputTests
     }
 
     [Fact]
-    public void SignatorySettingsStore_ShouldUseCustomValues_AndFallbackForBlankValues()
+    public void SignatorySettingsStore_ShouldUseCustomValues_AndPreserveBlankValues()
     {
         var temporaryDirectory = Directory.CreateTempSubdirectory("oehs-document-settings-");
         try
@@ -748,7 +748,7 @@ public sealed partial class OfficialDocumentOutputTests
             var settings = OehsOfficialDocumentSettingsStore.Load(settingsPath);
 
             Assert.Equal("Örnek Düzenleyen", settings.PreparerName);
-            Assert.Equal("Memur", settings.PreparerRole);
+            Assert.Equal("", settings.PreparerRole);
             Assert.Equal("Örnek Kontrol", settings.ControllerName);
             Assert.Equal("Kontrol Görevlisi", settings.ControllerRole);
             Assert.Equal("Örnek Onaylayan", settings.ApproverName);

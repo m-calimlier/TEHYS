@@ -10,7 +10,7 @@ Temel Eğitim veya Özel Eğitim programını seçin. Kendi ihale, yüklenici,
 hat ve dönem bilgilerinizi girin. Önce Ayarlar bölümündeki resmî belge
 imzacılarını kendi kurumunuza göre kontrol edip güncelleyin.
 Paket hazırlayan kişinin mevcut veri/çıktı/ayar dosyaları pakete eklenmez.
-Uygulamanın başlangıç imzacıları kendi kurumunuz için doğrulanmış değildir.
+İlk kurulumda imzacı adları ve görevleri boştur; kendi kurum bilgilerinizi girin.
 
 VERİLER
 Tüm kullanıcı verileri gerçek Windows masaüstündeki

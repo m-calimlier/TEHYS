@@ -13,6 +13,8 @@
 - Arayüz yerleşimi ve hakediş hesaplama kuralları korunur. Normal kaldırma masaüstü kullanıcı verilerini silmez.
 - CI denetimleri altı proje ve ayrılmış ana pencere dosyalarıyla uyumlu hâle getirildi; davranışlar tam test takımlarıyla denetlenir.
 
-Bu hazırlık 0.1.5 kararlı sürümünü değiştirmez. Doğrulama sonuçları tamamlandıktan sonra sürüm paketine eklenir.
+Bu sürüm tüm geliştirmeleri main dalında toplar. Kullanıcı verisi içermeyen Windows x64 kurulum ve taşınabilir ZIP paketleri son kararlı sürüm olarak paylaşılır.
 
-Doğrulama: 301 çekirdek ve 371 WPF testi, toplam 672 test geçti. Klasör bağlantısı üzerinden dış hedefin korunması, çakışan kayıtların saklanması, başarısız taşımada kaynakların korunması, eski kurtarma kopyaları ve deneme paketi verilerinin taşınması test edildi. Inno Setup betiği derlendi; seçim ekranında temiz kurulumun varsayılan boş olduğu ve hazır özette veri yolunun doğru olduğu doğrulandı. Veri silen gerçek bir kurulum geliştirme bilgisayarında çalıştırılmadı.
+Doğrulama: 301 çekirdek ve 374 WPF testi, toplam 675 test geçti. Klasör bağlantısı üzerinden dış hedefin korunması, çakışan kayıtların saklanması, başarısız taşımada kaynakların korunması, eski kurtarma kopyaları ve deneme paketi verilerinin taşınması test edildi. Inno Setup betiği derlendi; seçim ekranında temiz kurulumun varsayılan boş olduğu ve hazır özette veri yolunun doğru olduğu doğrulandı. Veri silen gerçek bir kurulum geliştirme bilgisayarında çalıştırılmadı.
+
+İlk kurulumdaki imzacı adları ve görevleri boşaltıldı; eski Excel evrak aktarımındaki sabit kurum imzacıları kaldırıldı. Mevcut kullanıcının kendi kaydettiği imzacı ayarları normal güncellemede korunur.
