@@ -2,7 +2,7 @@
 #define ExistingCleanTask
 #define CustomDataPreparation
 #ifndef AppVersion
-  #define AppVersion "0.1.8"
+  #define AppVersion "0.1.7"
 #endif
 #ifndef PackageDir
   #define PackageDir "..\dist\TEHYS-" + AppVersion + "-win-x64"
