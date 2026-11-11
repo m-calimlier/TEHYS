@@ -1,5 +1,5 @@
 #ifndef AppVersion
-  #define AppVersion "0.1.6"
+  #define AppVersion "0.1.7"
 #endif
 #ifndef PackageDir
   #define PackageDir "..\dist\TEHYS-" + AppVersion + "-win-x64"
@@ -10,7 +10,7 @@ AppName=TEHYS
 AppVersion={#AppVersion}
 AppVerName=TEHYS {#AppVersion}
 AppPublisher=Aşkın KESKİNBALTA & Murat ÇALIMLIER
-AppPublisherURL=https://github.com/mcalimlier/OzelEgitimHakedisSistemi
+AppPublisherURL=https://github.com/mcalimlier/TEHYS
 DefaultDirName={localappdata}\Programs\TEHYS
 DefaultGroupName=TEHYS
 DisableProgramGroupPage=yes
@@ -44,7 +44,7 @@ Name: "turkish"; MessagesFile: "compiler:Languages\Turkish.isl"
 [Messages]
 SetupWindowTitle=TEHYS · Kurulum
 WelcomeLabel1=TEHYS'ye hoş geldiniz
-WelcomeLabel2=Taşımalı Eğitim Hakediş Yönetim Sistemi%n%nTüm kayıtlar, belgeler, arşivler ve yedekler masaüstündeki OzelEgitimHakedisSistemi klasöründe tutulur.%n%nNormal kurulum eski verilerinizi doğrulayarak bu klasöre taşır. Temiz kurulum seçilirse bu Windows hesabının bilinen TEHYS/OEHS veri klasörleri kalıcı silinir.%n%nSürüm {#AppVersion} · Windows x64
+WelcomeLabel2=Taşımalı Eğitim Hakediş Yönetim Sistemi%n%nTüm kayıtlar, belgeler, arşivler ve yedekler masaüstündeki TEHYS klasöründe tutulur.%n%nNormal kurulum eski verilerinizi doğrulayarak bu klasöre taşır. Temiz kurulum seçilirse bu Windows hesabının bilinen TEHYS/OEHS veri klasörleri kalıcı silinir.%n%nSürüm {#AppVersion} · Windows x64
 FinishedHeadingLabel=TEHYS kullanıma hazır
 FinishedLabel=Kurulum tamamlandı.%n%nProgramı Başlat menüsünden veya oluşturduysanız masaüstü kısayolundan açabilirsiniz.%n%nCreated by Aşkın KESKİNBALTA & Murat ÇALIMLIER
 [Tasks]
@@ -78,7 +78,7 @@ begin
     end;
     Result := MsgBox('TEMİZ KURULUM' + #13#10#13#10 +
       'Bu Windows kullanıcısının eski kayıtları, ayarları, arşivleri, yedekleri ve PDF çıktıları aşağıdaki bilinen program klasörlerinden kalıcı silinecek:' + #13#10#13#10 +
-      ExpandConstant('{userdesktop}\OzelEgitimHakedisSistemi') + #13#10 +
+      ExpandConstant('{userdesktop}\TEHYS') + #13#10 + ExpandConstant('{userdesktop}\OzelEgitimHakedisSistemi') + #13#10 +
       ExpandConstant('{localappdata}\OEHS') + #13#10 + ExpandConstant('{userappdata}\OEHS') + #13#10#13#10 +
       'Eski sıfırlama/kurtarma kopyaları ve seçili kurulum klasöründeki bilinen eski program dosyaları da temizlenir. Diğer Windows hesaplarına ve başka klasörlere elle kaydedilmiş dosyalara dokunulmaz.' + #13#10#13#10 +
       'Bu işlem geri alınamaz. Temiz kuruluma devam edilsin mi?', mbConfirmation, MB_YESNO or MB_DEFBUTTON2) = IDYES;
@@ -89,7 +89,7 @@ function UpdateReadyMemo(Space, NewLine, MemoUserInfoInfo, MemoDirInfo, MemoType
   MemoComponentsInfo, MemoGroupInfo, MemoTasksInfo: String): String;
 begin
   Result := MemoDirInfo + NewLine + NewLine + MemoTasksInfo + NewLine + NewLine +
-    'Veri klasörü:' + NewLine + Space + ExpandConstant('{userdesktop}\OzelEgitimHakedisSistemi') + NewLine +
+    'Veri klasörü:' + NewLine + Space + ExpandConstant('{userdesktop}\TEHYS') + NewLine +
     Space + 'Kayitlar / Belgeler / Yedekler / Calisma';
   if not WizardIsTaskSelected('cleandata') then
     Result := Result + NewLine + NewLine + 'Mevcut veriler doğrulanarak korunur ve masaüstüne taşınır.';

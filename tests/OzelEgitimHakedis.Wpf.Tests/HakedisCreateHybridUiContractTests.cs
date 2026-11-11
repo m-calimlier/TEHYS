@@ -1595,7 +1595,7 @@ public sealed partial class HakedisCreateHybridUiContractTests
         }
         var resources = XDocument.Load(LoadProjectFile("src", "OzelEgitimHakedis.Wpf", "App.xaml"))
             .Root!.Element(presentation + "Application.Resources")!;
-        XNamespace local = "clr-namespace:OzelEgitimHakedis.Wpf;assembly=OEHS";
+        XNamespace local = $"clr-namespace:OzelEgitimHakedis.Wpf;assembly={typeof(MainWindow).Assembly.GetName().Name}";
         var root = new XElement(presentation + "Grid",
             new XAttribute(XNamespace.Xmlns + "x", XamlNamespace),
             new XAttribute(XNamespace.Xmlns + "local", local.NamespaceName),

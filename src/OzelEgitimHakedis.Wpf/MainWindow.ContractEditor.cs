@@ -83,7 +83,7 @@ public partial class MainWindow
                 : string.Empty;
             NightMessageBox.Show(
                 $"İKN '{contract.TenderNumber}' / '{contract.WorkName}' kaydı {routeCount} bağlı hat ve {historyCount} bağlı hakedişle ilişkili. Önce ilişkili kayıtları düzeltin; kayıt silinmedi.{ambiguityNote}",
-                "OEHS", MessageBoxButton.OK, MessageBoxImage.Information);
+                "TEHYS", MessageBoxButton.OK, MessageBoxImage.Information);
             return;
         }
 

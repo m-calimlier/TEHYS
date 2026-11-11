@@ -11,7 +11,7 @@ public sealed class PayrollWorkbookAcceptanceTests
     public void AllPayrollRows_MatchExcelAmounts_WithBlankAndAlternativeInvoiceDisplayReportedSeparately()
     {
         var root = new DirectoryInfo(AppContext.BaseDirectory);
-        while (root is not null && !File.Exists(Path.Combine(root.FullName, "OzelEgitimHakedisSistemi.sln"))) root = root.Parent;
+        while (root is not null && !File.Exists(Path.Combine(root.FullName, "TEHYS.sln"))) root = root.Parent;
         using var fixture = JsonDocument.Parse(File.ReadAllText(Path.Combine(root!.FullName,
             "tests/OzelEgitimHakedis.Tests/Fixtures/payroll-2026-10-26.json")));
         var matched = 0;

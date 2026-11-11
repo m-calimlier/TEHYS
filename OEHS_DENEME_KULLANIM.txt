@@ -2,11 +2,11 @@ OEHS — ARKADAŞ DENEME PAKETİ
 
 KURULUM
 1. ZIP içeriğini yeni ve boş bir klasöre çıkarın.
-2. OEHS.exe dosyasını çalıştırın. Kurulum veya ayrıca .NET yüklemesi gerekmez (Windows x64).
+2. TEHYS.exe dosyasını çalıştırın. Kurulum veya ayrıca .NET yüklemesi gerekmez (Windows x64).
 3. Bu paket ilk açılışta boş başlar; eski OEHS kullanıcı verilerini veya Masaüstündeki eski arşivleri içe aktarmaz.
 
 VERİLER NEREDE SAKLANIR?
-Deneme sırasında kaydedilen ihale, yüklenici, hat, hakediş ve arşiv kayıtları, OEHS.exe yanındaki "DenemeVerisi" klasöründe tutulur. Arkadaşınızın denemelerinin korunması için bu klasörü silmeyin. Bu klasör, bilgisayardaki normal OEHS kullanıcı verilerinden ve eski Masaüstü arşivlerinden ayrıdır.
+Deneme sırasında kaydedilen ihale, yüklenici, hat, hakediş ve arşiv kayıtları, TEHYS.exe yanındaki "DenemeVerisi" klasöründe tutulur. Arkadaşınızın denemelerinin korunması için bu klasörü silmeyin. Bu klasör, bilgisayardaki normal OEHS kullanıcı verilerinden ve eski Masaüstü arşivlerinden ayrıdır.
 
 ÖNEMLİ
 - Bu, gözden geçirme ve deneme sürümüdür; hesap ve resmî belge çıktıları gerçek ödeme kararı yerine kullanılmamalıdır.

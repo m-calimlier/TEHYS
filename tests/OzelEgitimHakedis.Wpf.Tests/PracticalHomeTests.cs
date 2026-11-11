@@ -8,7 +8,7 @@ public sealed class PracticalHomeTests
 {
     private static string Root
     {
-        get { var dir = new DirectoryInfo(AppContext.BaseDirectory); while(dir is not null && !File.Exists(Path.Combine(dir.FullName,"OzelEgitimHakedisSistemi.sln"))) dir=dir.Parent; return dir!.FullName; }
+        get { var dir = new DirectoryInfo(AppContext.BaseDirectory); while(dir is not null && !File.Exists(Path.Combine(dir.FullName,"TEHYS.sln"))) dir=dir.Parent; return dir!.FullName; }
     }
     [Fact] public void Home_ContainsOnlyContextWorkListAndSelectedPaymentControl()
     {

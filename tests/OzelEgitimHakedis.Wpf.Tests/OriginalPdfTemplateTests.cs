@@ -27,7 +27,7 @@ public sealed partial class OfficialDocumentOutputTests
             foreach(var output in OehsOfficialDocumentFactory.BuildSeparate(context with {IsCombined=false}))
                 Assert.DoesNotContain("Hat No :",GetPageText(output.Document.Pages[0].Child),StringComparison.Ordinal);
             var root=new DirectoryInfo(AppContext.BaseDirectory);
-            while(root.Parent is not null&&!File.Exists(Path.Combine(root.FullName,"OzelEgitimHakedisSistemi.sln")))root=root.Parent;
+            while(root.Parent is not null&&!File.Exists(Path.Combine(root.FullName,"TEHYS.sln")))root=root.Parent;
             PdfVectorWriter.Save(doc,Path.Combine(root.FullName,".superpowers","original-template-2026-11-04",program+".pdf"));
         });
     }

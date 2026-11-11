@@ -3,18 +3,18 @@ setlocal EnableExtensions
 cd /d "%~dp0" || exit /b 1
 
 set "ROOT=%CD%"
-set "SOLUTION=%ROOT%\OzelEgitimHakedisSistemi.sln"
+set "SOLUTION=%ROOT%\TEHYS.sln"
 set "PROJECT=%ROOT%\src\OzelEgitimHakedis.Wpf\OzelEgitimHakedis.Wpf.csproj"
 set "TEST_PROJECT=%ROOT%\tests\OzelEgitimHakedis.Tests\OzelEgitimHakedis.Tests.csproj"
 set "DIST=%ROOT%\dist"
-set "PUBLISH=%DIST%\OEHS-Test-Paketi"
-set "ZIP=%DIST%\OEHS-Test-Paketi.zip"
-set "ZIP_TMP=%DIST%\OEHS-Test-Paketi.tmp.zip"
+set "PUBLISH=%DIST%\TEHYS-Test-Paketi"
+set "ZIP=%DIST%\TEHYS-Test-Paketi.zip"
+set "ZIP_TMP=%DIST%\TEHYS-Test-Paketi.tmp.zip"
 
-title OEHS - Windows Test Paketi Olusturucu
+title TEHYS - Windows Test Paketi Olusturucu
 echo.
 echo ============================================================
-echo   OEHS - WINDOWS TEST PAKETI OLUSTUR
+echo   TEHYS - WINDOWS TEST PAKETI OLUSTUR
 echo ============================================================
 echo.
 
@@ -85,8 +85,8 @@ if errorlevel 1 (
     goto :fail
 )
 
-if not exist "%PUBLISH%\OEHS.exe" (
-    echo [HATA] Beklenen OEHS.exe bulunamadi.
+if not exist "%PUBLISH%\TEHYS.exe" (
+    echo [HATA] Beklenen TEHYS.exe bulunamadi.
     goto :fail
 )
 
@@ -108,9 +108,9 @@ if not exist "%ZIP_TMP%" (
     goto :fail
 )
 
-powershell -NoProfile -ExecutionPolicy Bypass -Command "Add-Type -AssemblyName System.IO.Compression.FileSystem; $z=[IO.Compression.ZipFile]::OpenRead('%ZIP_TMP%'); try { if (-not ($z.Entries | Where-Object { $_.FullName -eq 'OEHS.exe' -or $_.FullName.EndsWith('/OEHS.exe') })) { exit 2 } } finally { $z.Dispose() }"
+powershell -NoProfile -ExecutionPolicy Bypass -Command "Add-Type -AssemblyName System.IO.Compression.FileSystem; $z=[IO.Compression.ZipFile]::OpenRead('%ZIP_TMP%'); try { if (-not ($z.Entries | Where-Object { $_.FullName -eq 'TEHYS.exe' -or $_.FullName.EndsWith('/TEHYS.exe') })) { exit 2 } } finally { $z.Dispose() }"
 if errorlevel 1 (
-    echo [HATA] ZIP dogrulamasi basarisiz: OEHS.exe bulunamadi.
+    echo [HATA] ZIP dogrulamasi basarisiz: TEHYS.exe bulunamadi.
     goto :fail
 )
 

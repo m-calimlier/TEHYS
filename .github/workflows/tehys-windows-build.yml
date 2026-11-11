@@ -1,4 +1,4 @@
-name: OEHS Windows Build
+name: TEHYS Windows Build
 
 on:
   workflow_dispatch:
@@ -26,21 +26,21 @@ jobs:
           dotnet-version: 8.0.x
 
       - name: Restore full solution
-        run: dotnet restore ".\OzelEgitimHakedisSistemi.sln"
+        run: dotnet restore ".\TEHYS.sln"
 
       - name: Verify Visual Studio 18 solution metadata
         shell: pwsh
         run: |
-          $solution = Get-Content ".\OzelEgitimHakedisSistemi.sln" -Raw
+          $solution = Get-Content ".\TEHYS.sln" -Raw
           if (-not $solution.Contains("# Visual Studio Version 18")) { throw "Solution is not marked as Visual Studio 18." }
           if (-not $solution.Contains("VisualStudioVersion = 18.")) { throw "Expected a VisualStudioVersion value from the Visual Studio 18 family." }
-          $projectOutput = dotnet sln ".\OzelEgitimHakedisSistemi.sln" list
-          if ($LASTEXITCODE -ne 0) { throw "dotnet sln could not parse OzelEgitimHakedisSistemi.sln." }
+          $projectOutput = dotnet sln ".\TEHYS.sln" list
+          if ($LASTEXITCODE -ne 0) { throw "dotnet sln could not parse TEHYS.sln." }
           $projects = @($projectOutput | Where-Object { $_ -match "\.csproj\s*$" })
           if ($projects.Count -ne 6) { throw "Expected six projects in the solution; found $($projects.Count)." }
 
       - name: Build full solution
-        run: dotnet build ".\OzelEgitimHakedisSistemi.sln" --configuration Release --no-restore
+        run: dotnet build ".\TEHYS.sln" --configuration Release --no-restore
 
       - name: Build WPF
         run: dotnet build ".\src\OzelEgitimHakedis.Wpf\OzelEgitimHakedis.Wpf.csproj" --configuration Release --no-restore
@@ -104,7 +104,7 @@ jobs:
       - name: Test WPF output suite
         run: dotnet test ".\tests\OzelEgitimHakedis.Wpf.Tests\OzelEgitimHakedis.Wpf.Tests.csproj" --configuration Release --no-build --no-restore
         env:
-          OEHS_HYBRID_PREVIEW: ${{ github.workspace }}/artifacts/OEHS-Hybrid-Preview
+          OEHS_HYBRID_PREVIEW: ${{ github.workspace }}/artifacts/TEHYS-Hybrid-Preview
 
       - name: Upload hybrid panel render evidence
         id: upload_hybrid_preview
@@ -113,12 +113,12 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: OEHS-Hybrid-UI-Render-100-125-150
-          path: artifacts/OEHS-Hybrid-Preview/*.png
+          path: artifacts/TEHYS-Hybrid-Preview/*.png
           if-no-files-found: warn
           retention-days: 3
 
       - name: Generate and verify PDF smoke files
-        run: .\scripts\Generate-OfficialPdfSmoke.ps1 -OutputDirectory ".\artifacts\OEHS-PDF-Smoke"
+        run: .\scripts\Generate-OfficialPdfSmoke.ps1 -OutputDirectory ".\artifacts\TEHYS-PDF-Smoke"
 
       - name: Upload PDF smoke outputs for visual review
         id: upload_pdf_smoke
@@ -126,8 +126,8 @@ jobs:
         continue-on-error: true
         uses: actions/upload-artifact@v4
         with:
-          name: OEHS-PDF-Smoke-Review
-          path: artifacts/OEHS-PDF-Smoke/*.pdf
+          name: TEHYS-PDF-Smoke-Review
+          path: artifacts/TEHYS-PDF-Smoke/*.pdf
           if-no-files-found: error
           retention-days: 3
 
@@ -141,51 +141,6 @@ jobs:
           --configuration Release
           --runtime win-x64
           --self-contained true
-          --output ".\artifacts\OEHS"
+          --output ".\artifacts\TEHYS"
           /p:PublishSingleFile=true
           /p:IncludeNativeLibrariesForSelfExtract=true
-
-      - name: Prepare isolated friend test package
-        shell: pwsh
-        run: |
-          $testOutput = ".\artifacts\OEHS-Arkadas-Deneme-Paketi"
-          if (Test-Path $testOutput) { Remove-Item $testOutput -Recurse -Force }
-          New-Item -ItemType Directory -Path $testOutput -Force | Out-Null
-          Copy-Item ".\artifacts\OEHS\OEHS.exe" (Join-Path $testOutput "OEHS.exe") -Force
-          Copy-Item ".\OEHS_DENEME_PAKETI.flag" (Join-Path $testOutput "OEHS_DENEME_PAKETI.flag") -Force
-          Copy-Item ".\OEHS_DENEME_KULLANIM.txt" (Join-Path $testOutput "KULLANIM.txt") -Force
-          $required = @("OEHS.exe", "OEHS_DENEME_PAKETI.flag", "KULLANIM.txt")
-          foreach ($name in $required) {
-            if (-not (Test-Path (Join-Path $testOutput $name))) { throw "Deneme paketi eksik dosya içeriyor: $name" }
-          }
-          $unexpected = @(Get-ChildItem $testOutput -File | Where-Object { $_.Extension -eq ".pdb" })
-          if ($unexpected.Count -gt 0) { throw "Deneme paketine PDB dosyası eklenmemeli." }
-
-      - name: Upload isolated friend test package
-        id: upload_friend_test_package
-        if: github.event_name != 'pull_request'
-        continue-on-error: true
-        uses: actions/upload-artifact@v4
-        with:
-          name: OEHS-Arkadas-Deneme-Paketi
-          path: artifacts/OEHS-Arkadas-Deneme-Paketi/*
-          if-no-files-found: error
-          retention-days: 7
-
-      - name: Report friend package upload limitation
-        if: steps.upload_friend_test_package.outcome == 'failure'
-        run: echo "::warning::Test package preparation succeeded, but GitHub Actions could not store the friend test package artifact."
-
-      - name: Upload OEHS EXE
-        id: upload_oehs_exe
-        if: github.event_name != 'pull_request'
-        continue-on-error: true
-        uses: actions/upload-artifact@v4
-        with:
-          name: OEHS-Windows-x64
-          path: artifacts/OEHS/
-          retention-days: 3
-
-      - name: Report artifact upload limitation
-        if: steps.upload_oehs_exe.outcome == 'failure'
-        run: echo "::warning::Build, tests, and publish succeeded, but GitHub Actions could not store the binary because artifact storage may be full. Free storage or download locally with the OEHS packaging script."

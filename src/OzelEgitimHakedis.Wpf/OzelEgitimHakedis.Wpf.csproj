@@ -4,7 +4,7 @@
     <TargetFramework>net8.0-windows</TargetFramework>
     <UseWPF>true</UseWPF>
     <EnableWindowsTargeting>true</EnableWindowsTargeting>
-    <AssemblyName>OEHS</AssemblyName>
+    <AssemblyName>TEHYS</AssemblyName>
     <RootNamespace>OzelEgitimHakedis.Wpf</RootNamespace>
     <UseAppHost>true</UseAppHost>
     <ApplicationIcon>Assets/tehys.ico</ApplicationIcon>

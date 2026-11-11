@@ -151,7 +151,7 @@ public partial class MainWindow
     private void HomeSetup_Click(object sender,RoutedEventArgs e)
     {
         if(HomeProgram is not {} program || IsArchiveCorrection) return;
-        if(HasOpenWorkForRestore()) {NightMessageBox.Show(this,"Önce açık formu kaydedin veya temizleyin.","OEHS",MessageBoxButton.OK,MessageBoxImage.Information);return;}
+        if(HasOpenWorkForRestore()) {NightMessageBox.Show(this,"Önce açık formu kaydedin veya temizleyin.","TEHYS",MessageBoxButton.OK,MessageBoxImage.Information);return;}
         TransportProgramTypeComboBox.SelectedItem=TransportProgramTypeComboBox.Items.Cast<ComboBoxItem>().FirstOrDefault(i=>i.Tag?.ToString()==program.ToString());
         NavigationButton_Click(_contracts.Any(c=>c.ProgramType==program)?NavLines:NavContract,new RoutedEventArgs());
     }
@@ -164,7 +164,7 @@ public partial class MainWindow
     {
         if(HomeMonthlyGrid.SelectedItem is not MonthlyPaymentRow row || IsArchiveCorrection) return;
         if(_editingHistoryId.HasValue || _editingRoute is not null || _editingContractTender is not null || _editingContractorKey is not null)
-        {NightMessageBox.Show(this,"Önce açık düzenlemeyi kaydedin veya iptal edin.","OEHS",MessageBoxButton.OK,MessageBoxImage.Information);return;}
+        {NightMessageBox.Show(this,"Önce açık düzenlemeyi kaydedin veya iptal edin.","TEHYS",MessageBoxButton.OK,MessageBoxImage.Information);return;}
         if(target=="Contract" && row.Contract is not null) {EditContractButton_Click(new Button{Tag=row.Contract},new RoutedEventArgs());return;}
         if(target=="Lines")
         {
@@ -192,7 +192,7 @@ public partial class MainWindow
         if(HomeMonthlyGrid.SelectedItem is not MonthlyPaymentRow {Payment:{} selected}) return;
         var payment=_progressHistory.FirstOrDefault(p=>p.Id==selected.Id&&p.Input.ProgramType==selected.Input.ProgramType);
         if(payment is not null && payment!=selected)
-        {NightMessageBox.Show(this,"Seçili hakediş değişmiş. Güncel tutarları yeniden kontrol edin.","OEHS",MessageBoxButton.OK,MessageBoxImage.Information);RefreshHomeOperations();return;}
+        {NightMessageBox.Show(this,"Seçili hakediş değişmiş. Güncel tutarları yeniden kontrol edin.","TEHYS",MessageBoxButton.OK,MessageBoxImage.Information);RefreshHomeOperations();return;}
         if(payment is null || !EnsurePaymentPreflight(payment)) {RefreshHomeOperations();return;}
         _homeOutputPayment=payment;
         try {CreateSaveAllRouteDocumentsButton_Click(sender,e);}

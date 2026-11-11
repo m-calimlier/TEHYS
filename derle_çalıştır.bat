@@ -3,12 +3,12 @@ setlocal EnableExtensions
 cd /d "%~dp0"
 
 set "PROJECT=.\src\OzelEgitimHakedis.Wpf\OzelEgitimHakedis.Wpf.csproj"
-set "APP=.\src\OzelEgitimHakedis.Wpf\bin\Debug\net8.0-windows\OEHS.exe"
+set "APP=.\src\OzelEgitimHakedis.Wpf\bin\Debug\net8.0-windows\TEHYS.exe"
 set "LOG=%~dp0OEHS_CALISMA_LOG.txt"
 
 echo.
 echo ==========================================
-echo   OEHS - DERLE VE CALISTIR
+echo   TEHYS - DERLE VE CALISTIR
 echo ==========================================
 echo.
 
@@ -44,7 +44,7 @@ echo [%date% %time%] BUILD BASARILI >> "%LOG%"
 echo [%date% %time%] PROGRAM BASLATILIYOR >> "%LOG%"
 
 if not exist "%APP%" (
-    echo [HATA] OEHS.exe bulunamadi: %APP%
+    echo [HATA] TEHYS.exe bulunamadi: %APP%
     echo [%date% %time%] EXE BULUNAMADI >> "%LOG%"
     pause
     exit /b 1

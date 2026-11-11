@@ -1,6 +1,6 @@
 # Resmî belge imza ayarları
 
-OEHS'nin dört resmî PDF şablonunda kullanılan düzenleyen, kontrol eden ve onaylayan adları/unvanları JSON ayar dosyasından okunur.
+TEHYS'nin dört resmî PDF şablonunda kullanılan düzenleyen, kontrol eden ve onaylayan adları ve unvanları JSON ayar dosyasından okunur.
 
 ## Ayar dosyasının konumu
 
@@ -11,10 +11,10 @@ JSON dosyasını doğrudan düzenlemek de mümkündür:
 Uygulama ilk resmî belgeyi oluştururken dosya yoksa varsayılan değerlerle otomatik oluşturur:
 
 ```text
-%LOCALAPPDATA%\OEHS\official-document-settings.json
+Masaüstü\TEHYS\Kayitlar\official-document-settings.json
 ```
 
-Windows Gezgini'nin adres çubuğuna bu yolu yapıştırabilirsiniz. Dosyayı Not Defteri ile açıp JSON değerlerini değiştirin. Değişiklikler bir sonraki belge oluşturma/önizleme isteğinde yeniden okunur; uygulamayı yeniden başlatmak gerekmez.
+Windows Gezgini'nde Masaüstü'nü açın ve belirtilen klasöre gidin. Dosyayı Not Defteri ile açıp JSON değerlerini değiştirin. Değişiklikler bir sonraki belge oluşturma veya önizleme isteğinde okunur.
 
 ## Alanlar
 
@@ -29,6 +29,6 @@ Windows Gezgini'nin adres çubuğuna bu yolu yapıştırabilirsiniz. Dosyayı No
 
 ## Güvenli kullanım
 
-Dosyada geçerli JSON kullanılmalıdır. Boş veya yalnızca boşluk içeren alanlarda standart varsayılan değer kullanılır. JSON biçimi bozuksa OEHS açık bir hata verir; yanlış veya eksik imza bilgisiyle sessizce belge üretmez.
+Dosyada geçerli JSON kullanılmalıdır. Doldurulmamış imzacı adları ve unvanları boş başlar. JSON biçimi bozuksa TEHYS hata bildirir.
 
 Bu ayar yalnızca imza isimlerini ve unvanlarını değiştirir; hakediş hesaplarını, kesintileri ya da hukuki belge metinlerinin mevzuata uygunluğunu doğrulamaz. Resmî belgeleri kullanımdan önce kurumunuzun onayladığı örneklerle karşılaştırın.

@@ -1,25 +1,23 @@
 ﻿# Taşımalı Eğitim Hakediş Yönetim Sistemi (TEHYS)
 
-OzelEgitimHakedisSistemi, Temel Eğitim ve Özel Eğitim taşıma hakedişleri için Windows uygulamasıdır. 0.1.6 dağıtımında uygulama adı Taşımalı Eğitim Hakediş Yönetim Sistemi (TEHYS) olarak görünür.
+TEHYS, Temel Eğitim ve Özel Eğitim taşıma hakedişleri için Windows uygulamasıdır.
 
 | Konum | Ad veya yol |
 | --- | --- |
-| GitHub deposu | `mcalimlier/OzelEgitimHakedisSistemi` |
-| GitHub Desktop klonu | Varsayılan konumda `Belgeler/GitHub/OzelEgitimHakedisSistemi` |
-| Visual Studio çözümü | `OzelEgitimHakedisSistemi.sln` |
-| 0.1.6 kullanıcı verisi | `Masaüstü/OzelEgitimHakedisSistemi` |
+| GitHub deposu | `mcalimlier/TEHYS` |
+| GitHub Desktop klonu | Varsayılan konumda `Belgeler/GitHub/TEHYS` |
+| Visual Studio çözümü | `TEHYS.sln` |
+| Kullanıcı verisi | `Masaüstü/TEHYS` |
 | Windows kurulum konumu | `%LOCALAPPDATA%/Programs/TEHYS` |
-| 0.1.6 uygulaması ve paketleri | `TEHYS.exe`, `TEHYS-0.1.6-Setup-win-x64.exe`, `TEHYS-0.1.6-win-x64.zip` |
+| Windows kurulum dosyası | `TEHYS-0.1.7-Setup-win-x64.exe` |
 
-`OEHS` adı eski veri konumlarında, yerel derleme çıktısında ve deneme paketi betiklerinde geriye dönük uyumluluk için kullanılır.
+`OEHS` ve `OzelEgitimHakedisSistemi` adları eski kayıtların taşınması ve mevcut araçlarla uyumluluk için kaynakta kullanılır.
 
-**Çalıştırılabilir paket:** [GitHub Releases — en güncel sürüm](https://github.com/mcalimlier/OzelEgitimHakedisSistemi/releases/latest).
-Assets bölümünden kurulum için `TEHYS-0.1.6-Setup-win-x64.exe` indirin. Taşınabilir kullanım için `TEHYS-0.1.6-win-x64.zip` dosyasını tamamen çıkarıp `TEHYS.exe` açın.
+**Windows kurulumu.** En güncel sürümün Assets bölümünden `TEHYS-0.1.7-Setup-win-x64.exe` dosyasını indirin ve sihirbazı tamamlayın. Ardından programı Başlat menüsündeki **TEHYS** kısayolundan açın. [En güncel GitHub sürümü](https://github.com/mcalimlier/TEHYS/releases/latest)
 Excel veya ayrıca .NET kurulumu gerekmez. İlk kullanımda resmî belge imzacılarını kendi kurumunuza göre düzenleyin.
 Hakediş Oluştur içindeki Excel aktarımı, görünen girdi sütunlarının sağına her hattın hesaplanan KDV, tevkifat, damga vergisi, ek kesin teminat, diğer kesintiler, brüt ve net tutarlarını sayısal hücrelerle ekler.
-Kaynak proje/modül adları ve mevcut veri klasörleri uyumluluk için korunur.
 
-Dağıtımı yeniden üretmek için `scripts/Publish-Tehys.ps1` çalıştırılır; yayın klasörü yalnız EXE, kullanım belgesi ve üçüncü taraf lisanslarını içerir, kişisel kayıtlar pakete alınmaz.
+Kurulum dosyasını yeniden üretmek için önce `scripts/Publish-Tehys.ps1`, ardından Inno Setup derleyicisinin yoluyla `scripts/Build-TehysInstaller.ps1 -CompilerPath <ISCC.exe>` çalıştırılır.
 
 ## Teknoloji ve çözüm yapısı
 
@@ -29,7 +27,7 @@ Dağıtımı yeniden üretmek için `scripts/Publish-Tehys.ps1` çalıştırıl�
 - `src/OzelEgitimHakedis.Wpf`: kullanıcı arayüzü, raporlama ve dışa aktarma
 - `tests/OzelEgitimHakedis.Tests`: xUnit otomatik testleri
 
-Çözüm dosyası: `OzelEgitimHakedisSistemi.sln`.
+Çözüm dosyası: `TEHYS.sln`.
 
 ## Mevcut kapsam
 
@@ -38,7 +36,7 @@ Dağıtımı yeniden üretmek için `scripts/Publish-Tehys.ps1` çalıştırıl�
 - Arşivleme, arşiv kayıtlarını görüntüleme, geri yükleme ve düzeltme iş akışları
 - PDF ve Excel çıktı akışları
 - Dört hakediş belgesi için ortak önizleme ve PDF çıktısı
-- Resmî belge imza adları ve unvanları için kullanıcı tarafından düzenlenebilir JSON ayarı (`Masaüstü\\OzelEgitimHakedisSistemi\\Kayitlar\\official-document-settings.json`)
+- Resmî belge imza adları ve unvanları için kullanıcı tarafından düzenlenebilir JSON ayarı (`Masaüstü/TEHYS/Kayitlar/official-document-settings.json`)
 - WPF `DocumentViewer` tabanlı belge önizlemesi ve doğrudan Windows yazdırma iletişim kutusu
 - xUnit testleri ve Windows üzerinde derleme/yayın akışı
 
@@ -68,17 +66,16 @@ Windows ve .NET 8 SDK gereklidir. Depo kökünde PowerShell veya Terminal açara
 
 ```powershell
 dotnet --version
-dotnet restore .\OzelEgitimHakedisSistemi.sln
-dotnet test .\OzelEgitimHakedisSistemi.sln --configuration Release
+dotnet restore .\TEHYS.sln
+dotnet test .\TEHYS.sln --configuration Release
 ```
 
 WPF uygulamasını yerel olarak derlemek için:
 
 ```powershell
-dotnet build .\OzelEgitimHakedisSistemi.sln --configuration Release
+dotnet build .\TEHYS.sln --configuration Release
 ```
 
-Arkadaşa gönderilecek Windows x64 test paketi için `OEHS_TEST_PAKETI_OLUSTUR_GUNCEL.bat` çalıştırılabilir. Paket oluşturucu öncelikle testleri çalıştırır; testler geçmezse yeni paket yayımlamaz ve önceki başarılı ZIP dosyasını korur. İşaretli deneme paketi, normal OEHS kullanıcı verisi ve Masaüstü arşivlerinden ayrı olarak EXE'nin yanındaki `DenemeVerisi` klasörüne yazar; ilk kez boş başlar. GitHub Actions da `OEHS-Arkadas-Deneme-Paketi` adlı ayrı paket üretir. Eski `OEHS_TEST_PAKETI_OLUSTUR.bat` adı geriye dönük kullanım için güncel oluşturucuya yönlendirir.
 
 ## Dikkat edilmesi gereken kalite adımı
 
@@ -86,8 +83,8 @@ Git'e gönderilen kodun Windows üzerinde gerçekten derlenmesi ve testlerden ge
 
 Gerçek kurum verilerini, kişisel bilgileri veya üretim kayıtlarını test paketi içine koymayın.
 
-## 0.1.6: masaüstünde tek veri klasörü
+## 0.1.7: masaüstünde tek veri klasörü
 
-Tüm kayıtlar ve ayarlar `Masaüstü/OzelEgitimHakedisSistemi/Kayitlar`, PDF ve arşivler `Belgeler`, yedekler `Yedekler` altında tutulur. Normal kurulum eski dosyaları doğrulayarak taşır. İsteğe bağlı **Temiz kurulum** yalnızca kurulumu yapan Windows hesabının bilinen program klasörlerini kalıcı temizler; kutu varsayılan olarak boş ve ayrıca onaylıdır.
+Tüm kayıtlar ve ayarlar `Masaüstü/TEHYS/Kayitlar`, PDF ve arşivler `Belgeler`, yedekler `Yedekler` altında tutulur. Normal kurulum eski dosyaları doğrulayarak taşır. Mevcut kayıtlarla aynı adı taşıyan farklı içerikler yedeklenir. İsteğe bağlı **Temiz kurulum** yalnızca kurulumu yapan Windows hesabının bilinen program klasörlerini kalıcı temizler. Kutu varsayılan olarak boştur ve ayrıca onay gerektirir.
 
-0.1.6 kurulum ve taşınabilir paketleri kullanıcı verisi içermez. İlk kurulumda imzacı adları ve görevleri de boştur; yalnız uygulamanın üretici bilgileri ve hesaplama kuralları korunur.
+0.1.7 kurulum dosyası kullanıcı verisi içermez. İlk kurulumda imzacı adları ve görevleri boştur.

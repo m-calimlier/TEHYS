@@ -28,10 +28,13 @@ public static class OehsCleanInstallService
             foreach (var path in Directory.EnumerateFiles(parent,"OEHS-Recovery-*.oehs-backup.zip")) candidates.Add(path);
         }
         var desktop=parents[2];
-        candidates.Add(Path.Combine(desktop,"OzelEgitimHakedisSistemi"));
-        if (Directory.Exists(desktop))
-            foreach (var pattern in new[] { "OzelEgitimHakedisSistemi.pre-reset-*", "OzelEgitimHakedisSistemi.before-*", "OzelEgitimHakedisSistemi.restore-*" })
-                foreach (var path in Directory.EnumerateDirectories(desktop,pattern)) candidates.Add(path);
+        foreach (var name in new[] { OehsRuntimePaths.ProductName, OehsRuntimePaths.LegacyDesktopFolderName })
+        {
+            candidates.Add(Path.Combine(desktop, name));
+            if (Directory.Exists(desktop))
+                foreach (var suffix in new[] { ".pre-reset-*", ".before-*", ".restore-*" })
+                    foreach (var path in Directory.EnumerateDirectories(desktop, name + suffix)) candidates.Add(path);
+        }
         if (install is not null && (File.Exists(Path.Combine(install,"TEHYS.exe")) || File.Exists(Path.Combine(install,"OEHS.exe")) ||
             File.Exists(Path.Combine(install,OehsRuntimePaths.TestPackageMarkerFileName))))
         {

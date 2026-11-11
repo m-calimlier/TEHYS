@@ -1,9 +1,9 @@
-﻿TAŞIMALI EĞİTİM HAKEDİŞ YÖNETİM SİSTEMİ (TEHYS) 0.1.6
+﻿TAŞIMALI EĞİTİM HAKEDİŞ YÖNETİM SİSTEMİ (TEHYS) 0.1.7
 
 WINDOWS 64-BİT İÇİN
-ZIP dosyasının tamamını bir klasöre çıkarın ve TEHYS.exe dosyasını açın.
+TEHYS-0.1.7-Setup-win-x64.exe dosyasını açın ve kurulum sihirbazını tamamlayın.
+Kurulumdan sonra Başlat menüsünden TEHYS uygulamasını açın.
 Excel veya ayrıca .NET kurmanız gerekmez.
-Bu taşınabilir paket kurulum sihirbazı içermez.
 
 İLK KULLANIM
 Temel Eğitim veya Özel Eğitim programını seçin. Kendi ihale, yüklenici,
@@ -14,12 +14,12 @@ Paket hazırlayan kişinin mevcut veri/çıktı/ayar dosyaları pakete eklenmez.
 
 VERİLER
 Tüm kullanıcı verileri gerçek Windows masaüstündeki
-OzelEgitimHakedisSistemi klasörünün içindedir:
+TEHYS klasörünün içindedir:
 - Kayitlar: taşıma türlerine göre kayıt dosyaları ve ayarlar.
 - Belgeler: PDF çıktıları ve hakediş arşivleri.
 - Yedekler: tam yedekler, dönem arşivleri ve kurtarma kopyaları.
 - Calisma: işlem sırasında kullanılan geçici dosyalar.
-Normal kurulum eski AppData kayıtlarını doğrulayarak buraya taşır;
+Normal kurulum eski masaüstü ve AppData kayıtlarını doğrulayarak buraya taşır;
 farklı içerikli aynı adlı eski dosyalar ayrıca yedeklenir.
 TEMİZ KURULUM kutusu varsayılan olarak boş gelir. İşaretlenip ayrıca
 onaylanırsa yalnız bu Windows kullanıcısının bilinen TEHYS/OEHS
@@ -36,6 +36,6 @@ sayısal değerleridir; Excel içinde sonradan girdi değişirse otomatik
 yeniden hesaplama yapılmaz.
 
 PAYLAŞMA
-GitHub Releases sayfasındaki TEHYS-0.1.6-win-x64.zip dosyasını indirin.
+GitHub Releases sayfasındaki TEHYS-0.1.7-win-x64.zip dosyasını indirin.
 Arkadaşınıza doğrudan ZIP'i veya Releases bağlantısını gönderebilirsiniz.
 Source code dosyaları çalıştırılabilir program değildir.

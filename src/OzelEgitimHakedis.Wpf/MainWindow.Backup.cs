@@ -18,7 +18,7 @@ public partial class MainWindow
             File.WriteAllText(Path.Combine(OehsRuntimePaths.DataRoot,"last-backup.txt"),BackupStatusText.Text);
             NightMessageBox.Show(this,"Tam yedek oluşturuldu. Kaydedilmemiş form girdileri pakete dahil değildir.","OEHS — Yedek",MessageBoxButton.OK,MessageBoxImage.Information);
         }
-        catch(Exception ex) {NightMessageBox.Show(this,"Yedek oluşturulamadı:\n"+ex.Message,"OEHS",MessageBoxButton.OK,MessageBoxImage.Error);}
+        catch(Exception ex) {NightMessageBox.Show(this,"Yedek oluşturulamadı:\n"+ex.Message,"TEHYS",MessageBoxButton.OK,MessageBoxImage.Error);}
         finally {IsEnabled=true;}
     }
     private bool HasOpenWorkForRestore() => IsArchiveEditing || _editingHistoryId.HasValue || _historyCorrectionTargetId.HasValue ||
@@ -37,7 +37,7 @@ public partial class MainWindow
         (!TurkishMoneyInput.TryParse(box.Text, out var amount) || amount != 0m));
     private async void BackupRestore_Click(object sender,RoutedEventArgs e)
     {
-        if(HasOpenWorkForRestore()) {NightMessageBox.Show(this,"Önce açık düzenlemeyi kaydedin veya formu temizleyin. Geri yükleme kaydedilmemiş girdileri değiştirebilir.","OEHS",MessageBoxButton.OK,MessageBoxImage.Information);return;}
+        if(HasOpenWorkForRestore()) {NightMessageBox.Show(this,"Önce açık düzenlemeyi kaydedin veya formu temizleyin. Geri yükleme kaydedilmemiş girdileri değiştirebilir.","TEHYS",MessageBoxButton.OK,MessageBoxImage.Information);return;}
         var dialog=new Microsoft.Win32.OpenFileDialog {Filter="OEHS tam yedek|*.oehs-backup.zip|ZIP|*.zip"};
         if(dialog.ShowDialog(this)!=true) return;
         IsEnabled=false;
@@ -64,7 +64,7 @@ public partial class MainWindow
             BackupStatusText.Text="Yedek geri yüklendi. Önceki verilerin kurtarma paketi:\n"+recovery;
             NightMessageBox.Show(this,BackupStatusText.Text,"OEHS — Geri yükleme",MessageBoxButton.OK,MessageBoxImage.Information);
         }
-        catch(Exception ex) {NightMessageBox.Show(this,"Geri yükleme tamamlanamadı:\n"+ex.Message,"OEHS",MessageBoxButton.OK,MessageBoxImage.Error);}
+        catch(Exception ex) {NightMessageBox.Show(this,"Geri yükleme tamamlanamadı:\n"+ex.Message,"TEHYS",MessageBoxButton.OK,MessageBoxImage.Error);}
         finally {IsEnabled=true;}
     }
 }

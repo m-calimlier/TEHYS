@@ -22,11 +22,11 @@ public sealed class OehsRuntimePathsTests
         var paths = OehsRuntimePaths.Resolve(packageRoot, localAppData, desktop, isolatedTestPackage: true);
 
         var testDataRoot = Path.Combine(Path.GetFullPath(packageRoot), "DenemeVerisi");
-        Assert.Equal(Path.Combine(testDataRoot, "OEHS"), paths.DataRoot);
-        Assert.Equal(Path.Combine(testDataRoot, "OEHS", "oehs-data.json"), paths.ApplicationDataFilePath);
-        Assert.Equal(Path.Combine(testDataRoot, "OzelEgitimHakedisSistemi", "Arsiv", "Hakedisler"), paths.ArchiveFolderPath);
-        Assert.Equal(Path.Combine(testDataRoot, "OzelEgitimHakedisSistemi"), paths.DesktopRoot);
-        Assert.Equal(Path.Combine(testDataRoot, "OEHS", "official-document-settings.json"), paths.OfficialDocumentSettingsFilePath);
+        Assert.Equal(Path.Combine(testDataRoot, "TEHYS", "Kayitlar"), paths.DataRoot);
+        Assert.Equal(Path.Combine(testDataRoot, "TEHYS", "Kayitlar", "oehs-data.json"), paths.ApplicationDataFilePath);
+        Assert.Equal(Path.Combine(testDataRoot, "TEHYS", "Belgeler", "Arsiv", "Hakedisler"), paths.ArchiveFolderPath);
+        Assert.Equal(Path.Combine(testDataRoot, "TEHYS", "Belgeler"), paths.DesktopRoot);
+        Assert.Equal(Path.Combine(testDataRoot, "TEHYS", "Kayitlar", "official-document-settings.json"), paths.OfficialDocumentSettingsFilePath);
 
         Assert.DoesNotContain(localAppData, paths.ApplicationDataFilePath, StringComparison.OrdinalIgnoreCase);
         Assert.DoesNotContain(desktop, paths.ArchiveFolderPath, StringComparison.OrdinalIgnoreCase);
@@ -42,8 +42,8 @@ public sealed class OehsRuntimePathsTests
 
         var paths = OehsRuntimePaths.Resolve(packageRoot, localAppData, desktop, isolatedTestPackage: false);
 
-        var expectedDataRoot = Path.Combine(desktop, "OzelEgitimHakedisSistemi", "Kayitlar");
-        var expectedDesktopRoot = Path.Combine(desktop, "OzelEgitimHakedisSistemi", "Belgeler");
+        var expectedDataRoot = Path.Combine(desktop, "TEHYS", "Kayitlar");
+        var expectedDesktopRoot = Path.Combine(desktop, "TEHYS", "Belgeler");
         Assert.Equal(expectedDataRoot, paths.DataRoot);
         Assert.Equal(Path.Combine(expectedDataRoot, "oehs-data.json"), paths.ApplicationDataFilePath);
         Assert.Equal(Path.Combine(expectedDesktopRoot, "Arsiv", "Hakedisler"), paths.ArchiveFolderPath);

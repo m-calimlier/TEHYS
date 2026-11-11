@@ -34,7 +34,7 @@ public sealed partial class OfficialDocumentOutputTests
                 Assert.True(FixedPage.GetLeft(block)<100);
             }
             var root=new DirectoryInfo(AppContext.BaseDirectory);
-            while(root.Parent is not null&&!File.Exists(Path.Combine(root.FullName,"OzelEgitimHakedisSistemi.sln")))root=root.Parent;
+            while(root.Parent is not null&&!File.Exists(Path.Combine(root.FullName,"TEHYS.sln")))root=root.Parent;
             var path=Path.Combine(root.FullName,".superpowers","corrections-2026-11-03",program+"-verified.pdf");
             PdfVectorWriter.Save(document,path);
             using var pdf=UglyToad.PdfPig.PdfDocument.Open(path);

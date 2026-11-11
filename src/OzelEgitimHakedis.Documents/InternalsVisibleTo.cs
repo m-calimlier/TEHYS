@@ -1,4 +1,4 @@
 using System.Runtime.CompilerServices;
-[assembly: InternalsVisibleTo("OEHS")]
+[assembly: InternalsVisibleTo("TEHYS")]
 [assembly: InternalsVisibleTo("OzelEgitimHakedis.Wpf.Tests")]
 [assembly: InternalsVisibleTo("Tehys.Performance")]

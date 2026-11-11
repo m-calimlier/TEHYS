@@ -38,7 +38,7 @@ public partial class MainWindow
         var item = GetLastCalculatedProgress();
         if (item is null)
         {
-            NightMessageBox.Show("Arşivlenecek tamamlanmış bir hakediş bulunamadı. Önce HAKEDİŞ HESAPLA/KAYDET düğmesine basın.", "OEHS",
+            NightMessageBox.Show("Arşivlenecek tamamlanmış bir hakediş bulunamadı. Önce HAKEDİŞ HESAPLA/KAYDET düğmesine basın.", "TEHYS",
                 MessageBoxButton.OK, MessageBoxImage.Information);
             return;
         }
@@ -140,7 +140,7 @@ public partial class MainWindow
         if (contract is null || route is null || contractor is null)
         {
             NightMessageBox.Show($"Hat {item.RouteNumber}: arşiv için ihale, hat ve yüklenici snapshot'ı çözümlenemedi. Kaydı kontrol edin.",
-                "OEHS", MessageBoxButton.OK, MessageBoxImage.Warning);
+                "TEHYS", MessageBoxButton.OK, MessageBoxImage.Warning);
             return false;
         }
 
@@ -200,7 +200,7 @@ public partial class MainWindow
         var item = GetLastCalculatedProgress();
         if (item is null)
         {
-            NightMessageBox.Show("Düzeltilecek hakediş bulunamadı.", "OEHS", MessageBoxButton.OK, MessageBoxImage.Information);
+            NightMessageBox.Show("Düzeltilecek hakediş bulunamadı.", "TEHYS", MessageBoxButton.OK, MessageBoxImage.Information);
             return;
         }
 
@@ -283,7 +283,7 @@ public partial class MainWindow
         }
         catch (ProgressPaymentArchiveException ex)
         {
-            NightMessageBox.Show(ex.Message, "OEHS", MessageBoxButton.OK, MessageBoxImage.Warning);
+            NightMessageBox.Show(ex.Message, "TEHYS", MessageBoxButton.OK, MessageBoxImage.Warning);
             return;
         }
 
@@ -393,7 +393,7 @@ public partial class MainWindow
         }
         catch (Exception ex) when (ex is ProgressPaymentArchiveException or IOException or UnauthorizedAccessException)
         {
-            NightMessageBox.Show($"Arşiv geri yüklenemedi.\n\n{ex.Message}", "OEHS", MessageBoxButton.OK, MessageBoxImage.Warning);
+            NightMessageBox.Show($"Arşiv geri yüklenemedi.\n\n{ex.Message}", "TEHYS", MessageBoxButton.OK, MessageBoxImage.Warning);
         }
     }
 
@@ -419,7 +419,7 @@ public partial class MainWindow
         catch (ProgressPaymentArchiveException ex)
         {
             ClearArchiveCorrectionState();
-            NightMessageBox.Show(ex.Message, "OEHS", MessageBoxButton.OK, MessageBoxImage.Warning);
+            NightMessageBox.Show(ex.Message, "TEHYS", MessageBoxButton.OK, MessageBoxImage.Warning);
         }
     }
 

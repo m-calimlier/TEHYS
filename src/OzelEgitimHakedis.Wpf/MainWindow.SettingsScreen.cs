@@ -98,7 +98,7 @@ public partial class MainWindow
         }
         if (proposed == _calculationConstants)
         {
-            NightMessageBox.Show("Girilen sabitlerde değişiklik yok. Yeni kayıt oluşturulmadı.", "OEHS",
+            NightMessageBox.Show("Girilen sabitlerde değişiklik yok. Yeni kayıt oluşturulmadı.", "TEHYS",
                 MessageBoxButton.OK, MessageBoxImage.Information);
             return;
         }

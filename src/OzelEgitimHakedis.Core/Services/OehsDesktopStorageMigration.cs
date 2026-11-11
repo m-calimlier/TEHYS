@@ -19,13 +19,25 @@ public static class OehsDesktopStorageMigration
         var workspace = Path.GetFullPath(paths.WorkspaceRoot);
         var moves = new List<(string Source, string Target)>();
         var oldRoots = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
-        void AddTree(string source, string destination)
+        void AddTree(string source, string destination, bool previousDesktopLayout = false)
         {
             if (!Directory.Exists(source)) return;
             oldRoots.Add(source);
             foreach (var file in Files(source))
-                moves.Add((file, Path.Combine(destination, Path.GetRelativePath(source, file))));
+            {
+                var relative = Path.GetRelativePath(source, file);
+                var firstFolder = relative.Split(Path.DirectorySeparatorChar, 2)[0];
+                var root = previousDesktopLayout && firstFolder is "Ciktilar" or "Arsiv"
+                    ? paths.DesktopRoot
+                    : destination;
+                moves.Add((file, Path.Combine(root, relative)));
+            }
         }
+        var parent = Path.GetDirectoryName(workspace)!;
+        var legacyWorkspace = Path.Combine(parent, OehsRuntimePaths.LegacyDesktopFolderName);
+        if (!string.Equals(workspace, legacyWorkspace, StringComparison.OrdinalIgnoreCase))
+            AddTree(legacyWorkspace, workspace, previousDesktopLayout: true);
+
         foreach (var legacy in new[] { (Root: legacyLocalRoot, Name: "Local"), (Root: legacyRoamingRoot, Name: "Roaming") })
         {
             if (Inside(workspace, legacy.Root) || Inside(legacy.Root, workspace))
@@ -61,11 +73,11 @@ public static class OehsDesktopStorageMigration
             var key = Convert.ToHexString(SHA256.HashData(System.Text.Encoding.UTF8.GetBytes(source)))[..16];
             AddTree(source, Path.Combine(workspace, "Yedekler", "EskiDenemePaketleri", key));
         }
-        var parent = Path.GetDirectoryName(workspace)!;
         if (Directory.Exists(parent))
-            foreach (var suffix in new[] { ".pre-reset-*", ".before-*", ".restore-*" })
-                foreach (var old in Directory.EnumerateDirectories(parent, Path.GetFileName(workspace) + suffix))
-                    AddTree(old, Path.Combine(workspace, "Yedekler", "OncekiSifirlama", Path.GetFileName(old)));
+            foreach (var name in new[] { Path.GetFileName(workspace), OehsRuntimePaths.LegacyDesktopFolderName }.Distinct(StringComparer.OrdinalIgnoreCase))
+                foreach (var suffix in new[] { ".pre-reset-*", ".before-*", ".restore-*" })
+                    foreach (var old in Directory.EnumerateDirectories(parent, name + suffix))
+                        AddTree(old, Path.Combine(workspace, "Yedekler", "OncekiSifirlama", Path.GetFileName(old)));
         foreach (var name in ManagedNames)
         {
             var path = Path.Combine(workspace, name); RejectLinks(path); Directory.CreateDirectory(path);

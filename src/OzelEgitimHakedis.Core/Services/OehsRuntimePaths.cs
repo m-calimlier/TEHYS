@@ -9,6 +9,8 @@ namespace OzelEgitimHakedis.Core.Services;
 /// </summary>
 public static class OehsRuntimePaths
 {
+    public const string ProductName = "TEHYS";
+    internal const string LegacyDesktopFolderName = "OzelEgitimHakedisSistemi";
     public const string TestPackageMarkerFileName = "OEHS_DENEME_PAKETI.flag";
 
     private static readonly OehsRuntimePathSet Current = Resolve(
@@ -50,19 +52,22 @@ public static class OehsRuntimePaths
         if (isolatedTestPackage)
         {
             var testDataRoot = Path.Combine(normalizedBaseDirectory, "DenemeVerisi");
-            var dataRoot = Path.Combine(testDataRoot, "OEHS");
+            var legacyDataRoot = Path.Combine(testDataRoot, "OEHS");
+            var dataRoot = Directory.Exists(legacyDataRoot) ? legacyDataRoot : Path.Combine(testDataRoot, ProductName, "Kayitlar");
+            var legacyDesktopRoot = Path.Combine(testDataRoot, LegacyDesktopFolderName);
+            var desktopRoot = Directory.Exists(legacyDesktopRoot) ? legacyDesktopRoot : Path.Combine(testDataRoot, ProductName, "Belgeler");
             return new OehsRuntimePathSet(
                 DataRoot: dataRoot,
                 ApplicationDataFilePath: Path.Combine(dataRoot, "oehs-data.json"),
-                ArchiveFolderPath: Path.Combine(testDataRoot, "OzelEgitimHakedisSistemi", "Arsiv", "Hakedisler"),
-                DesktopRoot: Path.Combine(testDataRoot, "OzelEgitimHakedisSistemi"),
+                ArchiveFolderPath: Path.Combine(desktopRoot, "Arsiv", "Hakedisler"),
+                DesktopRoot: desktopRoot,
                 OfficialDocumentSettingsFilePath: Path.Combine(dataRoot, "official-document-settings.json"));
         }
 
         ArgumentException.ThrowIfNullOrWhiteSpace(localApplicationDataDirectory);
         ArgumentException.ThrowIfNullOrWhiteSpace(desktopDirectory);
 
-        var workspace = Path.Combine(desktopDirectory, "OzelEgitimHakedisSistemi");
+        var workspace = Path.Combine(desktopDirectory, ProductName);
         var normalDataRoot = Path.Combine(workspace, "Kayitlar");
         var normalDesktopRoot = Path.Combine(workspace, "Belgeler");
         return new OehsRuntimePathSet(

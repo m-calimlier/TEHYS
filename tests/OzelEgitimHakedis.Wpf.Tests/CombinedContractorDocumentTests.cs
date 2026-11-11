@@ -71,7 +71,7 @@ public sealed partial class HakedisCreateHybridUiContractTests
             var document=OehsOfficialDocumentFactory.BuildCombined(context);
             Assert.Equal(4,document.Pages.Count);
             var repo=new DirectoryInfo(AppContext.BaseDirectory);
-            while(repo.Parent is not null && !File.Exists(Path.Combine(repo.FullName,"OzelEgitimHakedisSistemi.sln")))repo=repo.Parent;
+            while(repo.Parent is not null && !File.Exists(Path.Combine(repo.FullName,"TEHYS.sln")))repo=repo.Parent;
             var directory=Path.Combine(repo.FullName,".superpowers","combined-contractor-2026-11-02");Directory.CreateDirectory(directory);
             var path=Path.Combine(directory,$"{program}.pdf");PdfVectorWriter.Save(document,path);
             using var pdf=UglyToad.PdfPig.PdfDocument.Open(path);

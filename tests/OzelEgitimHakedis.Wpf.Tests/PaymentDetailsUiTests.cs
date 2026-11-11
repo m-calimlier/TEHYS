@@ -127,7 +127,7 @@ public sealed partial class HakedisCreateHybridUiContractTests
 
     private static void SavePaymentDetailsPreview(FrameworkElement element, string name)
     {
-        var directory = Path.Combine(Path.GetDirectoryName(LoadProjectFile("OzelEgitimHakedisSistemi.sln"))!, ".superpowers", "payment-details-2026-10-26");
+        var directory = Path.Combine(Path.GetDirectoryName(LoadProjectFile("TEHYS.sln"))!, ".superpowers", "payment-details-2026-10-26");
         Directory.CreateDirectory(directory);
         var image = new RenderTargetBitmap((int)Math.Ceiling(element.ActualWidth), (int)Math.Ceiling(element.ActualHeight), 96, 96, PixelFormats.Pbgra32);
         image.Render(element);

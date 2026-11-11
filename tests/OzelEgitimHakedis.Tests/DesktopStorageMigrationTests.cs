@@ -6,6 +6,42 @@ namespace OzelEgitimHakedis.Tests;
 public sealed class DesktopStorageMigrationTests
 {
     [Fact]
+    public void PreviousDesktopWorkspace_IsMigratedIntoTehysWithoutReplacingCurrentRecords()
+    {
+        using var f = new Fixture();
+        var desktop = Path.GetDirectoryName(f.Paths.WorkspaceRoot)!;
+        var legacy = Path.Combine(desktop, "OzelEgitimHakedisSistemi");
+        f.Write(legacy, "Kayitlar/oehs-data.json", "old");
+        f.Write(legacy, "Belgeler/Arsiv/report.pdf", "report");
+        f.Write(legacy, "Yedekler/backup.zip", "backup");
+        f.Write(f.Paths.DataRoot, "oehs-data.json", "current");
+
+        OehsDesktopStorageMigration.Ensure(f.Paths, f.Local, f.Roaming);
+
+        Assert.Equal(Path.Combine(desktop, "TEHYS"), f.Paths.WorkspaceRoot);
+        Assert.Equal("current", File.ReadAllText(f.Paths.ApplicationDataFilePath));
+        Assert.Equal("report", File.ReadAllText(Path.Combine(f.Paths.DesktopRoot, "Arsiv", "report.pdf")));
+        Assert.Equal("backup", File.ReadAllText(Path.Combine(f.Paths.WorkspaceRoot, "Yedekler", "backup.zip")));
+        Assert.Contains(Directory.GetFiles(Path.Combine(f.Paths.WorkspaceRoot, "Yedekler"), "*", SearchOption.AllDirectories),
+            path => File.ReadAllText(path) == "old");
+    }
+
+    [Fact]
+    public void PreviousDesktopRecords_TakePriorityOverOlderAppDataCopies()
+    {
+        using var f = new Fixture();
+        var desktop = Path.GetDirectoryName(f.Paths.WorkspaceRoot)!;
+        f.Write(Path.Combine(desktop, "OzelEgitimHakedisSistemi"), "Kayitlar/oehs-data.json", "desktop");
+        f.Write(f.Local, "oehs-data.json", "older AppData");
+
+        OehsDesktopStorageMigration.Ensure(f.Paths, f.Local, f.Roaming);
+
+        Assert.Equal("desktop", File.ReadAllText(f.Paths.ApplicationDataFilePath));
+        Assert.Contains(Directory.GetFiles(Path.Combine(f.Paths.WorkspaceRoot, "Yedekler"), "*", SearchOption.AllDirectories),
+            path => File.ReadAllText(path) == "older AppData");
+    }
+
+    [Fact]
     public void Upgrade_MovesAndVerifiesOldRecordsSettingsAndDocumentsWithoutResettingThem()
     {
         using var f = new Fixture();

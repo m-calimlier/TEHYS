@@ -19,7 +19,7 @@ public partial class MainWindow
 {
     private static void ShowAlreadyRegistered(string message)
     {
-        NightMessageBox.Show(message, "OEHS", MessageBoxButton.OK, MessageBoxImage.Information);
+        NightMessageBox.Show(message, "TEHYS", MessageBoxButton.OK, MessageBoxImage.Information);
     }
 
     private static string BuildArchivePdfFileName(ProgressPaymentHistoryData payment)
