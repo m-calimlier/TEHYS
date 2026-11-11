@@ -1,20 +1,20 @@
-﻿# Taşımalı Eğitim Hakediş Yönetim Sistemi (TEHYS)
+# Taşımalı Eğitim Hakediş Yönetim Sistemi (TEHYS)
 
 TEHYS, Temel Eğitim ve Özel Eğitim taşıma hakedişleri için Windows uygulamasıdır.
 
 | Konum | Ad veya yol |
 | --- | --- |
-| GitHub deposu | `mcalimlier/TEHYS` |
+| GitHub deposu | `m-calimlier/TEHYS` |
 | GitHub Desktop klonu | Varsayılan konumda `Belgeler/GitHub/TEHYS` |
 | Visual Studio çözümü | `TEHYS.sln` |
-| Kullanıcı verisi | `Masaüstü/TEHYS` |
+| Güncel kaynak sürümünün kullanıcı verisi | `Masaüstü/TEHYS` |
 | Windows kurulum konumu | `%LOCALAPPDATA%/Programs/TEHYS` |
-| Windows kurulum dosyası | `TEHYS-0.1.7-Setup-win-x64.exe` |
+| Windows kurulum dosyası | `OzelEgitimHakedisSistemi-Kurulum-0.1.6.exe` |
 
 `OEHS` ve `OzelEgitimHakedisSistemi` adları eski kayıtların taşınması ve mevcut araçlarla uyumluluk için kaynakta kullanılır.
 
-**Windows kurulumu.** En güncel sürümün Assets bölümünden `TEHYS-0.1.7-Setup-win-x64.exe` dosyasını indirin ve sihirbazı tamamlayın. Ardından programı Başlat menüsündeki **TEHYS** kısayolundan açın. [En güncel GitHub sürümü](https://github.com/m-calimlier/TEHYS/releases/latest)
-Excel veya ayrıca .NET kurulumu gerekmez. İlk kullanımda resmî belge imzacılarını kendi kurumunuza göre düzenleyin.
+**Windows kurulumu.** En güncel sürümün Assets bölümünden `OzelEgitimHakedisSistemi-Kurulum-0.1.6.exe` dosyasını indirin ve sihirbazı tamamlayın. Ardından programı Başlat menüsündeki **TEHYS** kısayolundan açın. [En güncel GitHub sürümü](https://github.com/m-calimlier/TEHYS/releases/latest)
+Yayımlanan 0.1.6 paketi verilerini masaüstündeki OzelEgitimHakedisSistemi klasöründe tutar. Excel veya ayrıca .NET kurulumu gerekmez. İlk kullanımda resmî belge imzacılarını kendi kurumunuza göre düzenleyin.
 Hakediş Oluştur içindeki Excel aktarımı, görünen girdi sütunlarının sağına her hattın hesaplanan KDV, tevkifat, damga vergisi, ek kesin teminat, diğer kesintiler, brüt ve net tutarlarını sayısal hücrelerle ekler.
 
 Kurulum dosyasını yeniden üretmek için önce `scripts/Publish-Tehys.ps1`, ardından Inno Setup derleyicisinin yoluyla `scripts/Build-TehysInstaller.ps1 -CompilerPath <ISCC.exe>` çalıştırılır.
