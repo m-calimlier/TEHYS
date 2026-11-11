@@ -408,3 +408,7 @@ OEHS_CALISMA_LOG.txt
 # Local friend test packages
 dist/
 .superpowers/
+
+# Local Windows builds and generated PDF review archive
+/Yayin/OEHS/
+/OfficialPdfVisualReview.zip

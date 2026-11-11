@@ -1,6 +1,18 @@
 ﻿# Taşımalı Eğitim Hakediş Yönetim Sistemi (TEHYS)
 
-Temel Eğitim ve Özel Eğitim taşıma hakedişleri için güncel Windows uygulaması.
+OzelEgitimHakedisSistemi, Temel Eğitim ve Özel Eğitim taşıma hakedişleri için Windows uygulamasıdır. 0.1.6 dağıtımında uygulama adı Taşımalı Eğitim Hakediş Yönetim Sistemi (TEHYS) olarak görünür.
+
+| Konum | Ad veya yol |
+| --- | --- |
+| GitHub deposu | `mcalimlier/OzelEgitimHakedisSistemi` |
+| GitHub Desktop klonu | Varsayılan konumda `Belgeler/GitHub/OzelEgitimHakedisSistemi` |
+| Visual Studio çözümü | `OzelEgitimHakedisSistemi.sln` |
+| 0.1.6 kullanıcı verisi | `Masaüstü/OzelEgitimHakedisSistemi` |
+| Windows kurulum konumu | `%LOCALAPPDATA%/Programs/TEHYS` |
+| 0.1.6 uygulaması ve paketleri | `TEHYS.exe`, `TEHYS-0.1.6-Setup-win-x64.exe`, `TEHYS-0.1.6-win-x64.zip` |
+
+`OEHS` adı eski veri konumlarında, yerel derleme çıktısında ve deneme paketi betiklerinde geriye dönük uyumluluk için kullanılır.
+
 **Çalıştırılabilir paket:** [GitHub Releases — en güncel sürüm](https://github.com/mcalimlier/OzelEgitimHakedisSistemi/releases/latest).
 Assets bölümünden kurulum için `TEHYS-0.1.6-Setup-win-x64.exe` indirin. Taşınabilir kullanım için `TEHYS-0.1.6-win-x64.zip` dosyasını tamamen çıkarıp `TEHYS.exe` açın.
 Excel veya ayrıca .NET kurulumu gerekmez. İlk kullanımda resmî belge imzacılarını kendi kurumunuza göre düzenleyin.
@@ -8,8 +20,6 @@ Hakediş Oluştur içindeki Excel aktarımı, görünen girdi sütunlarının sa
 Kaynak proje/modül adları ve mevcut veri klasörleri uyumluluk için korunur.
 
 Dağıtımı yeniden üretmek için `scripts/Publish-Tehys.ps1` çalıştırılır; yayın klasörü yalnız EXE, kullanım belgesi ve üçüncü taraf lisanslarını içerir, kişisel kayıtlar pakete alınmaz.
-
-OEHS, özel eğitim hizmetleri için sözleşme/ihale bilgilerini, hatları, yüklenicileri, hakediş hesaplarını, geçmiş kayıtları ve resmî rapor çıktısını Windows masaüstü uygulamasında yönetmek amacıyla geliştirilmektedir.
 
 ## Teknoloji ve çözüm yapısı
 
