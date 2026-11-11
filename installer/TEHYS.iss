@@ -1,5 +1,8 @@
+﻿#define DataFolderName "TEHYS"
+#define ExistingCleanTask
+#define CustomDataPreparation
 #ifndef AppVersion
-  #define AppVersion "0.1.7"
+  #define AppVersion "0.1.8"
 #endif
 #ifndef PackageDir
   #define PackageDir "..\dist\TEHYS-" + AppVersion + "-win-x64"
@@ -21,8 +24,13 @@ OutputDir=..\dist
 OutputBaseFilename=TEHYS-{#AppVersion}-Setup-win-x64
 SetupIconFile=..\src\OzelEgitimHakedis.Wpf\Assets\tehys.ico
 UninstallDisplayIcon={app}\TEHYS.exe
+#ifdef FastBuild
+Compression=zip/1
+SolidCompression=no
+#else
 Compression=lzma2
 SolidCompression=yes
+#endif
 WizardStyle=modern dark polar includetitlebar hidebevels
 WizardBackColor=#10263d
 WizardSizePercent=115,115
@@ -65,26 +73,6 @@ Filename: "{app}\TEHYS.exe"; Description: "TEHYS programını aç"; Flags: nowai
 ; User records, archives and PDFs are deliberately absent from Files/UninstallDelete.
 
 [Code]
-function NextButtonClick(CurPageID: Integer): Boolean;
-begin
-  Result := True;
-  if (CurPageID = wpReady) and WizardIsTaskSelected('cleandata') then
-  begin
-    if WizardSilent then
-    begin
-      Log('Temiz kurulum etkileşimli onay gerektirir.');
-      Result := False;
-      Exit;
-    end;
-    Result := MsgBox('TEMİZ KURULUM' + #13#10#13#10 +
-      'Bu Windows kullanıcısının eski kayıtları, ayarları, arşivleri, yedekleri ve PDF çıktıları aşağıdaki bilinen program klasörlerinden kalıcı silinecek:' + #13#10#13#10 +
-      ExpandConstant('{userdesktop}\TEHYS') + #13#10 + ExpandConstant('{userdesktop}\OzelEgitimHakedisSistemi') + #13#10 +
-      ExpandConstant('{localappdata}\OEHS') + #13#10 + ExpandConstant('{userappdata}\OEHS') + #13#10#13#10 +
-      'Eski sıfırlama/kurtarma kopyaları ve seçili kurulum klasöründeki bilinen eski program dosyaları da temizlenir. Diğer Windows hesaplarına ve başka klasörlere elle kaydedilmiş dosyalara dokunulmaz.' + #13#10#13#10 +
-      'Bu işlem geri alınamaz. Temiz kuruluma devam edilsin mi?', mbConfirmation, MB_YESNO or MB_DEFBUTTON2) = IDYES;
-  end;
-end;
-
 function UpdateReadyMemo(Space, NewLine, MemoUserInfoInfo, MemoDirInfo, MemoTypeInfo,
   MemoComponentsInfo, MemoGroupInfo, MemoTasksInfo: String): String;
 begin
@@ -112,3 +100,5 @@ begin
       RaiseException('Veriler hazırlanamadı. Açık tüm TEHYS/OEHS pencerelerini kapatıp klasör izinlerini kontrol edin. Kurulum durduruldu. Kod: ' + IntToStr(ExitCode));
   end;
 end;
+
+#include "CommonWizard.iss"

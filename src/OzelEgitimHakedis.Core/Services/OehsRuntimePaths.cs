@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.IO;
 
 namespace OzelEgitimHakedis.Core.Services;
@@ -93,7 +93,7 @@ public static class OehsRuntimePaths
         if (!string.IsNullOrWhiteSpace(path))
             return path;
 
-        return Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.UserProfile), "Desktop");
+        throw new IOException("Masaüstü klasörü bulunamadı. Klasör erişimini düzeltmeden program kullanılamaz.");
     }
 }
 

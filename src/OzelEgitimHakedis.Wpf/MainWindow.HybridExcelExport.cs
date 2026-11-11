@@ -1,4 +1,4 @@
-using System.IO;
+﻿using System.IO;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
@@ -35,7 +35,7 @@ public partial class MainWindow
     private void HybridExportExcelButton_Click(object sender, RoutedEventArgs e)
     {
         if(!CommitHybridExportEdits()) return;
-        var dialog=new SaveFileDialog
+        var dialog=new WorkspaceSaveFileDialog
         {
             Filter="Excel çalışma kitabı (*.xlsx)|*.xlsx",DefaultExt=".xlsx",AddExtension=true,
             FileName="Secili-Hatlar.xlsx"
