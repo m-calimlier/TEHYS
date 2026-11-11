@@ -13,7 +13,7 @@ TEHYS, Temel Eğitim ve Özel Eğitim taşıma hakedişleri için Windows uygula
 
 `OEHS` ve `OzelEgitimHakedisSistemi` adları eski kayıtların taşınması ve mevcut araçlarla uyumluluk için kaynakta kullanılır.
 
-**Windows kurulumu.** En güncel sürümün Assets bölümünden `TEHYS-0.1.7-Setup-win-x64.exe` dosyasını indirin ve sihirbazı tamamlayın. Ardından programı Başlat menüsündeki **TEHYS** kısayolundan açın. [En güncel GitHub sürümü](https://github.com/mcalimlier/TEHYS/releases/latest)
+**Windows kurulumu.** En güncel sürümün Assets bölümünden `TEHYS-0.1.7-Setup-win-x64.exe` dosyasını indirin ve sihirbazı tamamlayın. Ardından programı Başlat menüsündeki **TEHYS** kısayolundan açın. [En güncel GitHub sürümü](https://github.com/m-calimlier/TEHYS/releases/latest)
 Excel veya ayrıca .NET kurulumu gerekmez. İlk kullanımda resmî belge imzacılarını kendi kurumunuza göre düzenleyin.
 Hakediş Oluştur içindeki Excel aktarımı, görünen girdi sütunlarının sağına her hattın hesaplanan KDV, tevkifat, damga vergisi, ek kesin teminat, diğer kesintiler, brüt ve net tutarlarını sayısal hücrelerle ekler.
 

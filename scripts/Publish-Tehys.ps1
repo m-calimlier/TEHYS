@@ -1,4 +1,4 @@
-﻿param([string]$Version = '0.1.7')
+﻿param([string]$Version = '0.1.8')
 $ErrorActionPreference = 'Stop'
 if ($Version -notmatch '^\d+\.\d+\.\d+$') { throw 'GeÃ§erli sÃ¼rÃ¼m girin.' }
 $repoRoot = Split-Path -Parent $PSScriptRoot
